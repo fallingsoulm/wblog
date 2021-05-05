@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>专辑</title>
+<!--    <link rel="stylesheet" href="/lib/semantic-ui/2.2.4/semantic.min.css">-->
+<!--    <link rel="stylesheet" href="../static/css/me.css">-->
+</head>
+<body>
+
+<!--导航-->
+<nav th:replace="_fragments :: menu(6)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <!--<div class="ui container">-->
+    <!--<div class="ui inverted secondary stackable menu">-->
+    <!--<h2 class="ui teal header item">Blog</h2>-->
+    <!--<a href="#" class=" m-item item m-mobile-hide"><i class="mini home icon"></i>首页</a>-->
+    <!--<a href="#" class="m-item item m-mobile-hide"><i class="mini idea icon"></i>分类</a>-->
+    <!--<a href="#" class="m-item item m-mobile-hide"><i class="mini tags icon"></i>标签</a>-->
+    <!--<a href="#" class="m-item item m-mobile-hide"><i class="mini clone icon"></i>归档</a>-->
+    <!--<a href="#" class="m-item item m-mobile-hide"><i class="mini info icon"></i>关于我</a>-->
+    <!--<div class="right m-item item m-mobile-hide">-->
+    <!--<div class="ui icon inverted transparent input m-margin-tb-tiny">-->
+    <!--<input type="text" placeholder="Search....">-->
+    <!--<i class="search link icon"></i>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">-->
+    <!--<i class="sidebar icon"></i>-->
+    <!--</a>-->
+</nav>
+
+<!--中间内容-->
+<div class="m-container m-padded-tb-big animated fadeIn">
+    <div class="ui  container">
+        <div class="ui stackable grid">
+
+
+            <!--左边博客列表-->
+            <div class="five wide column">
+                <!--分类-->
+                <div class="ui segments">
+                    <div class="ui secondary segment">
+                        <div class="ui two column grid">
+                            <i class="idea icon"></i><span style="font-weight:bold" th:text="${albumVo.title}"></span>
+                            <!--                            <div class="column">-->
+                            <!--                                <i class="idea icon"></i><span th:text="${albumVo.title}"></span>>-->
+                            <!--                            </div>-->
+                            <!--                            <div class="right aligned column">-->
+                            <!--                                <a href="#" th:href="@{/label}" target="_blank">more <i-->
+                            <!--                                        class="angle double right icon"></i></a>-->
+                            <!--                            </div>-->
+                        </div>
+                    </div>
+                    <div class="ui teal segment">
+                        <div class="ui fluid vertical menu">
+                            <a th:href="@{/album/info/}+${albumVo.id}+'/'+${article.id}+'.html'"
+                               class="item"
+                               th:each="article : ${articleVos}">
+                                <span th:text="${article.title}" th:if="${article.check}"
+                                      style="font-weight: bold ; color: #00a8c6">学习日志</span>
+                                <span th:text="${article.title}" th:if="${!article.check}">学习日志</span>
+                            </a>
+
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!--二维码-->
+                <h4 class="ui horizontal divider header m-margin-top-large">扫码关注我</h4>
+                <div class="ui centered card" style="width: 11em">
+                    <img src="../static/images/wechat.jpg" th:src="#{mini}" alt=""
+                         class="ui rounded image">
+                </div>
+
+            </div>
+
+
+            <!--右边的top-->
+            <div class="eleven wide column">
+                <!--中间内容-->
+<!--                <div id="waypoint" class="m-container-small m-padded-tb-big animated fadeIn">-->
+                <div id="waypoint" class="">
+                    <div class="ui container">
+                        <div class="ui top attached segment">
+                            <div class="ui horizontal link list">
+                                <div class="item">
+                                    <img src="https://unsplash.it/100/100?image=1005"
+                                         th:src="@{${articleVo.userVo.avatar}}" alt=""
+                                         class="ui avatar image">
+                                    <div class="content"><a href="#" class="header"
+                                                            th:text="${articleVo.userVo.userName}">李仁密</a></div>
+                                </div>
+                                <div class="item">
+                                    <i class="calendar icon"></i> <span
+                                        th:text="${#dates.format(articleVo.createTime,'yyyy-MM-dd')}">2017-10-01</span>
+                                </div>
+                                <div class="item">
+                                    <i class="eye icon"></i> <span th:text="${articleVo.view}">2342</span>
+                                </div>
+                                <div class="item ">
+                                    <i class="">分类于</i>
+                                    <a class="ui orange basic left pointing label"
+                                       th:href="@{/types/{id}(id=${articleVo.classifyId})}+'.html'"
+                                       target="_blank" th:text="${articleVo.classifyName}"></a>
+                                    <!--<span class="ui orange basic left pointing label" >2342</span>-->
+                                </div>
+                            </div>
+
+                            <div class="ui attached segment"><label></label>
+                                <a th:href="@{/label/{id}(id=${label.id})}+'.html'" target="_blank"
+                                   class="ui teal basic left pointing label m-margin-tb-tiny"
+                                   th:each="label : ${articleVo.labelVos}"
+                                   th:text="'#'+${label.name}"></a>
+                                <!--<div class="ui teal basic left pointing label m-margin-tb-tiny" >Java-->
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="ui  attached padded segment">
+                        <!--内容-->
+                        <div class="ui right aligned basic segment">
+                            <div class="ui orange basic label" th:text="${articleVo.sourceVal}">原创</div>
+                        </div>
+
+                        <h2 class="ui center aligned header" th:text="${articleVo.title}">关于刻意练习的清单</h2>
+                        <br>
+                        <!--中间主要内容部分-->
+                        <div id="content"
+                             class="typo  typo-selection js-toc-content m-padded-lr-responsive m-padded-tb-large"
+                             th:utext="${articleVo.content}">
+                        </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+</div>
+
+<br>
+<br>
+<!--底部footer-->
+<footer th:replace="_fragments :: footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <!--<div class="ui center aligned container">-->
+    <!--<div class="ui inverted divided stackable grid">-->
+    <!--<div class="three wide column">-->
+    <!--<div class="ui inverted link list">-->
+    <!--<div class="item">-->
+    <!--<img src="../static/images/wechat.jpg" th:src="@{/images/wechat.jpg}" class="ui rounded image"-->
+    <!--alt="" style="width: 110px">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="three wide column">-->
+    <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">最新博客</h4>-->
+    <!--<div class="ui inverted link list">-->
+    <!--<a href="#" class="item m-text-thin">用户故事（User Story）</a>-->
+    <!--<a href="#" class="item m-text-thin">用户故事（User Story）</a>-->
+    <!--<a href="#" class="item m-text-thin">用户故事（User Story）</a>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="three wide column">-->
+    <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>-->
+    <!--<div class="ui inverted link list">-->
+    <!--<a href="#" class="item m-text-thin">Email：lirenmi@163.com</a>-->
+    <!--<a href="#" class="item m-text-thin">QQ：865729312</a>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="seven wide column">-->
+    <!--<h4 class="ui inverted header m-text-thin m-text-spaced ">Blog</h4>-->
+    <!--<p class="m-text-thin m-text-spaced m-opacity-mini">这是我的个人博客、会分享关于编程、写作、思考相关的任何内容，希望可以给来到这儿的人有所帮助...</p>-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="ui inverted section divider"></div>-->
+    <!--<p class="m-text-thin m-text-spaced m-opacity-tiny">Copyright © 2016 - 2017 Lirenmi Designed by Lirenmi</p>-->
+    <!--</div>-->
+
+</footer>
+<!--/*/<th:block th:replace="_fragments :: script">/*/-->
+<script src="/js/jquery.min.js"></script>
+<script src="/lib/semantic-ui/2.2.4/semantic.min.js"></script>
+<!--/*/</th:block>/*/-->
+
+<script>
+    $('.menu.toggle').click(function () {
+        $('.m-item').toggleClass('m-mobile-hide');
+    });
+</script>
+</body>
+</html>

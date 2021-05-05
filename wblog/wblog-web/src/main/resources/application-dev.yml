@@ -1,0 +1,25 @@
+## 日志配置
+logging:
+  level:
+    com.easy: debug
+    org.springframework: warn
+spring:
+  thymeleaf:
+    # thymeleaf  禁用缓存
+    cache: false
+    # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: true
+      ## 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://easy-mysql:3306/easy-archetype-dev?characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowMultiQueries=true
+    password: luyanan
+    username: luyanan
+  redis:
+    host: easy-mysql
+    password: luyanan
+    port: 6379
+    database: 3

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.apes.hub.info.mapper.ArticleLabelMapper">
+    <select id="listAndCount" resultType="com.apes.hub.api.module.info.vo.LabelVo">
+        SELECT COUNT(b_article_label.id) AS num,
+        b_label.*
+        FROM b_label
+        LEFT JOIN b_article_label ON b_label.id = b_article_label.label_id
+        LEFT JOIN b_article ON b_article_label.article_id = b_article.id
+
+        WHERE 1 =1
+        AND b_article.del_flag = 0
+        <if test="params != null">
+            <if test="params.name != null and params.name != ''">
+                AND b_label.NAME LIKE CONCAT("%", #{params.name}, "%")
+            </if>
+            <if test="params.aliases != null and params.aliases != ''">
+                AND b_label.aliases LIKE CONCAT("%", #{params.aliases}, "%")
+            </if>
+            <if test="params.articleStatus != null">
+                AND b_article.`status` = #{params.articleStatus}
+            </if>
+        </if>
+
+        GROUP BY b_label.id
+        ORDER BY num DESC
+        LIMIT #{offset}
+        ,#{limit}
+
+    </select>
+    <select id="findAndCount" resultType="java.lang.Integer">
+
+
+        SELECT
+        count( b_label.id)
+        FROM b_label
+        LEFT JOIN b_article_label ON b_label.id = b_article_label.label_id
+
+        LEFT JOIN b_article ON b_article_label.article_id = b_article.id
+
+        WHERE 1 =1
+        AND b_article.del_flag = 0
+        <if test="params != null">
+            <if test="params.name != null and params.name != ''">
+                AND b_label.NAME LIKE CONCAT("%", #{params.name}, "%")
+            </if>
+            <if test="params.aliases != null and params.aliases != ''">
+                AND b_label.aliases LIKE CONCAT("%", #{params.aliases}, "%")
+            </if>
+            <if test="params.articleStatus != null">
+                AND b_article.`status` = #{params.articleStatus}
+            </if>
+        </if>
+
+
+    </select>
+</mapper>

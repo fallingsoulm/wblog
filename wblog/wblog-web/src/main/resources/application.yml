@@ -1,0 +1,173 @@
+server:
+  ## 端口号
+  port: 9000
+  servlet:
+    ## 应用的访问路径
+    context-path: /uaa
+  #  tomcat:
+  #    # tomcat的URI 编码
+  #    uri-encoding: utf-8
+  #    # tomcat的最大线程池,默认为200
+  #    max-threads: 800
+  #    # tomcat 启动初始化的线程数量，默认为
+  #    min-spare-threads: 30
+  undertow:
+    accesslog:
+      # 是否打开 undertow 日志，默认为 false
+      enabled: false
+      # 设置访问日志所在目录
+      dir: logs
+      # 指定工作者线程的 I/0 线程数，默认为 2 或者 CPU 的个数
+    #    io-threads: 8
+    #    # 指定工作者线程个数，默认为 I/O 线程个数的 8 倍
+    #    worker-threads: 64
+    # 设置 HTTP POST 内容的最大长度，默认不做限制
+    max-http-post-size: -1B
+    # 是否分配的直接内存(NIO直接分配的堆外内存)
+    direct-buffers: true
+    # 以下的配置会影响buffer,这些buffer会用于服务器连接的IO操作,有点类似netty的池化内存管理
+    # 每块buffer的空间大小,越小的空间被利用越充分，不要设置太大，以免影响其他应用，合适即可
+    buffer-size: 1024
+# Spring的配置
+spring:
+  # 模板引擎配置
+  thymeleaf:
+    mode: HTML
+    # 编码
+    encoding: UTF-8
+    # 资源信息
+  messages:
+    # 国际化资源文件
+    basename: i18n/messages
+    # 序列化
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  profiles:
+    # 指定启用哪个环境的配置文件
+    active: dev
+  # 文件上传
+  servlet:
+    multipart:
+      # 单个文件大小
+      max-file-size: 100MB
+      # 设置总上传的文件大小
+      max-request-size: 200MB
+      enabled: true
+  application:
+    name: easy-archetype
+  main:
+    allow-bean-definition-overriding: true
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  session:
+    store-type: redis
+    timeout: 5h
+# 自定义配置
+easy:
+  archetype:
+    framework:
+      enable: true
+      # Spring 增强
+      spring:
+        enable: true
+        # 开启cors
+        cors:
+          enable: true
+      # 缓存增强
+      cache:
+        enable: true
+      logger:
+        enable: true
+        # 是否开启日志打印
+        logger-print: true
+      mybatis-plus:
+        enable: false
+      thread:
+        enable: true
+      config:
+        center:
+          enable: true
+    security:
+      oauth:
+        token-signing-key: easy-archetype
+        client:
+          authorization-server-host: http://localhost:${server.port}/
+          client-id: c1
+          client-secret: secret
+          resource-id: res1
+      ignoring-login-url:
+        - /captchaImage
+        - /actuator/**
+        - /oauth/*
+        - /token/**
+        - /css/**
+        - /img/**
+        - /js/**
+        - /static/**
+        - /ajax/**
+      validatecode:
+        captcha-type: math
+        enable: true
+        validate-code-urls: /login
+        validate-code-filter: false
+
+## mybatis-plus配置
+mybatis-plus:
+  global-config:
+    banner: false
+    db-config:
+      id-type: auto
+      select-strategy: not_empty
+      update-strategy: not_empty
+      logic-delete-field: delFlag
+      logic-delete-value: 2
+      logic-not-delete-value: 0
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
+  #  搜索指定包别名
+  type-aliases-package: com.easy.archetype.**.entity
+# 接口文档
+knife4j:
+  enable: true
+  documents:
+    - group: 2.X版本
+      name: 接口签名
+      locations: classpath:sign/*
+  setting:
+    language: zh-CN
+    enableSwaggerModels: true
+    enableDocumentManage: true
+    swaggerModelName: 实体类列表
+    enableVersion: true
+    enableReloadCacheParameter: false
+    enableAfterScript: true
+    enableFilterMultipartApiMethodType: POST
+    enableFilterMultipartApis: false
+    enableRequestCache: true
+    enableHost: false
+    enableHostText: 192.168.0.193:8000
+    enableHomeCustom: true
+    homeCustomLocation: classpath:markdown/home.md
+    enableSearch: false
+    enableFooter: false
+    enableFooterCustom: true
+    footerCustomContent: Apache License 2.0 | Copyright  2019-[浙江八一菜刀股份有限公司](https://gitee.com/xiaoym/knife4j)
+    enableDynamicParameter: true
+    enableDebug: true
+    enableOpenApi: false
+    enableGroup: true
+  cors: false
+  production: false
+  basic:
+    enable: false
+    username: test
+    password: 12313
+com:
+  easy:
+    archetype:
+      job:
+        enable: true

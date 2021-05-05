@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:replace="${title}">博客详情</title>
+    <link rel="stylesheet" href="../static/lib/semantic-ui/2.2.4/semantic.min.css"
+          th:href="@{/lib/semantic-ui/2.2.4/semantic.min.css}">
+    <link rel="stylesheet" href="../static/css/typo.css" th:href="@{/css/typo.css}">
+    <link rel="stylesheet" href="../static/css/animate.css" th:href="@{/css/animate.css}">
+    <link rel="stylesheet" href="../static/lib/prism/prism.css" th:href="@{/lib/prism/prism.css}">
+    <link rel="stylesheet" href="../static/lib/tocbot/tocbot.css" th:href="@{/lib/tocbot/tocbot.css}">
+    <link rel="stylesheet" href="../static/css/me.css" th:href="@{/css/me.css}">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+
+    <script>
+        // 百度统计
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?4166f69a6b21cd25eaea0b704e88cdfa";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+
+
+    </script>
+    <!-- 谷歌收录 -->
+    <meta name="google-site-verification" content="YpIsSKChhfQnCy1C6EeBKmY1WCzPQdMIr8dEUyv6qJQ"/>
+
+    <script>
+        function search() {
+            var search = $("#search").val();
+            if (search == '' || search.length == 0) {
+                return;
+            }
+            window.location.href = "/search.html?search=" + search;
+        }
+
+        function redirectLogin() {
+
+            var url = window.location.href;
+            window.location.href = "https://sso.luyanan.com/uaa/login.html?redirectUri=" + url
+        }
+
+    </script>
+</head>
+<body>
+
+
+<!--导航-->
+<nav th:fragment="menu(n)" class="ui inverted attached segment m-padded-tb-mini m-shadow-small">
+    <div class="ui container">
+        <div class="ui inverted secondary stackable menu">
+            <h2 class="ui teal header item" th:text="#{projectName}">Blog</h2>
+            <a href="#" th:href="@{/index.html}" class="m-item item m-mobile-hide " th:classappend="${n==1} ? 'active'"><i
+                    class="mini home icon"></i>首页</a>
+            <!--            <a href="#" th:href="@{/types/-1}" class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"><i-->
+            <!--                    class="mini idea icon"></i>分类</a>-->
+            <a href="#" th:href="@{/label.html}" class="m-item item m-mobile-hide" th:classappend="${n==3} ? 'active'"><i
+                    class="mini tags icon"></i>标签</a>
+
+            <a href="#" th:href="@{/news.html}" class="m-item item m-mobile-hide" th:classappend="${n==2} ? 'active'"><i
+                    class="mini tags icon"></i>热门资讯</a>
+
+            <a href="#" th:href="@{/album.html}" class="m-item item m-mobile-hide" th:classappend="${n==6} ? 'active'"><i
+                    class="mini tags icon"></i>专辑</a>
+
+
+            <a href="#" th:href="@{/tools.html}" class="m-item item m-mobile-hide" th:classappend="${n==4} ? 'active'"><i
+                    class="mini clone icon"></i>常用工具</a>
+            <a href="#" th:href="@{/document.html}" class="m-item item m-mobile-hide" th:classappend="${n==5} ? 'active'"><i
+                    class="mini info icon"></i>常用文档</a>
+            <div class="right m-item item m-mobile-hide">
+                <!--                <form name="search" action="#" th:action="@{/search}" method="post" target="_blank">-->
+                <div class="ui icon inverted transparent input m-margin-top-small">
+                    <input type="text" id="search" name="query" placeholder="Search...." th:value="${search}">
+                    <!--                    <i onclick="document.forms['search'].submit()" class="search link icon"></i>-->
+
+                    <i onclick="search()" class="search link icon"></i>
+                </div>
+                <!--                </form>-->
+            </div>
+            <!--<img class="ui avatar image" th:if="${user}!= null" src="https://unsplash.it/100/100?image=1005"-->
+            <!--th:src="@{${user.avatar}}">-->
+            <!--<span th:text="${user.nickName}" th:if="${user} != null"></span>-->
+            <a href="https://manage.luyanan.com/index" th:if="${currentUser!=nul}" target="_blank"
+               class="m-item item m-mobile-hide"><i
+                    class="mini" style="color: #0ea432" th:text="${currentUser.username}"></i></a>
+
+            <a href="#" onclick="redirectLogin()"
+               th:if="${currentUser==nul}"
+               class="m-item item m-mobile-hide"><i
+                    class="mini" style="color: #0ea432">登陆/注册</i></a>
+
+            <!--<a href="#" th:href="@{/admin}" th:if="${user}" class="m-item item m-mobile-hide"><i-->
+            <!--class="mini"></i>登陆/注册</a>-->
+        </div>
+    </div>
+    <a href="#" class="ui menu toggle black icon button m-right-top m-mobile-show">
+        <i class="sidebar icon"></i>
+    </a>
+</nav>
+
+
+<!--底部footer-->
+<footer th:fragment="footer" class="ui inverted vertical segment m-padded-tb-massive">
+    <div class="ui center aligned container">
+        <div class="ui inverted divided stackable grid">
+            <div class="three wide column">
+                <div class="ui inverted link list">
+                    <div class="item">
+                        <img src="../static/images/wechat.jpg" th:src="#{mini}" class="ui rounded image"
+                             alt="" style="width: 110px">
+                    </div>
+                </div>
+            </div>
+            <!--            <div class="three wide column">-->
+            <!--                <h4 class="ui inverted header m-text-thin m-text-spaced ">最新博客</h4>-->
+            <!--                <div id="newblog-container">-->
+            <!--                    <div class="ui inverted link list" th:fragment="newblogList">-->
+            <!--                        <a href="#" th:href="@{/blog/{id}(id=${blog.id})}" target="_blank" class="item m-text-thin"-->
+            <!--                           th:each="blog : ${newblogs}" th:text="${blog.title}">用户故事（User Story）</a>-->
+            <!--                        &lt;!&ndash;/*&ndash;&gt;-->
+            <!--                        <a href="#" class="item m-text-thin">用户故事（User Story）</a>-->
+            <!--                        <a href="#" class="item m-text-thin">用户故事（User Story）</a>-->
+            <!--                        &lt;!&ndash;*/&ndash;&gt;-->
+            <!--                    </div>-->
+            <!--                </div>-->
+            <!--            </div>-->
+            <div class="three wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">联系我</h4>
+                <div class="ui inverted link list">
+                    <a href="#" class="item m-text-thin" th:text="#{index.email}">luyanan@0718@163.com</a>
+                    <a href="#" class="item m-text-thin" th:text="#{index.qq}">QQ：914596513</a>
+                </div>
+            </div>
+            <div class="seven wide column">
+                <h4 class="ui inverted header m-text-thin m-text-spaced ">Blog</h4>
+                <p class="m-text-thin m-text-spaced m-opacity-mini" th:text="#{blogDescription}">
+                    这是我的个人博客、会分享关于编程、写作、思考相关的任何内容，希望可以给来到这儿的人有所帮助...</p>
+            </div>
+        </div>
+
+        <div class="ui inverted section divider"></div>
+        <p class="m-text-thin m-text-spaced m-opacity-tiny"><span th:text=#{icp}></span>
+            Copyright © <span th:text="#{copyrightYear}"></span>- <span
+                    th:text="${#dates.year(#dates.createNow())}">2020</span> Luyanan Designed by Luyanan</p>
+
+    </div>
+</footer>
+
+<th:block th:fragment="script">
+    <script src="/js/jquery.min.js"></script>
+    <script src="/lib/semantic-ui/2.2.4/semantic.min.js"></script>
+    <script src="/js/jquery.scrollTo.min.js"></script>
+    <script src="../static/lib/prism/prism.js" th:src="@{/lib/prism/prism.js}"></script>
+    <script src="../static/lib/tocbot/tocbot.min.js" th:src="@{/lib/tocbot/tocbot.min.js}"></script>
+    <script src="../static/lib/qrcode/qrcode.min.js" th:src="@{/lib/qrcode/qrcode.min.js}"></script>
+    <script src="../static/lib/waypoints/jquery.waypoints.min.js"
+            th:src="@{/lib/waypoints/jquery.waypoints.min.js}"></script>
+    <!--    <script>-->
+    <!--        $('#newblog-container').load(/*[[@{/footer/newblog}]]*/"/footer/newblog");-->
+    <!--    </script>-->
+
+    <script>
+
+    </script>
+
+
+</th:block>
+
+</body>
+</html>

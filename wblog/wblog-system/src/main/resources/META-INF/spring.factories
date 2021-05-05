@@ -1,0 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.easy.archetype.system.config.SystemAutoConfiguration
+# Environment Post Processor
+#org.springframework.boot.env.EnvironmentPostProcessor=\
+# com.easy.archetype.system.config.CustomerEnvironmentPostProcessor

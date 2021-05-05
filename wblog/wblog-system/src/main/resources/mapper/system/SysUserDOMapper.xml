@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wblog.system.mapper.SysUserMapper">
+
+	<select id="listByPage" resultType="com.wblog.system.entity.SysUserDo">
+
+		select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.password, u.sex, u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from sys_user u
+		left join sys_dept d on u.dept_id = d.dept_id
+		where u.del_flag = '0'
+		<if test="params.userName != null and params.userName != ''">
+			AND u.user_name like concat('%', #{params.userName}, '%')
+		</if>
+		<if test="params.status != null and params.status != ''">
+			AND u.status = #{params.status}
+		</if>
+		<if test="params.phonenumber != null and params.phonenumber != ''">
+			AND u.phonenumber like concat('%', #{params.phonenumber}, '%')
+		</if>
+<!--		<if test="params.beginTime != null and params.beginTime != ''">&lt;!&ndash; 开始时间检索 &ndash;&gt;-->
+		<!--			AND date_format(u.create_time,'%y%m%d') &gt;= date_format(#{params.beginTime},'%y%m%d')-->
+		<!--		</if>-->
+		<!--		<if test="params.endTime != null and params.endTime != ''">&lt;!&ndash; 结束时间检索 &ndash;&gt;-->
+		<!--			AND date_format(u.create_time,'%y%m%d') &lt;= date_format(#{params.endTime},'%y%m%d')-->
+		<!--		</if>-->
+		<if test="params.deptId != null and params.deptId != 0">
+			AND (u.dept_id = #{params.deptId} OR u.dept_id IN ( SELECT t.dept_id FROM sys_dept t WHERE find_in_set(#{params.deptId}, ancestors) ))
+		</if>
+	</select>
+</mapper>
