@@ -1,6 +1,7 @@
 package com.wblog.info.service;
 
-import com.apes.hub.api.module.info.vo.CommentVo;
+
+import com.wblog.common.module.info.vo.CommentVo;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public interface ICommentService {
      * <p>根据文章id查询</p>
      *
      * @param articleId
-     * @return {@link List<CommentVo>}
+     * @return {@link List< CommentVo >}
      * @author luyanan
      * @since 2020/9/19
      */

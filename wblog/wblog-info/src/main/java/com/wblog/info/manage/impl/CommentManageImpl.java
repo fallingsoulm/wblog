@@ -1,10 +1,11 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.CommentEntity;
-import com.apes.hub.info.manage.ICommentManage;
-import com.apes.hub.info.mapper.CommentMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.wblog.info.entity.CommentEntity;
+import com.wblog.info.manage.ICommentManage;
+import com.wblog.info.mapper.CommentMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import java.util.List;
  * <p></p>
  **/
 @Service
-public class CommentManageImpl extends MybatisPlusCacheManageImpl<CommentMapper, CommentEntity> implements ICommentManage {
+public class CommentManageImpl extends CacheManageImpl<CommentMapper, CommentEntity> implements ICommentManage {
 
 
     @Cacheable(sync = true)
@@ -30,7 +31,8 @@ public class CommentManageImpl extends MybatisPlusCacheManageImpl<CommentMapper,
     }
 
 
-    protected LambdaQueryWrapper<CommentEntity> queryWrapper(CommentEntity entity) {
+    @Override
+    protected LambdaQueryWrapper<CommentEntity> lambdaQueryWrapper(CommentEntity entity) {
         return new LambdaQueryWrapper<>(entity).orderByDesc(CommentEntity::getCreateTime);
     }
 

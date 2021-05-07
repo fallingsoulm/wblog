@@ -1,8 +1,9 @@
 package com.wblog.info.service;
 
-import com.apes.hub.api.module.info.vo.ClassifyVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
+
+import com.wblog.common.module.info.vo.ClassifyVo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 
 import java.util.List;
 

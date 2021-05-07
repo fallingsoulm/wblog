@@ -1,11 +1,11 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.NewsEntity;
-import com.apes.hub.info.manage.INewsManage;
-import com.apes.hub.info.mapper.NewsMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.entity.NewsEntity;
+import com.wblog.info.manage.INewsManage;
+import com.wblog.info.mapper.NewsMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
  * @since 2020-07-13
  */
 @Service
-public class NewsManageImpl extends MybatisPlusCacheManageImpl<NewsMapper, NewsEntity> implements INewsManage {
+public class NewsManageImpl extends CacheManageImpl<NewsMapper, NewsEntity> implements INewsManage {
 
     @Cacheable(sync = true)
     @Override
@@ -27,7 +27,7 @@ public class NewsManageImpl extends MybatisPlusCacheManageImpl<NewsMapper, NewsE
     }
 
     @Override
-    protected LambdaQueryWrapper<NewsEntity> createQueryWrapper(NewsEntity entity) {
-        return super.createQueryWrapper(entity).orderByDesc(NewsEntity::getPublishTime);
+    protected LambdaQueryWrapper<NewsEntity> lambdaQueryWrapper(NewsEntity entity) {
+        return super.lambdaQueryWrapper(entity).orderByDesc(NewsEntity::getPublishTime);
     }
 }

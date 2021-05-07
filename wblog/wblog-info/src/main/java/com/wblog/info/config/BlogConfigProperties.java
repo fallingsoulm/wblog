@@ -30,6 +30,13 @@ public class BlogConfigProperties {
 
 
     /**
+     * 随机图片的目录地址
+     *
+     * @since 2021/5/7
+     */
+
+    private String randomImagePath;
+    /**
      * <p>文件内容的url</p>
      *
      * @author luyanan

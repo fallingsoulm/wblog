@@ -1,11 +1,11 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.ArticleLabelEntity;
-import com.apes.hub.info.manage.IArticleLabelManage;
-import com.apes.hub.info.mapper.ArticleLabelMapper;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.info.entity.ArticleLabelEntity;
+import com.wblog.info.manage.IArticleLabelManage;
+import com.wblog.info.mapper.ArticleLabelMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -21,7 +21,7 @@ import java.util.List;
  * @since 2020-06-10
  */
 @Service
-public class ArticleLabelManageImpl extends MybatisPlusCacheManageImpl<ArticleLabelMapper, ArticleLabelEntity> implements IArticleLabelManage {
+public class ArticleLabelManageImpl extends CacheManageImpl<ArticleLabelMapper, ArticleLabelEntity> implements IArticleLabelManage {
     @Cacheable(sync = true)
     @Override
     public Integer findAndCount(LabelVo params) {

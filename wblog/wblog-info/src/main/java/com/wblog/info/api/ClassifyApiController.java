@@ -1,10 +1,10 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.module.info.vo.ClassifyVo;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.core.datascope.annotation.GlobalDataScope;
-import com.apes.hub.info.service.IClassifyService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.datascope.annotation.GlobalDataScope;
+import com.wblog.common.module.info.vo.ClassifyVo;
+import com.wblog.info.service.IClassifyService;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,9 +1,9 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.info.service.IAlbumArticleService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.info.service.IAlbumArticleService;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

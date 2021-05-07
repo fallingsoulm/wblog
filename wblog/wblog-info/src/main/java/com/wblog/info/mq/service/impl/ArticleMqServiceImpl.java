@@ -1,12 +1,12 @@
 package com.wblog.info.mq.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.mq.ArticleMqConstant;
-import com.apes.hub.info.manage.IArticleManage;
-import com.apes.hub.info.mq.service.IArticleMqService;
-import com.apes.hub.info.service.ILabelService;
 import com.rabbitmq.client.Channel;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.mq.ArticleMqConstant;
+import com.wblog.info.manage.IArticleManage;
+import com.wblog.info.mq.service.IArticleMqService;
+import com.wblog.info.service.ILabelService;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.connection.CorrelationData;

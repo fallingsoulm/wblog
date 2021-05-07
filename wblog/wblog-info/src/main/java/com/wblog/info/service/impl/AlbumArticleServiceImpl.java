@@ -1,19 +1,19 @@
 package com.wblog.info.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.AlbumArticleVo;
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.core.security.LoginUserManage;
-import com.apes.hub.info.conver.AlbumArticleConver;
-import com.apes.hub.info.entity.AlbumArticleEntity;
-import com.apes.hub.info.manage.IAlbumArticleManage;
-import com.apes.hub.info.service.IAlbumArticleService;
-import com.apes.hub.info.service.IArticleService;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.AlbumArticleVo;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.info.entity.AlbumArticleEntity;
+import com.wblog.info.manage.IAlbumArticleManage;
+import com.wblog.info.service.IAlbumArticleService;
+import com.wblog.info.service.IArticleService;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
+import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,33 +41,27 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
 
 
     @Autowired
-    private AlbumArticleConver albumArticleConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
     @Autowired
     private IArticleService articleService;
 
     @Autowired
-    private LoginUserManage loginUserManage;
+    private LoginUserService loginUserService;
 
     @Override
     public PageInfo<AlbumArticleVo> findByPage(PageRequestParams<AlbumArticleVo> pageRequestParams) {
-        PageRequestParams<AlbumArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, AlbumArticleEntity.class, albumArticleConver);
-        PageInfo<AlbumArticleEntity> entityPageInfo = iAlbumArticleManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, AlbumArticleVo.class, albumArticleConver, new PageInfoContentHandler<AlbumArticleVo>() {
-            @Override
-            public void handler(List<AlbumArticleVo> contentList) {
-                List<Long> articleIds = contentList.stream().map(AlbumArticleVo::getArticleId).distinct().collect(Collectors.toList());
-                List<ArticleVo> articleVoList =
-                        articleService.findByIds(articleIds);
-                for (AlbumArticleVo albumArticleVo : contentList) {
-                    for (ArticleVo articleVo : articleVoList) {
-                        if (albumArticleVo.getArticleId().equals(articleVo.getId())) {
-                            albumArticleVo.setArticleVo(articleVo);
-                        }
+        PageRequestParams<AlbumArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams,
+                AlbumArticleEntity.class);
+        PageInfo<AlbumArticleEntity> entityPageInfo = iAlbumArticleManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, AlbumArticleVo.class, contentList -> {
+            List<Long> articleIds = contentList.stream().map(AlbumArticleVo::getArticleId).distinct().collect(Collectors.toList());
+            List<ArticleVo> articleVoList =
+                    articleService.findByIds(articleIds);
+            for (AlbumArticleVo albumArticleVo : contentList) {
+                for (ArticleVo articleVo : articleVoList) {
+                    if (albumArticleVo.getArticleId().equals(articleVo.getId())) {
+                        albumArticleVo.setArticleVo(articleVo);
                     }
                 }
             }
@@ -80,39 +74,39 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
         if (albumArticleEntity == null) {
             return null;
         }
-        return albumArticleConver.map(albumArticleEntity, AlbumArticleVo.class);
+        return BeanUtils.copyProperties(albumArticleEntity, AlbumArticleVo.class);
     }
 
     @Override
     public List<AlbumArticleVo> findList(AlbumArticleVo albumArticleVo) {
-        AlbumArticleEntity AlbumArticleEntity = albumArticleConver.map(albumArticleVo, AlbumArticleEntity.class);
-        List<AlbumArticleEntity> list = iAlbumArticleManage.findList(AlbumArticleEntity);
-        return albumArticleConver.mapAsList(list, AlbumArticleVo.class);
+        AlbumArticleEntity AlbumArticleEntity = BeanUtils.copyProperties(albumArticleVo, AlbumArticleEntity.class);
+        List<AlbumArticleEntity> list = iAlbumArticleManage.list(AlbumArticleEntity);
+        return BeanUtils.copyList(list, AlbumArticleVo.class);
     }
 
     @Override
     public List<AlbumArticleVo> findByIds(List<Long> ids) {
         List<AlbumArticleEntity> entities = iAlbumArticleManage.findByIds(ids);
-        return albumArticleConver.mapAsList(entities, AlbumArticleVo.class);
+        return BeanUtils.copyList(entities, AlbumArticleVo.class);
     }
 
     @Override
     public Long save(AlbumArticleVo albumArticleVo) {
-        AlbumArticleEntity albumArticleEntity = albumArticleConver.map(albumArticleVo, AlbumArticleEntity.class);
+        AlbumArticleEntity albumArticleEntity = BeanUtils.copyProperties(albumArticleVo, AlbumArticleEntity.class);
         iAlbumArticleManage.insert(albumArticleEntity);
         return albumArticleEntity.getId();
     }
 
     @Override
     public void update(AlbumArticleVo albumArticleVo) {
-        AlbumArticleEntity albumArticleEntity = albumArticleConver.map(albumArticleVo, AlbumArticleEntity.class);
+        AlbumArticleEntity albumArticleEntity = BeanUtils.copyProperties(albumArticleVo, AlbumArticleEntity.class);
         iAlbumArticleManage.update(albumArticleEntity);
 
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iAlbumArticleManage.deleteBatch(new AlbumArticleEntity(), ids);
+        iAlbumArticleManage.deleteBatch(ids);
     }
 
     @Override
@@ -122,7 +116,7 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
 
     @Override
     public Integer count(AlbumArticleVo albumArticleVo) {
-        AlbumArticleEntity albumArticleEntity = albumArticleConver.map(albumArticleVo, AlbumArticleEntity.class);
+        AlbumArticleEntity albumArticleEntity = BeanUtils.copyProperties(albumArticleVo, AlbumArticleEntity.class);
         return iAlbumArticleManage.count(albumArticleEntity);
     }
 
@@ -131,7 +125,7 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
         // 查询出来关联的文章列表
         Long albumId = pageRequestParams.getParams().getAlbumId();
         List<Long> articleIds = this.iAlbumArticleManage
-                .findList(AlbumArticleEntity.builder().albumId(albumId).build())
+                .list(AlbumArticleEntity.builder().albumId(albumId).build())
                 .stream()
                 .map(AlbumArticleEntity::getArticleId)
                 .distinct()
@@ -141,11 +135,11 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
         if (null == articleVo) {
             articleVo = new ArticleVo();
         }
-        articleVo.setUserId(loginUserManage.userId());
+        articleVo.setUserId(loginUserService.getUserId());
         articleVo.setStatus(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue());
         PageRequestParams<ArticleVo> params = new PageRequestParams<>();
         params.setPageSize(pageRequestParams.getPageSize());
-        params.setPageIndex(pageRequestParams.getPageIndex());
+        params.setPageNum(pageRequestParams.getPageNum());
         params.setParams(articleVo);
         return articleService.findByPageAndNotIn(params, articleIds);
     }
@@ -177,7 +171,7 @@ public class AlbumArticleServiceImpl implements IAlbumArticleService {
     public List<ArticleVo> findArticle(Long albumId) {
 
 
-        List<Long> articleIds = iAlbumArticleManage.findList(AlbumArticleEntity.builder().albumId(albumId).build())
+        List<Long> articleIds = iAlbumArticleManage.list(AlbumArticleEntity.builder().albumId(albumId).build())
                 .stream().sorted(Comparator.comparing(AlbumArticleEntity::getOrderNum))
                 .map(AlbumArticleEntity::getArticleId).collect(Collectors.toList());
 

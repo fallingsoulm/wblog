@@ -1,10 +1,10 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.data.thread.BusinessThreadPoolTaskExecutor;
-import com.apes.hub.info.config.BlogConfigProperties;
-import com.apes.hub.info.service.ISiteMapService;
+import com.wblog.common.constant.Version;
+import com.wblog.info.config.BlogConfigProperties;
+import com.wblog.info.service.ISiteMapService;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.framework.thread.BusinessThreadPoolTaskExecutor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

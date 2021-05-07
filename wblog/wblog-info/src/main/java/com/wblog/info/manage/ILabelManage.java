@@ -1,7 +1,7 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.LabelEntity;
+import com.wblog.info.entity.LabelEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
 /**
  * <p>

@@ -1,7 +1,7 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.CommentEntity;
+import com.wblog.info.entity.CommentEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
 import java.util.List;
 

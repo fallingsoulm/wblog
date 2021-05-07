@@ -1,14 +1,13 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.GitSynDataVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.core.excel.ExcelUtil;
-import com.apes.hub.data.thread.BusinessThreadPoolTaskExecutor;
-import com.apes.hub.info.service.IGitSynDataService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.GitSynDataVo;
+import com.wblog.info.service.IGitSynDataService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.framework.thread.BusinessThreadPoolTaskExecutor;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,17 +103,17 @@ public class GitSynDataApiController {
         PageInfo<GitSynDataVo> pageInfo = gitSynDataService.findByPage(pageRequestParams);
         return RespEntity.success(pageInfo);
     }
-
-    /**
-     * 导出git同步信息配置列表
-     */
-    @PreAuthorize("hasAnyAuthority('info:gitSynData:export')")
-    @GetMapping("/export")
-    public RespEntity export(GitSynDataVo gitSynDataVo) {
-        List<GitSynDataVo> list = gitSynDataService.findList(gitSynDataVo);
-        ExcelUtil<GitSynDataVo> util = new ExcelUtil<GitSynDataVo>(GitSynDataVo.class);
-        return util.exportExcel(list, "gitSynData");
-    }
+//
+//    /**
+//     * 导出git同步信息配置列表
+//     */
+//    @PreAuthorize("hasAnyAuthority('info:gitSynData:export')")
+//    @GetMapping("/export")
+//    public RespEntity export(GitSynDataVo gitSynDataVo) {
+//        List<GitSynDataVo> list = gitSynDataService.findList(gitSynDataVo);
+//        ExcelUtil<GitSynDataVo> util = new ExcelUtil<GitSynDataVo>(GitSynDataVo.class);
+//        return util.exportExcel(list, "gitSynData");
+//    }
 
     /**
      * 获取git同步信息配置详细信息

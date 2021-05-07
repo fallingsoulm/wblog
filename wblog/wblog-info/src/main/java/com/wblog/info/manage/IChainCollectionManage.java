@@ -1,7 +1,8 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.ChainCollectionEntity;
+
+import com.wblog.info.entity.ChainCollectionEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
 import java.util.List;
 

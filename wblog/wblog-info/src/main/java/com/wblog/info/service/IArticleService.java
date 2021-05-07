@@ -1,9 +1,10 @@
 package com.wblog.info.service;
 
 
-
+import com.wblog.common.module.info.vo.ArticleLabelVo;
 import com.wblog.common.module.info.vo.ArticleVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 
 import java.util.List;
 
@@ -210,7 +211,6 @@ public interface IArticleService {
      * @since 2020/7/24
      */
     void patrol();
-
 
 
 }

@@ -2,6 +2,7 @@ package com.wblog.info.service;
 
 
 import com.wblog.common.module.info.vo.AlbumArticleVo;
+import com.wblog.common.module.info.vo.ArticleVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 

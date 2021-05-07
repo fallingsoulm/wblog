@@ -1,7 +1,7 @@
 package com.wblog.info.mapper;
 
-import com.apes.hub.data.mp3.BaseMapperPlus;
-import com.apes.hub.info.entity.ArticleInfoEntity;
+import com.wblog.info.entity.ArticleInfoEntity;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.BaseMapperPlus;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

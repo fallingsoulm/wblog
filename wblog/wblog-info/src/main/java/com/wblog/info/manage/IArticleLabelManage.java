@@ -1,9 +1,10 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.ArticleLabelEntity;
+
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.info.entity.ArticleLabelEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 
 import java.util.List;
 

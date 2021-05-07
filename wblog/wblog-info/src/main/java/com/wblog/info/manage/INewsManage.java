@@ -1,8 +1,9 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.NewsEntity;
+
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.entity.NewsEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
 /**
  * <p>

@@ -1,11 +1,11 @@
 package com.wblog.info.manage.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.ChainCollectionEntity;
-import com.apes.hub.info.manage.IChainCollectionManage;
-import com.apes.hub.info.mapper.ChainCollectionMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wblog.info.entity.ChainCollectionEntity;
+import com.wblog.info.manage.IChainCollectionManage;
+import com.wblog.info.mapper.ChainCollectionMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +20,11 @@ import java.util.List;
  * @since 2020-06-23
  */
 @Service
-public class ChainCollectionManageImpl extends MybatisPlusCacheManageImpl<ChainCollectionMapper, ChainCollectionEntity> implements IChainCollectionManage {
+public class ChainCollectionManageImpl extends CacheManageImpl<ChainCollectionMapper, ChainCollectionEntity> implements IChainCollectionManage {
 
     @Override
-    protected LambdaQueryWrapper<ChainCollectionEntity> createQueryWrapper(ChainCollectionEntity entity) {
-        LambdaQueryWrapper<ChainCollectionEntity> queryWrapper = super.createQueryWrapper(entity);
+    protected LambdaQueryWrapper<ChainCollectionEntity> lambdaQueryWrapper(ChainCollectionEntity entity) {
+        LambdaQueryWrapper<ChainCollectionEntity> queryWrapper = super.lambdaQueryWrapper(entity);
 
         queryWrapper.apply(entity.getClassifyId() != null && (!entity.getClassifyId().equals(0L)),
 

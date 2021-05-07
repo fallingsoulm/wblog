@@ -1,5 +1,16 @@
 package com.wblog.info.admin;
 
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelUtil;
+import com.wblog.common.constant.Version;
+import com.wblog.common.datascope.annotation.GlobalDataScope;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.GitSynDataVo;
+import com.wblog.info.service.IGitSynDataService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +38,7 @@ public class GitSynDataAdminController {
     private IGitSynDataService gitSynDataService;
 
     @Autowired
-    private LoginUserManage loginUserManage;
+    private LoginUserService loginUserService;
 
     /**
      * 查询git同步信息配置列表
@@ -49,16 +60,16 @@ public class GitSynDataAdminController {
         return RespEntity.success(pageInfo);
     }
 
-    /**
-     * 导出git同步信息配置列表
-     */
-    @PreAuthorize("hasAnyAuthority('info:gitSynData:export')")
-    @GetMapping("/export")
-    public RespEntity export(GitSynDataVo gitSynDataVo) {
-        List<GitSynDataVo> list = gitSynDataService.findList(gitSynDataVo);
-        ExcelUtil<GitSynDataVo> util = new ExcelUtil<GitSynDataVo>(GitSynDataVo.class);
-        return util.exportExcel(list, "gitSynData");
-    }
+//    /**
+//     * 导出git同步信息配置列表
+//     */
+//    @PreAuthorize("hasAnyAuthority('info:gitSynData:export')")
+//    @GetMapping("/export")
+//    public RespEntity export(GitSynDataVo gitSynDataVo) {
+//        List<GitSynDataVo> list = gitSynDataService.findList(gitSynDataVo);
+//        ExcelUtil<GitSynDataVo> util = new ExcelUtil<GitSynDataVo>(GitSynDataVo.class);
+//        return util.exportExcel(list, "gitSynData");
+//    }
 
     /**
      * 获取git同步信息配置详细信息
@@ -77,9 +88,9 @@ public class GitSynDataAdminController {
     @PreAuthorize("hasAnyAuthority('info:gitSynData:add')")
     @PostMapping
     public RespEntity add(@RequestBody @Validated GitSynDataVo gitSynDataVo) {
-        gitSynDataVo.setUserId(loginUserManage.userId());
-        gitSynDataVo.setUserName(loginUserManage.user().getUsername());
-        gitSynDataVo.setOwner(loginUserManage.user().getUsername());
+        gitSynDataVo.setUserId(loginUserService.getUserId());
+        gitSynDataVo.setUserName(loginUserService.getUser().getUserName());
+        gitSynDataVo.setOwner(loginUserService.getUser().getUserName());
 
         //设置默认值
         if (StrUtil.isBlank(gitSynDataVo.getBranch())) {

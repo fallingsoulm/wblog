@@ -1,10 +1,9 @@
 package com.wblog.info.event;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.module.search.dto.SearchDto;
-import com.apes.hub.api.module.search.mq.SearchMqConstant;
-import com.apes.hub.info.service.IArticleService;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.search.dto.SearchDto;
+import com.wblog.common.module.search.mq.SearchMqConstant;
+import com.wblog.info.service.IArticleService;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;

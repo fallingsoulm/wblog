@@ -1,8 +1,8 @@
 package com.wblog.info.mapper;
 
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.data.mp3.BaseMapperPlus;
-import com.apes.hub.info.entity.NewsEntity;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.entity.NewsEntity;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.BaseMapperPlus;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

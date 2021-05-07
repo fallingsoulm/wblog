@@ -1,9 +1,9 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.ChainCollectionClassifyEntity;
-import com.apes.hub.info.manage.IChainCollectionClassifyManage;
-import com.apes.hub.info.mapper.ChainCollectionClassifyMapper;
+import com.wblog.info.entity.ChainCollectionClassifyEntity;
+import com.wblog.info.manage.IChainCollectionClassifyManage;
+import com.wblog.info.mapper.ChainCollectionClassifyMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-06-23
  */
 @Service
-public class ChainCollectionClassifyManageImpl extends MybatisPlusCacheManageImpl<ChainCollectionClassifyMapper, ChainCollectionClassifyEntity> implements IChainCollectionClassifyManage {
+public class ChainCollectionClassifyManageImpl extends CacheManageImpl<ChainCollectionClassifyMapper, ChainCollectionClassifyEntity> implements IChainCollectionClassifyManage {
 
 }

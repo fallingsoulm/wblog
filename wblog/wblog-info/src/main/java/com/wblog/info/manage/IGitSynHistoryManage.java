@@ -1,7 +1,8 @@
 package com.wblog.info.manage;
 
-import com.apes.hub.core.manage.IManage;
-import com.apes.hub.info.entity.GitSynHistoryEntity;
+
+import com.wblog.info.entity.GitSynHistoryEntity;
+import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
 /**
  * <p>
@@ -10,7 +11,7 @@ import com.apes.hub.info.entity.GitSynHistoryEntity;
  *
  * @author luyanan
  * @since 2020-06-10
-*/
+ */
 public interface IGitSynHistoryManage extends IManage<GitSynHistoryEntity> {
 
 

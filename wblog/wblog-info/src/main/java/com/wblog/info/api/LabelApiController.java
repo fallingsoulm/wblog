@@ -1,12 +1,12 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.info.service.ILabelService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.info.service.ILabelService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class LabelApiController {
      * <p>分页查询标签并且统计数量</p>
      *
      * @param pageRequestParams 分页参数
-     * @return {@link PageInfo<LabelVo>}
+     * @return {@link PageInfo <LabelVo>}
      * @author luyanan
      * @since 2020/6/15
      */

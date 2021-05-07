@@ -1,9 +1,9 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.ArticleInfoEntity;
-import com.apes.hub.info.manage.IArticleInfoManage;
-import com.apes.hub.info.mapper.ArticleInfoMapper;
+import com.wblog.info.entity.ArticleInfoEntity;
+import com.wblog.info.manage.IArticleInfoManage;
+import com.wblog.info.mapper.ArticleInfoMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,6 +15,6 @@ import org.springframework.stereotype.Service;
  * @since 2020-06-10
  */
 @Service
-public class ArticleInfoManageImpl extends MybatisPlusCacheManageImpl<ArticleInfoMapper, ArticleInfoEntity> implements IArticleInfoManage {
+public class ArticleInfoManageImpl extends CacheManageImpl<ArticleInfoMapper, ArticleInfoEntity> implements IArticleInfoManage {
 
 }

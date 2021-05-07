@@ -1,11 +1,11 @@
 package com.wblog.info.admin;
 
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.info.service.INewsService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.service.INewsService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

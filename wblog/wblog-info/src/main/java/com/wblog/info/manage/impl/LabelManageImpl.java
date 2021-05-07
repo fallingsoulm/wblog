@@ -1,10 +1,10 @@
 package com.wblog.info.manage.impl;
 
-import com.apes.hub.core.manage.MybatisPlusCacheManageImpl;
-import com.apes.hub.info.entity.LabelEntity;
-import com.apes.hub.info.manage.ILabelManage;
-import com.apes.hub.info.mapper.LabelMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.wblog.info.entity.LabelEntity;
+import com.wblog.info.manage.ILabelManage;
+import com.wblog.info.mapper.LabelMapper;
+import io.github.fallingsoulm.easy.archetype.data.manage.impl.CacheManageImpl;
 import org.springframework.stereotype.Service;
 
 /**
@@ -16,9 +16,9 @@ import org.springframework.stereotype.Service;
  * @since 2020-06-10
  */
 @Service
-public class LabelManageImpl extends MybatisPlusCacheManageImpl<LabelMapper, LabelEntity> implements ILabelManage {
+public class LabelManageImpl extends CacheManageImpl<LabelMapper, LabelEntity> implements ILabelManage {
     @Override
-    protected LambdaQueryWrapper<LabelEntity> createQueryWrapper(LabelEntity entity) {
-        return super.createQueryWrapper(entity).orderByDesc(LabelEntity::getCreateTime);
+    protected LambdaQueryWrapper<LabelEntity> lambdaQueryWrapper(LabelEntity entity) {
+        return super.lambdaQueryWrapper(entity).orderByDesc(LabelEntity::getCreateTime);
     }
 }

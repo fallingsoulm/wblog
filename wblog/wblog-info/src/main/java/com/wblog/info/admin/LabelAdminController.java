@@ -1,12 +1,12 @@
 package com.wblog.info.admin;
 
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.data.validation.AddGroup;
-import com.apes.hub.info.service.ILabelService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.info.service.ILabelService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.framework.validation.AddGroup;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

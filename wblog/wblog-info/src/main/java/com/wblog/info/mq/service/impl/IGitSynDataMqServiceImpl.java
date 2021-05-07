@@ -1,9 +1,9 @@
 package com.wblog.info.mq.service.impl;
 
-import com.apes.hub.api.module.info.mq.GitSynDataMqConstant;
-import com.apes.hub.info.mq.service.IGitSynDataMqService;
-import com.apes.hub.info.service.IGitSynDataService;
 import com.rabbitmq.client.Channel;
+import com.wblog.common.module.info.mq.GitSynDataMqConstant;
+import com.wblog.info.mq.service.IGitSynDataMqService;
+import com.wblog.info.service.IGitSynDataService;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

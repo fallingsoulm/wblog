@@ -1,12 +1,12 @@
 package com.wblog.info.api;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.AlbumVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.constant.Version;
-import com.apes.hub.info.service.IAlbumService;
+import com.wblog.common.constant.Version;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.AlbumVo;
+import com.wblog.info.service.IAlbumService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

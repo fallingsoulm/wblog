@@ -1,8 +1,16 @@
 package com.wblog.info.admin;
 
 import com.wblog.common.constant.Version;
+import com.wblog.common.datascope.annotation.GlobalDataScope;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.AlbumArticleVo;
+import com.wblog.common.module.info.vo.AlbumVo;
 import com.wblog.info.service.IAlbumArticleService;
 import com.wblog.info.service.IAlbumService;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.framework.validation.AddGroup;
 import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -52,7 +60,6 @@ public class AlbumAdminController {
     @PostMapping()
     public RespEntity save(@RequestBody @Validated(AddGroup.class) AlbumVo albumVo) {
         albumVo.setUserId(loginUserService.getUserId());
-
         albumVo.setStatus(ConstantEnum.ALBUM_STATUS_STOP.getValue());
         albumService.save(albumVo);
         return RespEntity.success();
