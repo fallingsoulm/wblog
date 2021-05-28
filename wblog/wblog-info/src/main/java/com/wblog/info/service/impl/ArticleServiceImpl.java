@@ -3,31 +3,25 @@ package com.wblog.info.service.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.enums.FilePathEnum;
-import com.apes.hub.api.exception.CustomException;
-import com.apes.hub.api.module.file.api.FileApi;
-import com.apes.hub.api.module.file.api.FileInfoApi;
-import com.apes.hub.api.module.info.vo.*;
-import com.apes.hub.api.module.system.api.SysUserApi;
-import com.apes.hub.api.module.system.vo.SysUserVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.core.redis.RedisKeyEnums;
-import com.apes.hub.core.redis.RedisKeyGenerator;
-import com.apes.hub.core.security.LoginUserManage;
-import com.apes.hub.data.utils.SimpleSnowflake;
-import com.apes.hub.info.config.BlogConfigProperties;
-import com.apes.hub.info.conver.ArticleConver;
-import com.apes.hub.info.entity.ArticleEntity;
-import com.apes.hub.info.event.ArticleEvent;
-import com.apes.hub.info.event.EventSourceVo;
-import com.apes.hub.info.manage.IArticleManage;
-import com.apes.hub.info.mq.service.IArticleMqService;
-import com.apes.hub.info.service.*;
-import com.apes.hub.info.utils.MarkdownUtils;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.common.module.info.vo.ClassifyVo;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.common.module.system.api.SysUserApi;
+import com.wblog.common.module.system.vo.SysUserVo;
+import com.wblog.common.redis.RedisKeyEnums;
+import com.wblog.common.utils.SimpleSnowflake;
+import com.wblog.info.config.BlogConfigProperties;
+import com.wblog.info.entity.ArticleEntity;
+import com.wblog.info.manage.IArticleManage;
+import com.wblog.info.mq.service.IArticleMqService;
+import com.wblog.info.service.*;
+import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,10 +53,6 @@ public class ArticleServiceImpl implements IArticleService {
 
 
     @Autowired
-    private ArticleConver articleConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
     @Autowired
@@ -78,10 +68,10 @@ public class ArticleServiceImpl implements IArticleService {
     private FileInfoApi fileInfoApi;
 
     @Autowired
-    private LoginUserManage loginUserManage;
+    private LoginUserService loginUserService;
 
     @Autowired
-    private FileApi fileApi;
+    private FileTemplate fileTemplate;
 
     @Autowired
     private IClassifyService classifyService;
@@ -121,7 +111,7 @@ public class ArticleServiceImpl implements IArticleService {
     public PageInfo<ArticleVo> findByPage(PageRequestParams<ArticleVo> pageRequestParams) {
         PageInfo<ArticleEntity> entityPageInfo = null;
         // 按照创建时间分页排序
-        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class, articleConver);
+        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class);
         if (null == pageRequestParams.getParams() || null == pageRequestParams.getParams().getOrderBy() ||
                 (null != pageRequestParams.getParams().getOrderBy() && pageRequestParams.getParams().getOrderBy().
                         equals(ConstantEnum.ARTICLE_ORDER_BY_NEWEST.getValue()))) {
@@ -157,11 +147,11 @@ public class ArticleServiceImpl implements IArticleService {
             } else {
                 articleEntities = new ArrayList<>();
             }
-            entityPageInfo = new PageInfo<ArticleEntity>(articleEntities, size.intValue(), params);
+            entityPageInfo = new PageInfo<ArticleEntity>(articleEntities, size.longValue(), params);
         }
 
 
-        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, articleConver, new PageInfoContentHandler<ArticleVo>() {
+        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, new PageInfoContentHandler<ArticleVo>() {
             @Override
             public void handler(List<ArticleVo> contentList) {
                 setExtField(contentList);
@@ -217,7 +207,7 @@ public class ArticleServiceImpl implements IArticleService {
         }, executor);
 
 
-        Map<String, String> images = fileApi.addHosts(contentList.stream().map(ArticleVo::getImage).distinct().collect(Collectors.toList()));
+        Map<String, String> images = fileTemplate.addHost(contentList.stream().map(ArticleVo::getImage).distinct().collect(Collectors.toList()));
 
         List<CompletableFuture> allFuture = new ArrayList<>();
         allFuture.add(userFurure);

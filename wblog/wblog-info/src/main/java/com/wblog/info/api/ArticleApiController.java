@@ -1,7 +1,6 @@
 package com.wblog.info.api;
 
 import com.wblog.common.constant.Version;
-import com.wblog.common.datascope.annotation.GlobalDataScope;
 import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.module.info.vo.ArticleLabelVo;
 import com.wblog.common.module.info.vo.ArticleVo;

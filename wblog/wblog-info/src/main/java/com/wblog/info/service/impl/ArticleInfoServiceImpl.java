@@ -1,14 +1,14 @@
 package com.wblog.info.service.impl;
 
-import com.apes.hub.api.module.info.vo.ArticleInfoVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.ArticleInfoConver;
-import com.apes.hub.info.entity.ArticleInfoEntity;
-import com.apes.hub.info.manage.IArticleInfoManage;
-import com.apes.hub.info.service.IArticleInfoService;
-import com.apes.hub.info.service.IGitSynService;
+import com.wblog.common.module.info.vo.ArticleInfoVo;
+import com.wblog.info.entity.ArticleInfoEntity;
+import com.wblog.info.manage.IArticleInfoManage;
+import com.wblog.info.service.IArticleInfoService;
+import com.wblog.info.service.IGitSynService;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +35,6 @@ public class ArticleInfoServiceImpl implements IArticleInfoService {
 
 
     @Autowired
-    private ArticleInfoConver articleInfoConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
     @Autowired
@@ -46,9 +42,9 @@ public class ArticleInfoServiceImpl implements IArticleInfoService {
 
     @Override
     public PageInfo<ArticleInfoVo> findByPage(PageRequestParams<ArticleInfoVo> pageRequestParams) {
-        PageRequestParams<ArticleInfoEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleInfoEntity.class, articleInfoConver);
-        PageInfo<ArticleInfoEntity> entityPageInfo = iArticleInfoManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, ArticleInfoVo.class, articleInfoConver);
+        PageRequestParams<ArticleInfoEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleInfoEntity.class);
+        PageInfo<ArticleInfoEntity> entityPageInfo = iArticleInfoManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, ArticleInfoVo.class);
     }
 
     @Override
@@ -57,7 +53,7 @@ public class ArticleInfoServiceImpl implements IArticleInfoService {
         if (articleInfoEntity == null) {
             return null;
         }
-        return articleInfoConver.map(articleInfoEntity, ArticleInfoVo.class);
+        return BeanUtils.copyProperties(articleInfoEntity, ArticleInfoVo.class);
     }
 
     @Override
@@ -71,9 +67,9 @@ public class ArticleInfoServiceImpl implements IArticleInfoService {
 
     @Override
     public List<ArticleInfoVo> findList(ArticleInfoVo articleInfoVo) {
-        ArticleInfoEntity ArticleInfoEntity = articleInfoConver.map(articleInfoVo, ArticleInfoEntity.class);
-        List<ArticleInfoEntity> list = iArticleInfoManage.findList(ArticleInfoEntity);
-        return articleInfoConver.mapAsList(list, ArticleInfoVo.class);
+        ArticleInfoEntity ArticleInfoEntity = BeanUtils.copyProperties(articleInfoVo, ArticleInfoEntity.class);
+        List<ArticleInfoEntity> list = iArticleInfoManage.list(ArticleInfoEntity);
+        return BeanUtils.copyList(list, ArticleInfoVo.class);
     }
 
     @Override

@@ -13,6 +13,7 @@ import com.apes.hub.info.service.ISiteMapService;
 import com.redfin.sitemapgenerator.W3CDateFormat;
 import com.redfin.sitemapgenerator.WebSitemapGenerator;
 import com.redfin.sitemapgenerator.WebSitemapUrl;
+import com.wblog.common.redis.RedisKeyEnums;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
