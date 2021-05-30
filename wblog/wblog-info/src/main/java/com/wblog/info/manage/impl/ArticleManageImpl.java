@@ -60,7 +60,7 @@ public class ArticleManageImpl extends CacheManageImpl<ArticleMapper, ArticleEnt
         queryWrapper.in(CollectionUtil.isNotEmpty(statusList), ArticleEntity::getStatus, statusList);
         queryWrapper.orderByDesc(ArticleEntity::getStatus);
         queryWrapper.orderByDesc(ArticleEntity::getCreateTime);
-        return this.toPageInfo(params, queryWrapper, this);
+        return this.toPageInfo(params, queryWrapper);
     }
 
     @Cacheable(sync = true)
@@ -70,7 +70,7 @@ public class ArticleManageImpl extends CacheManageImpl<ArticleMapper, ArticleEnt
                 lambdaQueryWrapper(params.getParams());
         queryWrapper.notIn(CollectionUtil.isNotEmpty(notInIds), ArticleEntity::getId, notInIds);
         queryWrapper.orderByDesc(ArticleEntity::getCreateTime);
-        return super.toPageInfo(params, queryWrapper, this);
+        return super.toPageInfo(params, queryWrapper);
 
 
     }

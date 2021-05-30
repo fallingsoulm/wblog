@@ -23,7 +23,7 @@ public class CommentManageImpl extends CacheManageImpl<CommentMapper, CommentEnt
     @Cacheable(sync = true)
     @Override
     public List<CommentEntity> findByBlogIdAndParentCommentNull(Long articleId) {
-        LambdaQueryWrapper<CommentEntity> queryWrapper = queryWrapper(CommentEntity.builder().articleId(articleId).build());
+        LambdaQueryWrapper<CommentEntity> queryWrapper = lambdaQueryWrapper(CommentEntity.builder().articleId(articleId).build());
         queryWrapper.isNull(CommentEntity::getParentCommentId);
         return this.list(queryWrapper);
 

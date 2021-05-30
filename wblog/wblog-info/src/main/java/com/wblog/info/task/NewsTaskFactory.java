@@ -1,6 +1,6 @@
 package com.wblog.info.task;
 
-import com.apes.hub.api.enums.ConstantEnum;
+import com.wblog.common.enums.ConstantEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

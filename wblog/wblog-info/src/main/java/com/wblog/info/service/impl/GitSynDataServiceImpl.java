@@ -12,27 +12,29 @@ import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.enums.FilePathEnum;
-import com.apes.hub.api.exception.CustomException;
-import com.apes.hub.api.module.file.api.FileApi;
-import com.apes.hub.api.module.info.vo.*;
-import com.apes.hub.api.module.system.api.SysUserApi;
-import com.apes.hub.api.module.system.vo.SysUserVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.api.uitils.RespEntity;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.core.redis.RedisKeyGenerator;
-import com.apes.hub.data.utils.charset.CharsetUtils;
-import com.apes.hub.info.config.BlogConfigProperties;
-import com.apes.hub.info.conver.GitSynDataConver;
-import com.apes.hub.info.entity.GitSynDataEntity;
-import com.apes.hub.info.manage.IGitSynDataManage;
-import com.apes.hub.info.mq.service.IGitSynDataMqService;
-import com.apes.hub.info.service.*;
-import com.apes.hub.info.utils.JgitUtils;
+
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.enums.FilePathEnum;
+import com.wblog.common.exception.BusinessException;
+import com.wblog.common.module.info.vo.*;
+import com.wblog.common.module.system.api.SysUserApi;
+import com.wblog.common.module.system.vo.SysUserVo;
+import com.wblog.info.component.FileTemplatePlus;
+import com.wblog.info.config.BlogConfigProperties;
+import com.wblog.info.entity.GitSynDataEntity;
+import com.wblog.info.manage.IGitSynDataManage;
+import com.wblog.info.mq.service.IGitSynDataMqService;
+import com.wblog.info.service.*;
+import com.wblog.info.utils.JgitUtils;
+import com.wblog.info.utils.charset.CharsetUtils;
+import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.data.redis.RedisKeyGenerator;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +63,6 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
 
     @Autowired
     private IGitSynDataManage iGitSynDataManage;
-
-
-    @Autowired
-    private GitSynDataConver gitSynDataDataConver;
 
 
     @Autowired
@@ -99,39 +97,36 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
     private IGitSynDataMqService gitSynDataMqService;
 
     @Autowired
-    private FileApi fileApi;
+    private FileTemplatePlus fileTemplatePlus;
 
     @Override
     public PageInfo<GitSynDataVo> findByPage(PageRequestParams<GitSynDataVo> pageRequestParams) {
-        PageRequestParams<GitSynDataEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, GitSynDataEntity.class, gitSynDataDataConver);
+        PageRequestParams<GitSynDataEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, GitSynDataEntity.class);
         PageInfo<GitSynDataEntity> entityPageInfo = iGitSynDataManage.findByPage(params,
                 null == pageRequestParams.getParams() ? null : pageRequestParams.getParams().getStatusList());
-        return plusUtils.convertPageInfo(entityPageInfo, GitSynDataVo.class, gitSynDataDataConver, new PageInfoContentHandler<GitSynDataVo>() {
-            @Override
-            public void handler(List<GitSynDataVo> contentList) {
-                List<Long> userIds = contentList
-                        .stream()
-                        .filter(a -> null != a.getUserId())
-                        .map(GitSynDataVo::getUserId)
-                        .distinct()
-                        .collect(Collectors.toList());
-                List<SysUserVo> data = userApi.findByIds(userIds).getData();
-                for (GitSynDataVo gitSynDataVo : contentList) {
-                    // 统计文章上架/下架/废弃的数量
-                    Integer enableCount = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
-                            .status(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue()).build());
-                    Integer stopCount = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
-                            .status(ConstantEnum.ARTICLE_STATUS_STOP.getValue()).build());
-                    Integer discardNum = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
-                            .status(ConstantEnum.ARTICLE_STATUS_DISCARD.getValue()).build());
+        return plusUtils.convertPageInfo(entityPageInfo, GitSynDataVo.class, contentList -> {
+            List<Long> userIds = contentList
+                    .stream()
+                    .filter(a -> null != a.getUserId())
+                    .map(GitSynDataVo::getUserId)
+                    .distinct()
+                    .collect(Collectors.toList());
+            List<SysUserVo> data = userApi.findByIds(userIds).getData();
+            for (GitSynDataVo gitSynDataVo : contentList) {
+                // 统计文章上架/下架/废弃的数量
+                Integer enableCount = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
+                        .status(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue()).build());
+                Integer stopCount = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
+                        .status(ConstantEnum.ARTICLE_STATUS_STOP.getValue()).build());
+                Integer discardNum = articleService.count(ArticleVo.builder().gitId(gitSynDataVo.getId())
+                        .status(ConstantEnum.ARTICLE_STATUS_DISCARD.getValue()).build());
 
-                    gitSynDataVo.setEnableNum(enableCount);
-                    gitSynDataVo.setStopNum(stopCount);
-                    gitSynDataVo.setDiscardNum(discardNum);
-                    for (SysUserVo userVo : data) {
-                        if (null != gitSynDataVo.getUserId() && gitSynDataVo.getUserId().equals(userVo.getUserId())) {
-                            gitSynDataVo.setUserName(userVo.getUserName());
-                        }
+                gitSynDataVo.setEnableNum(enableCount);
+                gitSynDataVo.setStopNum(stopCount);
+                gitSynDataVo.setDiscardNum(discardNum);
+                for (SysUserVo userVo : data) {
+                    if (null != gitSynDataVo.getUserId() && gitSynDataVo.getUserId().equals(userVo.getUserId())) {
+                        gitSynDataVo.setUserName(userVo.getUserName());
                     }
                 }
             }
@@ -145,7 +140,7 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
             return null;
         }
 
-        GitSynDataVo gitSynDataVo = gitSynDataDataConver.map(gitSynDataEntity, GitSynDataVo.class);
+        GitSynDataVo gitSynDataVo = BeanUtils.copyProperties(gitSynDataEntity, GitSynDataVo.class);
         if (null != gitSynDataEntity.getUserId()) {
             gitSynDataVo.setUserName(userApi.findById(gitSynDataEntity.getUserId()).getData().getUserName());
         }
@@ -154,15 +149,15 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
 
     @Override
     public List<GitSynDataVo> findList(GitSynDataVo gitSynDataVo) {
-        GitSynDataEntity GitSynDataEntity = gitSynDataDataConver.map(gitSynDataVo, GitSynDataEntity.class);
-        List<GitSynDataEntity> list = iGitSynDataManage.findList(GitSynDataEntity);
-        return gitSynDataDataConver.mapAsList(list, GitSynDataVo.class);
+        GitSynDataEntity GitSynDataEntity = BeanUtils.copyProperties(gitSynDataVo, GitSynDataEntity.class);
+        List<GitSynDataEntity> list = iGitSynDataManage.list(GitSynDataEntity);
+        return BeanUtils.copyList(list, GitSynDataVo.class);
     }
 
     @Override
     public List<GitSynDataVo> findByIds(List<Long> ids) {
         List<GitSynDataEntity> entities = iGitSynDataManage.findByIds(ids);
-        return gitSynDataDataConver.mapAsList(entities, GitSynDataVo.class);
+        return BeanUtils.copyList(entities, GitSynDataVo.class);
     }
 
     @Override
@@ -176,12 +171,12 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
         GitSynDataEntity one = this.iGitSynDataManage.findOne(GitSynDataEntity.builder().gitUrl(gitSynDataVo.getGitUrl()).build());
         if (null != one) {
             if (thre) {
-                throw new CustomException(gitSynDataVo.getGitUrl() + ":已经存在,不允许重复");
+                throw new BusinessException(gitSynDataVo.getGitUrl() + ":已经存在,不允许重复");
             } else {
                 return null;
             }
         }
-        GitSynDataEntity gitSynDataEntity = gitSynDataDataConver.map(gitSynDataVo, GitSynDataEntity.class);
+        GitSynDataEntity gitSynDataEntity = BeanUtils.copyProperties(gitSynDataVo, GitSynDataEntity.class);
 
 
         if (StrUtil.isBlank(gitSynDataVo.getProjectName())) {
@@ -213,14 +208,14 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
 
     @Override
     public void update(GitSynDataVo gitSynDataVo) {
-        GitSynDataEntity gitSynDataEntity = gitSynDataDataConver.map(gitSynDataVo, GitSynDataEntity.class);
+        GitSynDataEntity gitSynDataEntity = BeanUtils.copyProperties(gitSynDataVo, GitSynDataEntity.class);
         iGitSynDataManage.update(gitSynDataEntity);
 
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iGitSynDataManage.deleteBatch(new GitSynDataEntity(), ids);
+        iGitSynDataManage.deleteBatch(ids);
     }
 
     @Override
@@ -279,7 +274,7 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
     public void synAll() {
         log.info("git文章同步开始");
         // 1. 找出来所有上架的项目
-        List<GitSynDataEntity> list = this.iGitSynDataManage.findList(GitSynDataEntity
+        List<GitSynDataEntity> list = this.iGitSynDataManage.list(GitSynDataEntity
                 .builder()
                 .status(ConstantEnum.GIT_SYN_DATA_STATUS_ENABLE.getValue())
                 .build());
@@ -672,9 +667,10 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
 
             try {
                 File file1 = new File(imageFile);
-                RespEntity<String> upload = fileApi.upload(FileUtil.getInputStream(file1), file1.getName(), FilePathEnum.BLOG_INFO.getClassify());
-                if (StrUtil.isNotBlank(upload.getData())) {
-                    content = content.replace(imagePath, upload.getData());
+                String upload = fileTemplatePlus.upload(FilePathEnum.BLOG_INFO.getPath(), file1.getName(),
+                        FileUtil.getInputStream(file1));
+                if (StrUtil.isNotBlank(upload)) {
+                    content = content.replace(imagePath, upload);
                 }
             } catch (IORuntimeException e) {
                 log.error("图片上传失败，{}", imageFile);

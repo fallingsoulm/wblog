@@ -5,6 +5,7 @@ import com.wblog.common.datascope.annotation.GlobalDataScope;
 import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.module.info.vo.AlbumArticleVo;
 import com.wblog.common.module.info.vo.AlbumVo;
+import com.wblog.common.module.info.vo.ArticleVo;
 import com.wblog.info.service.IAlbumArticleService;
 import com.wblog.info.service.IAlbumService;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;

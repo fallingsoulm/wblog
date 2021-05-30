@@ -1,5 +1,7 @@
 package com.wblog.common.redis;
 
+import io.github.fallingsoulm.easy.archetype.data.redis.IRedisKeyEnums;
+
 /**
  * redis key 的枚举类
  *

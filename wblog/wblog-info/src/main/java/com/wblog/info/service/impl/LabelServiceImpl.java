@@ -1,20 +1,21 @@
 package com.wblog.info.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.api.exception.CustomException;
-import com.apes.hub.api.module.file.api.FileApi;
-import com.apes.hub.api.module.info.vo.ArticleLabelVo;
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.LabelConver;
-import com.apes.hub.info.entity.LabelEntity;
-import com.apes.hub.info.manage.ILabelManage;
-import com.apes.hub.info.mq.service.ILabelMqService;
-import com.apes.hub.info.service.IArticleLabelService;
-import com.apes.hub.info.service.ILabelService;
+import com.wblog.common.exception.BusinessException;
+import com.wblog.common.module.info.vo.ArticleLabelVo;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.info.component.FileTemplatePlus;
+import com.wblog.info.entity.LabelEntity;
+import com.wblog.info.manage.ILabelManage;
+import com.wblog.info.mq.service.ILabelMqService;
+import com.wblog.info.service.IArticleLabelService;
+import com.wblog.info.service.ILabelService;
+import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,37 +42,30 @@ public class LabelServiceImpl implements ILabelService {
 
 
     @Autowired
-    private LabelConver labelConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
     @Autowired
     private IArticleLabelService articleLabelService;
 
     @Autowired
-    private FileApi fileApi;
+    private FileTemplate fileTemplate;
 
     @Autowired
     private ILabelMqService labelMqService;
 
     @Override
     public PageInfo<LabelVo> findByPage(PageRequestParams<LabelVo> pageRequestParams) {
-        PageRequestParams<LabelEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, LabelEntity.class, labelConver);
-        PageInfo<LabelEntity> entityPageInfo = iLabelManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, LabelVo.class, labelConver, new PageInfoContentHandler<LabelVo>() {
-            @Override
-            public void handler(List<LabelVo> contentList) {
-                List<String> hosts = contentList.stream().map(LabelVo::getIcon).distinct().collect(Collectors.toList());
-                Map<String, String> addHosts = fileApi.addHosts(hosts);
-                for (LabelVo labelVo : contentList) {
-                    labelVo.setIcon(addHosts.get(labelVo.getIcon()));
-                    Integer count = articleLabelService.count(ArticleLabelVo.builder().labelId(labelVo.getId()).build());
-                    labelVo.setNum(count);
-                    //图片处理
+        PageRequestParams<LabelEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, LabelEntity.class);
+        PageInfo<LabelEntity> entityPageInfo = iLabelManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, LabelVo.class, contentList -> {
+            List<String> hosts = contentList.stream().map(LabelVo::getIcon).distinct().collect(Collectors.toList());
+            Map<String, String> addHosts = fileTemplate.addHost(hosts);
+            for (LabelVo labelVo : contentList) {
+                labelVo.setIcon(addHosts.get(labelVo.getIcon()));
+                Integer count = articleLabelService.count(ArticleLabelVo.builder().labelId(labelVo.getId()).build());
+                labelVo.setNum(count);
+                //图片处理
 
-                }
             }
         });
     }
@@ -82,32 +76,32 @@ public class LabelServiceImpl implements ILabelService {
         if (labelEntity == null) {
             return null;
         }
-        LabelVo labelVo = labelConver.map(labelEntity, LabelVo.class);
-        labelVo.setIcon(fileApi.addHost(labelVo.getIcon()));
+        LabelVo labelVo = BeanUtils.copyProperties(labelEntity, LabelVo.class);
+        labelVo.setIcon(fileTemplate.addHost(labelVo.getIcon()));
         return labelVo;
     }
 
     @Override
     public List<LabelVo> findList(LabelVo labelVo) {
-        LabelEntity LabelEntity = labelConver.map(labelVo, LabelEntity.class);
-        List<LabelEntity> list = iLabelManage.findList(LabelEntity);
-        return labelConver.mapAsList(list, LabelVo.class);
+        LabelEntity LabelEntity = BeanUtils.copyProperties(labelVo, LabelEntity.class);
+        List<LabelEntity> list = iLabelManage.list(LabelEntity);
+        return BeanUtils.copyList(list, LabelVo.class);
     }
 
     @Override
     public List<LabelVo> findByIds(List<Long> ids) {
         List<LabelEntity> entities = iLabelManage.findByIds(ids);
-        return labelConver.mapAsList(entities, LabelVo.class);
+        return BeanUtils.copyList(entities, LabelVo.class);
     }
 
     @Override
     public Long save(LabelVo labelVo) {
         LabelEntity one = this.iLabelManage.findOne(LabelEntity.builder().name(labelVo.getName()).build());
         if (null != one) {
-            throw new CustomException("标签名称不允许重复");
+            throw new BusinessException("标签名称不允许重复");
         }
-        LabelEntity labelEntity = labelConver.map(labelVo, LabelEntity.class);
-        labelEntity.setIcon(fileApi.spiltHost(labelEntity.getIcon()));
+        LabelEntity labelEntity = BeanUtils.copyProperties(labelVo, LabelEntity.class);
+        labelEntity.setIcon(fileTemplate.removeHost(labelEntity.getIcon()));
         iLabelManage.insert(labelEntity);
         labelMqService.addLabel(labelEntity.getId());
 
@@ -117,8 +111,8 @@ public class LabelServiceImpl implements ILabelService {
 
     @Override
     public void update(LabelVo labelVo) {
-        LabelEntity labelEntity = labelConver.map(labelVo, LabelEntity.class);
-        labelEntity.setIcon(fileApi.spiltHost(labelEntity.getIcon()));
+        LabelEntity labelEntity = BeanUtils.copyProperties(labelVo, LabelEntity.class);
+        labelEntity.setIcon(fileTemplate.removeHost(labelEntity.getIcon()));
         iLabelManage.update(labelEntity);
 
         labelMqService.addLabel(labelEntity.getId());
@@ -133,7 +127,7 @@ public class LabelServiceImpl implements ILabelService {
         for (Long id : ids) {
             articleLabelService.delete(ArticleLabelVo.builder().labelId(id).build());
         }
-        iLabelManage.deleteBatch(new LabelEntity(), ids);
+        iLabelManage.deleteBatch(ids);
     }
 
     @Override
@@ -156,7 +150,7 @@ public class LabelServiceImpl implements ILabelService {
 
         List<LabelVo> content = pageInfo.getContent();
         if (!content.isEmpty()) {
-            Map<String, String> hosts = fileApi.addHosts(content.stream().map(LabelVo::getIcon).distinct().collect(Collectors.toList()));
+            Map<String, String> hosts = fileTemplate.removeHost(content.stream().map(LabelVo::getIcon).distinct().collect(Collectors.toList()));
             for (LabelVo labelVo : content) {
                 labelVo.setIcon(hosts.get(labelVo.getIcon()));
             }

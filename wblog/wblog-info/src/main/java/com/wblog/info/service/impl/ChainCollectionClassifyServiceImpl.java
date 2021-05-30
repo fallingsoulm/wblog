@@ -1,15 +1,17 @@
 package com.wblog.info.service.impl;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.exception.CustomException;
-import com.apes.hub.api.module.info.vo.ChainCollectionClassifyVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.ChainCollectionClassifyConver;
-import com.apes.hub.info.entity.ChainCollectionClassifyEntity;
-import com.apes.hub.info.manage.IChainCollectionClassifyManage;
-import com.apes.hub.info.service.IChainCollectionClassifyService;
+
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.exception.BusinessException;
+import com.wblog.common.module.info.vo.ChainCollectionClassifyVo;
+import com.wblog.info.entity.ChainCollectionClassifyEntity;
+import com.wblog.info.manage.IChainCollectionClassifyManage;
+import com.wblog.info.service.IChainCollectionClassifyService;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,26 +28,22 @@ import java.util.List;
  */
 @Service
 @Slf4j
+@AllArgsConstructor
 public class ChainCollectionClassifyServiceImpl implements IChainCollectionClassifyService {
 
 
-    @Autowired
-    private IChainCollectionClassifyManage iChainCollectionClassifyManage;
+    private final IChainCollectionClassifyManage iChainCollectionClassifyManage;
 
 
-    @Autowired
-    private ChainCollectionClassifyConver chainCollectionClassifyConver;
-
-
-    @Autowired
-    private MybatisPlusUtils plusUtils;
+    private final MybatisPlusUtils plusUtils;
 
 
     @Override
     public PageInfo<ChainCollectionClassifyVo> findByPage(PageRequestParams<ChainCollectionClassifyVo> pageRequestParams) {
-        PageRequestParams<ChainCollectionClassifyEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ChainCollectionClassifyEntity.class, chainCollectionClassifyConver);
-        PageInfo<ChainCollectionClassifyEntity> entityPageInfo = iChainCollectionClassifyManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, ChainCollectionClassifyVo.class, chainCollectionClassifyConver);
+        PageRequestParams<ChainCollectionClassifyEntity> params = plusUtils.convertPageRequestParams(pageRequestParams,
+                ChainCollectionClassifyEntity.class);
+        PageInfo<ChainCollectionClassifyEntity> entityPageInfo = iChainCollectionClassifyManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, ChainCollectionClassifyVo.class);
     }
 
     @Override
@@ -60,7 +58,7 @@ public class ChainCollectionClassifyServiceImpl implements IChainCollectionClass
         if (chainCollectionClassifyEntity == null) {
             return null;
         }
-        ChainCollectionClassifyVo classifyVo = chainCollectionClassifyConver.map(chainCollectionClassifyEntity, ChainCollectionClassifyVo.class);
+        ChainCollectionClassifyVo classifyVo = BeanUtils.copyProperties(chainCollectionClassifyEntity, ChainCollectionClassifyVo.class);
         if (classifyVo.getParentId().equals(0L)) {
             classifyVo.setParentName("无");
         } else {
@@ -71,21 +69,21 @@ public class ChainCollectionClassifyServiceImpl implements IChainCollectionClass
 
     @Override
     public List<ChainCollectionClassifyVo> findList(ChainCollectionClassifyVo chainCollectionClassifyVo) {
-        ChainCollectionClassifyEntity ChainCollectionClassifyEntity = chainCollectionClassifyConver.map(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
-        List<ChainCollectionClassifyEntity> list = iChainCollectionClassifyManage.findList(ChainCollectionClassifyEntity);
-        return chainCollectionClassifyConver.mapAsList(list, ChainCollectionClassifyVo.class);
+        ChainCollectionClassifyEntity ChainCollectionClassifyEntity = BeanUtils.copyProperties(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
+        List<ChainCollectionClassifyEntity> list = iChainCollectionClassifyManage.list(ChainCollectionClassifyEntity);
+        return BeanUtils.copyList(list, ChainCollectionClassifyVo.class);
     }
 
     @Override
     public List<ChainCollectionClassifyVo> findByIds(List<Long> ids) {
         List<ChainCollectionClassifyEntity> entities = iChainCollectionClassifyManage.findByIds(ids);
-        return chainCollectionClassifyConver.mapAsList(entities, ChainCollectionClassifyVo.class);
+        return BeanUtils.copyList(entities, ChainCollectionClassifyVo.class);
     }
 
     @Override
     public Long save(ChainCollectionClassifyVo chainCollectionClassifyVo) {
         checkUnique(chainCollectionClassifyVo);
-        ChainCollectionClassifyEntity chainCollectionClassifyEntity = chainCollectionClassifyConver.map(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
+        ChainCollectionClassifyEntity chainCollectionClassifyEntity = BeanUtils.copyProperties(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
         iChainCollectionClassifyManage.insert(chainCollectionClassifyEntity);
         return chainCollectionClassifyEntity.getId();
     }
@@ -103,7 +101,7 @@ public class ChainCollectionClassifyServiceImpl implements IChainCollectionClass
                 .parentId(chainCollectionClassifyVo.getParentId())
                 .type(chainCollectionClassifyVo.getType()).build());
         if (one != null) {
-            throw new CustomException("名字不允许重复");
+            throw new BusinessException("名字不允许重复");
         }
     }
 
@@ -113,7 +111,7 @@ public class ChainCollectionClassifyServiceImpl implements IChainCollectionClass
         if (!chainCollectionClassifyVo.getName().equals(manage.getName())) {
             checkUnique(chainCollectionClassifyVo);
         }
-        ChainCollectionClassifyEntity chainCollectionClassifyEntity = chainCollectionClassifyConver.map(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
+        ChainCollectionClassifyEntity chainCollectionClassifyEntity = BeanUtils.copyProperties(chainCollectionClassifyVo, ChainCollectionClassifyEntity.class);
         iChainCollectionClassifyManage.update(chainCollectionClassifyEntity);
 
     }
@@ -121,12 +119,12 @@ public class ChainCollectionClassifyServiceImpl implements IChainCollectionClass
     @Override
     public void deleteByIds(List<Long> ids) {
         for (Long id : ids) {
-            List<ChainCollectionClassifyEntity> list = this.iChainCollectionClassifyManage.findList(ChainCollectionClassifyEntity.builder().parentId(id).build());
+            List<ChainCollectionClassifyEntity> list = this.iChainCollectionClassifyManage.list(ChainCollectionClassifyEntity.builder().parentId(id).build());
             if (list != null && list.size() > 0) {
-                throw new CustomException("该分类下存在子分类,不允许删除");
+                throw new BusinessException("该分类下存在子分类,不允许删除");
             }
         }
-        iChainCollectionClassifyManage.deleteBatch(new ChainCollectionClassifyEntity(), ids);
+        iChainCollectionClassifyManage.deleteBatch(ids);
     }
 
     @Override

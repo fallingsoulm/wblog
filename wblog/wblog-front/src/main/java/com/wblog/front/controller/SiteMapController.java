@@ -1,7 +1,7 @@
 package com.wblog.front.controller;
 
 import cn.hutool.core.io.FileUtil;
-import com.apes.hub.api.module.info.api.SiteMapApi;
+import com.wblog.common.module.info.api.SiteMapApi;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,10 +1,10 @@
 package com.wblog.front.controller;
 
-import com.apes.hub.api.module.info.api.ArticleApi;
-import com.apes.hub.api.module.info.api.ChainCollectionApi;
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.module.info.vo.ChainCollectionVo;
-import com.apes.hub.gateway.info.utils.PageUtils;
+import com.wblog.common.module.info.api.ArticleApi;
+import com.wblog.common.module.info.api.ChainCollectionApi;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.common.module.info.vo.ChainCollectionVo;
+import com.wblog.front.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

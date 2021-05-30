@@ -4,23 +4,29 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wblog.common.enums.ConstantEnum;
-import com.wblog.common.module.info.vo.ArticleVo;
-import com.wblog.common.module.info.vo.ClassifyVo;
-import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.common.enums.FilePathEnum;
+import com.wblog.common.exception.BusinessException;
+import com.wblog.common.module.info.vo.*;
 import com.wblog.common.module.system.api.SysUserApi;
 import com.wblog.common.module.system.vo.SysUserVo;
 import com.wblog.common.redis.RedisKeyEnums;
 import com.wblog.common.utils.SimpleSnowflake;
+import com.wblog.info.component.FileTemplatePlus;
 import com.wblog.info.config.BlogConfigProperties;
 import com.wblog.info.entity.ArticleEntity;
+import com.wblog.info.event.ArticleEvent;
+import com.wblog.info.event.EventSourceVo;
 import com.wblog.info.manage.IArticleManage;
 import com.wblog.info.mq.service.IArticleMqService;
 import com.wblog.info.service.*;
+import com.wblog.info.utils.MarkdownUtils;
 import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
 import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
 import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.data.redis.RedisKeyGenerator;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -65,7 +71,7 @@ public class ArticleServiceImpl implements IArticleService {
     private ILabelService labelService;
 
     @Autowired
-    private FileInfoApi fileInfoApi;
+    private FileTemplatePlus fileTemplatePlus;
 
     @Autowired
     private LoginUserService loginUserService;
@@ -250,20 +256,20 @@ public class ArticleServiceImpl implements IArticleService {
         if (articleEntity == null) {
             return null;
         }
-        return articleConver.map(articleEntity, ArticleVo.class);
+        return BeanUtils.copyProperties(articleEntity, ArticleVo.class);
     }
 
     @Override
     public List<ArticleVo> findList(ArticleVo articleVo) {
-        ArticleEntity ArticleEntity = articleConver.map(articleVo, ArticleEntity.class);
-        List<ArticleEntity> list = iArticleManage.findList(ArticleEntity);
-        return articleConver.mapAsList(list, ArticleVo.class);
+        ArticleEntity ArticleEntity = BeanUtils.copyProperties(articleVo, ArticleEntity.class);
+        List<ArticleEntity> list = iArticleManage.list(ArticleEntity);
+        return BeanUtils.copyList(list, ArticleVo.class);
     }
 
     @Override
     public List<ArticleVo> findByIds(List<Long> ids) {
         List<ArticleEntity> entities = iArticleManage.findByIds(ids);
-        List<ArticleVo> articleVos = articleConver.mapAsList(entities, ArticleVo.class);
+        List<ArticleVo> articleVos = BeanUtils.copyList(entities, ArticleVo.class);
         CompletableFuture<Void> classifyCompletableFuture = CompletableFuture.runAsync(() -> {
             // 分类名
             List<Long> classifyIds = articleVos.stream().filter(a -> null != a.getClassifyId()).map(ArticleVo::getClassifyId).distinct().collect(Collectors.toList());
@@ -283,7 +289,7 @@ public class ArticleServiceImpl implements IArticleService {
 
             List<String> collect = articleVos.stream().filter(a -> StrUtil.isNotBlank(a.getImage())).map(ArticleVo::getImage).distinct().collect(Collectors.toList());
 
-            Map<String, String> addHosts = fileApi.addHosts(collect);
+            Map<String, String> addHosts = fileTemplatePlus.addHost(collect);
             for (ArticleVo articleVo : articleVos) {
                 articleVo.setImage(addHosts.getOrDefault(articleVo.getImage(), ""));
             }
@@ -303,7 +309,7 @@ public class ArticleServiceImpl implements IArticleService {
     //    @Transactional(rollbackFor = Exception.class)
     @Override
     public Long save(ArticleVo articleVo) {
-        ArticleEntity articleEntity = articleConver.map(articleVo, ArticleEntity.class);
+        ArticleEntity articleEntity = BeanUtils.copyProperties(articleVo, ArticleEntity.class);
         articleEntity.setId(snowflake.nextId());
         if (StrUtil.isBlank(articleVo.getContent())) {
             return null;
@@ -311,7 +317,7 @@ public class ArticleServiceImpl implements IArticleService {
         articleInfoService.save(ArticleInfoVo.builder().articleId(articleEntity.getId()).content(articleVo.getContent()).build());
         if (StrUtil.isBlank(articleEntity.getImage())) {
             // 随机的头图
-            articleEntity.setImage(fileApi.spiltHost(fileInfoApi.randomFile(FilePathEnum.PUBLIC.getClassify()).getData().getUrl()));
+            articleEntity.setImage(fileTemplatePlus.removeHost(fileTemplatePlus.randomImage()));
         }
         String desp = getIntroduction(articleVo.getContent());
         articleEntity.setIntroduction(desp);
@@ -340,7 +346,7 @@ public class ArticleServiceImpl implements IArticleService {
             String desp = getIntroduction(articleVo.getContent());
             articleVo.setIntroduction(desp);
             articleInfoService.update(ArticleInfoVo.builder().articleId(articleVo.getId()).content(articleVo.getContent()).build());
-            ArticleEntity articleEntity = articleConver.map(articleVo, ArticleEntity.class);
+            ArticleEntity articleEntity = BeanUtils.copyProperties(articleVo, ArticleEntity.class);
             iArticleManage.update(articleEntity);
             // 发送修改事件
             applicationContext.publishEvent(new ArticleEvent(EventSourceVo
@@ -360,7 +366,7 @@ public class ArticleServiceImpl implements IArticleService {
         for (Long id : ids) {
             articleLabelService.delete(ArticleLabelVo.builder().articleId(id).build());
         }
-        iArticleManage.deleteBatch(new ArticleEntity(), ids);
+        iArticleManage.deleteBatch(ids);
         // 发送删除事件
         for (Long id : ids) {
             applicationContext.publishEvent(new ArticleEvent(EventSourceVo
@@ -387,9 +393,9 @@ public class ArticleServiceImpl implements IArticleService {
     public ArticleVo info(Long id) {
         ArticleEntity articleEntity = iArticleManage.findById(id);
         if (null == articleEntity) {
-            throw new CustomException("不存在");
+            throw new BusinessException("不存在");
         }
-        ArticleVo articleVo = articleConver.map(articleEntity, ArticleVo.class);
+        ArticleVo articleVo = BeanUtils.copyProperties(articleEntity, ArticleVo.class);
         // 类名
         articleVo.setClassifyName(classifyService.findById(articleVo.getClassifyId()).getName());
         // 标签名称
@@ -494,7 +500,7 @@ public class ArticleServiceImpl implements IArticleService {
 
     @Override
     public Integer count(ArticleVo articleVo) {
-        ArticleEntity articleEntity = articleConver.map(articleVo, ArticleEntity.class);
+        ArticleEntity articleEntity = BeanUtils.copyProperties(articleVo, ArticleEntity.class);
         return iArticleManage.count(articleEntity);
     }
 
@@ -517,51 +523,46 @@ public class ArticleServiceImpl implements IArticleService {
                 , ConstantEnum.ARTICLE_STATUS_STOP.getValue()));
         pageRequestParams.setParams(articleVo);
 
-        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class, articleConver);
+        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class);
         PageInfo<ArticleEntity> entityPageInfo = iArticleManage.findByPage(params,
                 null == pageRequestParams.getParams() ? null : pageRequestParams.getParams().getStatusList());
-        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, articleConver, new PageInfoContentHandler<ArticleVo>() {
-            @Override
-            public void handler(List<ArticleVo> contentList) {
-                setExtField(contentList);
-                List<Long> articleIds = contentList.stream().map(ArticleVo::getId).distinct().collect(Collectors.toList());
-                CompletableFuture<Void> gitSynVoListFuture = CompletableFuture.runAsync(() -> {
-                    //同步编码查询
-                    List<GitSynVo> gitSynVoList = gitSynService.findByArticleIds(articleIds);
-                    for (ArticleVo articleVo : contentList) {
-                        for (GitSynVo gitSynVo : gitSynVoList) {
-                            if (articleVo.getId().equals(gitSynVo.getArticleId())) {
-                                articleVo.setSynCharset(gitSynVo.getCharset());
-                            }
+        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, contentList -> {
+            setExtField(contentList);
+            List<Long> articleIds = contentList.stream().map(ArticleVo::getId).distinct().collect(Collectors.toList());
+            CompletableFuture<Void> gitSynVoListFuture = CompletableFuture.runAsync(() -> {
+                //同步编码查询
+                List<GitSynVo> gitSynVoList = gitSynService.findByArticleIds(articleIds);
+                for (ArticleVo articleVo1 : contentList) {
+                    for (GitSynVo gitSynVo : gitSynVoList) {
+                        if (articleVo1.getId().equals(gitSynVo.getArticleId())) {
+                            articleVo1.setSynCharset(gitSynVo.getCharset());
                         }
                     }
-                }, executor);
-
-                CompletableFuture<Void> otherFuture = CompletableFuture.runAsync(() -> {
-                    Map<Long, ArticleInfoVo> articleInfoVoMap = articleInfoService.findByIdsToMap(articleIds);
-                    //添加url
-                    for (ArticleVo articleVo : contentList) {
-                        ArticleInfoVo articleInfoVo = articleInfoVoMap.getOrDefault(articleVo.getId(), null);
-                        if (null != articleInfoVo && StrUtil.isNotBlank(articleInfoVo.getContent())) {
-                            String content = MarkdownUtils.markdownToHtmlExtensions(articleInfoVo.getContent());
-                            articleVo.setContent(Jsoup.parse(content).text());
-                            String reviewLabel = spiltReviewLabel(articleVo, content);
-                            articleVo.setReviewLabel(reviewLabel);
-                        }
-                        articleVo.setUrl(blogConfigProperties.getArticleInfoUrl() + articleVo.getId() + "");
-                    }
-                }, executor);
-
-                try {
-                    CompletableFuture.allOf(otherFuture, gitSynVoListFuture).get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
                 }
+            }, executor);
+
+            CompletableFuture<Void> otherFuture = CompletableFuture.runAsync(() -> {
+                Map<Long, ArticleInfoVo> articleInfoVoMap = articleInfoService.findByIdsToMap(articleIds);
+                //添加url
+                for (ArticleVo articleVo1 : contentList) {
+                    ArticleInfoVo articleInfoVo = articleInfoVoMap.getOrDefault(articleVo1.getId(), null);
+                    if (null != articleInfoVo && StrUtil.isNotBlank(articleInfoVo.getContent())) {
+                        String content = MarkdownUtils.markdownToHtmlExtensions(articleInfoVo.getContent());
+                        articleVo1.setContent(Jsoup.parse(content).text());
+                        String reviewLabel = spiltReviewLabel(articleVo1, content);
+                        articleVo1.setReviewLabel(reviewLabel);
+                    }
+                    articleVo1.setUrl(blogConfigProperties.getArticleInfoUrl() + articleVo1.getId() + "");
+                }
+            }, executor);
+
+            try {
+                CompletableFuture.allOf(otherFuture, gitSynVoListFuture).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
             }
-
-
         });
 
     }
@@ -571,7 +572,7 @@ public class ArticleServiceImpl implements IArticleService {
 
         GitSynVo gitSynVo = gitSynService.findOne(GitSynVo.builder().articleId(id).build());
         if (null == gitSynVo) {
-            throw new CustomException("文章不存在");
+            throw new BusinessException("文章不存在");
         }
 
         String path = gitSynVo.getPath();
@@ -594,7 +595,7 @@ public class ArticleServiceImpl implements IArticleService {
 
         ArticleInfoVo articleInfoVo = articleInfoService.findById(id);
         if (null == articleInfoVo || StrUtil.isBlank(articleInfoVo.getContent())) {
-            throw new CustomException("文章不存在");
+            throw new BusinessException("文章不存在");
         }
 
         ArticleEntity articleEntity = this.iArticleManage.findById(id);
@@ -616,17 +617,14 @@ public class ArticleServiceImpl implements IArticleService {
             (PageRequestParams<ArticleVo> pageRequestParams, List<Long> notInIds) {
 
 
-        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class, articleConver);
+        PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class);
         PageInfo<ArticleEntity> entityPageInfo = iArticleManage.findByPageAndNotIn(params,
                 notInIds);
-        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, articleConver, new PageInfoContentHandler<ArticleVo>() {
-            @Override
-            public void handler(List<ArticleVo> contentList) {
-                setExtField(contentList);
-                //添加url
-                for (ArticleVo articleVo : contentList) {
-                    articleVo.setUrl(blogConfigProperties.getArticleInfoUrl() + articleVo.getId() + "");
-                }
+        return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, contentList -> {
+            setExtField(contentList);
+            //添加url
+            for (ArticleVo articleVo : contentList) {
+                articleVo.setUrl(blogConfigProperties.getArticleInfoUrl() + articleVo.getId() + "");
             }
         });
 

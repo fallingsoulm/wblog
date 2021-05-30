@@ -2,9 +2,9 @@ package com.wblog.info.task;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.http.HttpUtil;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.data.http.UserAgent;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.utils.UserAgent;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

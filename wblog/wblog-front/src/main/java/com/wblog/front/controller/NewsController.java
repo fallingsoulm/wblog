@@ -1,10 +1,10 @@
 package com.wblog.front.controller;
 
-import com.apes.hub.api.module.info.api.NewsApi;
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.gateway.info.utils.PageUtils;
+import com.wblog.common.module.info.api.NewsApi;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.front.utils.PageUtils;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

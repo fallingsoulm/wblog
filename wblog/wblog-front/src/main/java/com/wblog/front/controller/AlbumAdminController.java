@@ -1,15 +1,15 @@
 package com.wblog.front.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.api.module.info.api.AlbumApi;
-import com.apes.hub.api.module.info.api.AlbumArticleApi;
-import com.apes.hub.api.module.info.api.ArticleApi;
-import com.apes.hub.api.module.info.api.LabelApi;
-import com.apes.hub.api.module.info.vo.AlbumVo;
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.gateway.info.utils.PageUtils;
+import com.wblog.front.utils.PageUtils;
+import com.wblog.common.module.info.api.AlbumApi;
+import com.wblog.common.module.info.api.AlbumArticleApi;
+import com.wblog.common.module.info.api.ArticleApi;
+import com.wblog.common.module.info.api.LabelApi;
+import com.wblog.common.module.info.vo.AlbumVo;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.common.module.info.vo.LabelVo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +55,7 @@ public class AlbumAdminController {
 
 //        RespEntity<AlbumVo> respEntity = albumApi.findById(1L);
         PageRequestParams<LabelVo> pageRequestParams = new PageRequestParams<>();
-        pageRequestParams.setPageIndex(1);
+        pageRequestParams.setPageNum(1);
         pageRequestParams.setPageSize(30);
         List<LabelVo> labelVoLists = labelApi.findByPageAndCount(pageRequestParams).getData().getContent();
         model.addAttribute("albumVoIPageInfo", albumVoIPageInfo);

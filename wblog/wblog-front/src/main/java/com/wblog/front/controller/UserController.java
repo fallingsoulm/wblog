@@ -1,14 +1,14 @@
 package com.wblog.front.controller;
 
-import com.apes.hub.api.module.info.api.ArticleApi;
-import com.apes.hub.api.module.info.api.LabelApi;
-import com.apes.hub.api.module.info.vo.ArticleVo;
-import com.apes.hub.api.module.info.vo.LabelVo;
-import com.apes.hub.api.module.system.api.SysUserApi;
-import com.apes.hub.api.module.system.vo.SysUserVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.gateway.info.utils.PageUtils;
+import com.wblog.common.module.info.api.ArticleApi;
+import com.wblog.common.module.info.api.LabelApi;
+import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.common.module.info.vo.LabelVo;
+import com.wblog.common.module.system.api.SysUserApi;
+import com.wblog.common.module.system.vo.SysUserVo;
+import com.wblog.front.utils.PageUtils;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -51,7 +51,7 @@ public class UserController {
         model.addAttribute("articlePageInfo", pageInfo);
 
         PageRequestParams<LabelVo> pageRequestParams = new PageRequestParams<>();
-        pageRequestParams.setPageIndex(1);
+        pageRequestParams.setPageNum(1);
         pageRequestParams.setPageSize(30);
         List<LabelVo> labelVoLists = labelApi.findByPageAndCount(pageRequestParams).getData().getContent();
         model.addAttribute("labelVoLists", labelVoLists);

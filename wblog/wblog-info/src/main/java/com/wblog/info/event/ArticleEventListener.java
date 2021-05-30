@@ -1,6 +1,7 @@
 package com.wblog.info.event;
 
 import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.ArticleVo;
 import com.wblog.common.module.search.dto.SearchDto;
 import com.wblog.common.module.search.mq.SearchMqConstant;
 import com.wblog.info.service.IArticleService;

@@ -1,11 +1,12 @@
 package com.wblog.info.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
-import com.apes.hub.api.module.info.vo.CommentVo;
-import com.apes.hub.info.conver.CommentConver;
-import com.apes.hub.info.entity.CommentEntity;
-import com.apes.hub.info.manage.ICommentManage;
-import com.apes.hub.info.service.ICommentService;
+
+import com.wblog.common.module.info.vo.CommentVo;
+import com.wblog.info.entity.CommentEntity;
+import com.wblog.info.manage.ICommentManage;
+import com.wblog.info.service.ICommentService;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,14 +23,12 @@ public class CommentServiceImpl implements ICommentService {
     @Autowired
     private ICommentManage commentManage;
 
-    @Autowired
-    private CommentConver commentConver;
 
     @Override
 
     public List<CommentVo> findByArticleId(Long articleId) {
         List<CommentEntity> list = commentManage.findByBlogIdAndParentCommentNull(articleId);
-        List<CommentVo> commentVos = commentConver.mapAsList(list, CommentVo.class);
+        List<CommentVo> commentVos = BeanUtils.copyList(list, CommentVo.class);
 //        getReply(commentVos);
         eachComment(commentVos);
         return commentVos;
@@ -38,8 +37,8 @@ public class CommentServiceImpl implements ICommentService {
     private void eachComment(List<CommentVo> commentVos) {
         for (CommentVo commentVo : commentVos) {
             //查询子节点
-            List<CommentEntity> list = commentManage.findList(CommentEntity.builder().parentCommentId(commentVo.getId()).build());
-            List<CommentVo> vos = commentConver.mapAsList(list, CommentVo.class);
+            List<CommentEntity> list = commentManage.list(CommentEntity.builder().parentCommentId(commentVo.getId()).build());
+            List<CommentVo> vos = BeanUtils.copyList(list, CommentVo.class);
             for (CommentVo vo : vos) {
                 vo.setParentCommentId(vo.getId());
                 vo.setParentCommentNickName(vo.getNickName());
@@ -134,7 +133,7 @@ public class CommentServiceImpl implements ICommentService {
 
     @Override
     public void save(CommentVo commentVo) {
-        CommentEntity commentEntity = commentConver.map(commentVo, CommentEntity.class);
+        CommentEntity commentEntity = BeanUtils.copyProperties(commentVo, CommentEntity.class);
         Long parentCommentId = commentVo.getParentComment().getId();
         if (parentCommentId.intValue() == -1) {
             commentEntity.setParentCommentId(null);

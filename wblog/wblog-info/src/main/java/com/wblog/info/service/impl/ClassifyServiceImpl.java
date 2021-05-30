@@ -1,13 +1,14 @@
 package com.wblog.info.service.impl;
 
-import com.apes.hub.api.module.info.vo.ClassifyVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.ClassifyConver;
-import com.apes.hub.info.entity.ClassifyEntity;
-import com.apes.hub.info.manage.IClassifyManage;
-import com.apes.hub.info.service.IClassifyService;
+
+import com.wblog.common.module.info.vo.ClassifyVo;
+import com.wblog.info.entity.ClassifyEntity;
+import com.wblog.info.manage.IClassifyManage;
+import com.wblog.info.service.IClassifyService;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,18 +34,14 @@ public class ClassifyServiceImpl implements IClassifyService {
 
 
     @Autowired
-    private ClassifyConver classifyConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
 
     @Override
     public PageInfo<ClassifyVo> findByPage(PageRequestParams<ClassifyVo> pageRequestParams) {
-        PageRequestParams<ClassifyEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ClassifyEntity.class, classifyConver);
-        PageInfo<ClassifyEntity> entityPageInfo = iClassifyManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, ClassifyVo.class, classifyConver);
+        PageRequestParams<ClassifyEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ClassifyEntity.class);
+        PageInfo<ClassifyEntity> entityPageInfo = iClassifyManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, ClassifyVo.class);
     }
 
     @Override
@@ -53,14 +50,14 @@ public class ClassifyServiceImpl implements IClassifyService {
         if (classifyEntity == null) {
             return null;
         }
-        return classifyConver.map(classifyEntity, ClassifyVo.class);
+        return BeanUtils.copyProperties(classifyEntity, ClassifyVo.class);
     }
 
     @Override
     public List<ClassifyVo> findList(ClassifyVo classifyVo) {
-        ClassifyEntity ClassifyEntity = classifyConver.map(classifyVo, ClassifyEntity.class);
-        List<ClassifyEntity> list = iClassifyManage.findList(ClassifyEntity);
-        return classifyConver.mapAsList(list, ClassifyVo.class);
+        ClassifyEntity ClassifyEntity = BeanUtils.copyProperties(classifyVo, ClassifyEntity.class);
+        List<ClassifyEntity> list = iClassifyManage.list(ClassifyEntity);
+        return BeanUtils.copyList(list, ClassifyVo.class);
     }
 
     @Override
@@ -69,13 +66,13 @@ public class ClassifyServiceImpl implements IClassifyService {
             return new ArrayList<>();
         }
         List<ClassifyEntity> entities = iClassifyManage.findByIds(ids);
-        return classifyConver.mapAsList(entities, ClassifyVo.class);
+        return BeanUtils.copyList(entities, ClassifyVo.class);
     }
 
     @Override
     public Long save(ClassifyVo classifyVo) {
-        ClassifyEntity classifyEntity = classifyConver.map(classifyVo, ClassifyEntity.class);
-        List<ClassifyEntity> list = this.iClassifyManage.findList(ClassifyEntity.builder().name(classifyVo.getName()).build());
+        ClassifyEntity classifyEntity = BeanUtils.copyProperties(classifyVo, ClassifyEntity.class);
+        List<ClassifyEntity> list = this.iClassifyManage.list(ClassifyEntity.builder().name(classifyVo.getName()).build());
         if (list.isEmpty()) {
             iClassifyManage.insert(classifyEntity);
             return classifyEntity.getId();
@@ -86,14 +83,14 @@ public class ClassifyServiceImpl implements IClassifyService {
 
     @Override
     public void update(ClassifyVo classifyVo) {
-        ClassifyEntity classifyEntity = classifyConver.map(classifyVo, ClassifyEntity.class);
+        ClassifyEntity classifyEntity = BeanUtils.copyProperties(classifyVo, ClassifyEntity.class);
         iClassifyManage.update(classifyEntity);
 
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iClassifyManage.deleteBatch(new ClassifyEntity(), ids);
+        iClassifyManage.deleteBatch(ids);
     }
 
     @Override

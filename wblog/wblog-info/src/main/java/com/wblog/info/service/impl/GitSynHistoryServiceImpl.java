@@ -1,16 +1,16 @@
 package com.wblog.info.service.impl;
 
-import com.apes.hub.api.module.info.vo.GitSynDataVo;
-import com.apes.hub.api.module.info.vo.GitSynHistoryVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.GitSynHistoryConver;
-import com.apes.hub.info.entity.GitSynHistoryEntity;
-import com.apes.hub.info.manage.IGitSynHistoryManage;
-import com.apes.hub.info.service.IGitSynDataService;
-import com.apes.hub.info.service.IGitSynHistoryService;
+import com.wblog.common.module.info.vo.GitSynDataVo;
+import com.wblog.common.module.info.vo.GitSynHistoryVo;
+import com.wblog.info.entity.GitSynHistoryEntity;
+import com.wblog.info.manage.IGitSynHistoryManage;
+import com.wblog.info.service.IGitSynDataService;
+import com.wblog.info.service.IGitSynHistoryService;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,10 +36,6 @@ public class GitSynHistoryServiceImpl implements IGitSynHistoryService {
 
 
     @Autowired
-    private GitSynHistoryConver gitSynHistoryConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
     @Autowired
@@ -47,9 +43,9 @@ public class GitSynHistoryServiceImpl implements IGitSynHistoryService {
 
     @Override
     public PageInfo<GitSynHistoryVo> findByPage(PageRequestParams<GitSynHistoryVo> pageRequestParams) {
-        PageRequestParams<GitSynHistoryEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, GitSynHistoryEntity.class, gitSynHistoryConver);
-        PageInfo<GitSynHistoryEntity> entityPageInfo = iGitSynHistoryManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, GitSynHistoryVo.class, gitSynHistoryConver, new PageInfoContentHandler<GitSynHistoryVo>() {
+        PageRequestParams<GitSynHistoryEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, GitSynHistoryEntity.class);
+        PageInfo<GitSynHistoryEntity> entityPageInfo = iGitSynHistoryManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, GitSynHistoryVo.class, new PageInfoContentHandler<GitSynHistoryVo>() {
             @Override
             public void handler(List<GitSynHistoryVo> contentList) {
                 if (contentList.isEmpty()) {
@@ -74,39 +70,39 @@ public class GitSynHistoryServiceImpl implements IGitSynHistoryService {
         if (gitSynHistoryEntity == null) {
             return null;
         }
-        return gitSynHistoryConver.map(gitSynHistoryEntity, GitSynHistoryVo.class);
+        return BeanUtils.copyProperties(gitSynHistoryEntity, GitSynHistoryVo.class);
     }
 
     @Override
     public List<GitSynHistoryVo> findList(GitSynHistoryVo gitSynHistoryVo) {
-        GitSynHistoryEntity GitSynHistoryEntity = gitSynHistoryConver.map(gitSynHistoryVo, GitSynHistoryEntity.class);
-        List<GitSynHistoryEntity> list = iGitSynHistoryManage.findList(GitSynHistoryEntity);
-        return gitSynHistoryConver.mapAsList(list, GitSynHistoryVo.class);
+        GitSynHistoryEntity GitSynHistoryEntity = BeanUtils.copyProperties(gitSynHistoryVo, GitSynHistoryEntity.class);
+        List<GitSynHistoryEntity> list = iGitSynHistoryManage.list(GitSynHistoryEntity);
+        return BeanUtils.copyList(list, GitSynHistoryVo.class);
     }
 
     @Override
     public List<GitSynHistoryVo> findByIds(List<Long> ids) {
         List<GitSynHistoryEntity> entities = iGitSynHistoryManage.findByIds(ids);
-        return gitSynHistoryConver.mapAsList(entities, GitSynHistoryVo.class);
+        return BeanUtils.copyList(entities, GitSynHistoryVo.class);
     }
 
     @Override
     public Long save(GitSynHistoryVo gitSynHistoryVo) {
-        GitSynHistoryEntity gitSynHistoryEntity = gitSynHistoryConver.map(gitSynHistoryVo, GitSynHistoryEntity.class);
+        GitSynHistoryEntity gitSynHistoryEntity = BeanUtils.copyProperties(gitSynHistoryVo, GitSynHistoryEntity.class);
         iGitSynHistoryManage.insert(gitSynHistoryEntity);
         return gitSynHistoryEntity.getId();
     }
 
     @Override
     public void update(GitSynHistoryVo gitSynHistoryVo) {
-        GitSynHistoryEntity gitSynHistoryEntity = gitSynHistoryConver.map(gitSynHistoryVo, GitSynHistoryEntity.class);
+        GitSynHistoryEntity gitSynHistoryEntity = BeanUtils.copyProperties(gitSynHistoryVo, GitSynHistoryEntity.class);
         iGitSynHistoryManage.update(gitSynHistoryEntity);
 
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iGitSynHistoryManage.deleteBatch(new GitSynHistoryEntity(), ids);
+        iGitSynHistoryManage.deleteBatch(ids);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.wblog.info.task;
 
-import com.apes.hub.api.module.info.vo.NewsVo;
+import com.wblog.common.module.info.vo.NewsVo;
 
 /**
  * @author luyanan

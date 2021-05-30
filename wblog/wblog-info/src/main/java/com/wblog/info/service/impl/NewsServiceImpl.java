@@ -1,18 +1,18 @@
 package com.wblog.info.service.impl;
 
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.api.page.PageInfo;
-import com.apes.hub.api.page.PageInfoContentHandler;
-import com.apes.hub.api.page.PageRequestParams;
-import com.apes.hub.core.page.MybatisPlusUtils;
-import com.apes.hub.info.conver.NewsConver;
-import com.apes.hub.info.entity.NewsEntity;
-import com.apes.hub.info.event.EventSourceVo;
-import com.apes.hub.info.event.NewsEvent;
-import com.apes.hub.info.manage.INewsManage;
-import com.apes.hub.info.service.INewsService;
-import com.apes.hub.info.task.NewsTaskFactory;
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.entity.NewsEntity;
+import com.wblog.info.event.EventSourceVo;
+import com.wblog.info.event.NewsEvent;
+import com.wblog.info.manage.INewsManage;
+import com.wblog.info.service.INewsService;
+import com.wblog.info.task.NewsTaskFactory;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -38,10 +38,6 @@ public class NewsServiceImpl implements INewsService {
 
 
     @Autowired
-    private NewsConver newsConver;
-
-
-    @Autowired
     private MybatisPlusUtils plusUtils;
 
 
@@ -53,14 +49,11 @@ public class NewsServiceImpl implements INewsService {
 
     @Override
     public PageInfo<NewsVo> findByPage(PageRequestParams<NewsVo> pageRequestParams) {
-        PageRequestParams<NewsEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, NewsEntity.class, newsConver);
-        PageInfo<NewsEntity> entityPageInfo = iNewsManage.findByPage(params);
-        return plusUtils.convertPageInfo(entityPageInfo, NewsVo.class, newsConver, new PageInfoContentHandler<NewsVo>() {
-            @Override
-            public void handler(List<NewsVo> contentList) {
-                for (NewsVo newsVo : contentList) {
-                    newsVo.setSourceStr(ConstantEnum.getByTypeAndValue(ConstantEnum.EnumType.NEWS_SOURCE, newsVo.getSource()).getDesp());
-                }
+        PageRequestParams<NewsEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, NewsEntity.class);
+        PageInfo<NewsEntity> entityPageInfo = iNewsManage.listByPage(params);
+        return plusUtils.convertPageInfo(entityPageInfo, NewsVo.class, contentList -> {
+            for (NewsVo newsVo : contentList) {
+                newsVo.setSourceStr(ConstantEnum.getByTypeAndValue(ConstantEnum.EnumType.NEWS_SOURCE, newsVo.getSource()).getDesp());
             }
         });
     }
@@ -71,20 +64,20 @@ public class NewsServiceImpl implements INewsService {
         if (newsEntity == null) {
             return null;
         }
-        return newsConver.map(newsEntity, NewsVo.class);
+        return BeanUtils.copyProperties(newsEntity, NewsVo.class);
     }
 
     @Override
     public List<NewsVo> findList(NewsVo newsVo) {
-        NewsEntity NewsEntity = newsConver.map(newsVo, NewsEntity.class);
-        List<NewsEntity> list = iNewsManage.findList(NewsEntity);
-        return newsConver.mapAsList(list, NewsVo.class);
+        NewsEntity NewsEntity = BeanUtils.copyProperties(newsVo, NewsEntity.class);
+        List<NewsEntity> list = iNewsManage.list(NewsEntity);
+        return BeanUtils.copyList(list, NewsVo.class);
     }
 
     @Override
     public List<NewsVo> findByIds(List<Long> ids) {
         List<NewsEntity> entities = iNewsManage.findByIds(ids);
-        return newsConver.mapAsList(entities, NewsVo.class);
+        return BeanUtils.copyList(entities, NewsVo.class);
     }
 
     @Override
@@ -94,7 +87,7 @@ public class NewsServiceImpl implements INewsService {
         if (null != one) {
             return null;
         }
-        NewsEntity newsEntity = newsConver.map(newsVo, NewsEntity.class);
+        NewsEntity newsEntity = BeanUtils.copyProperties(newsVo, NewsEntity.class);
         iNewsManage.insert(newsEntity);
         // 发布资讯添加事件
         applicationContext.publishEvent(new NewsEvent(EventSourceVo
@@ -107,14 +100,14 @@ public class NewsServiceImpl implements INewsService {
 
     @Override
     public void update(NewsVo newsVo) {
-        NewsEntity newsEntity = newsConver.map(newsVo, NewsEntity.class);
+        NewsEntity newsEntity = BeanUtils.copyProperties(newsVo, NewsEntity.class);
         iNewsManage.update(newsEntity);
 
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iNewsManage.deleteBatch(new NewsEntity(), ids);
+        iNewsManage.deleteBatch(ids);
     }
 
     @Override

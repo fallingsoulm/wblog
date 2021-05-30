@@ -1,11 +1,12 @@
 package com.wblog.info.task;
 
 import cn.hutool.core.util.StrUtil;
-import com.apes.hub.api.enums.ConstantEnum;
-import com.apes.hub.api.module.info.vo.NewsVo;
-import com.apes.hub.data.utils.SimpleSnowflake;
-import com.apes.hub.info.config.BlogConfigProperties;
-import com.apes.hub.info.service.INewsService;
+
+import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.config.BlogConfigProperties;
+import com.wblog.info.service.INewsService;
+import io.github.fallingsoulm.easy.archetype.data.id.SimpleSnowflake;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;

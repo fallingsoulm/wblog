@@ -1,11 +1,14 @@
 package com.wblog.info.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.enums.FilePathEnum;
+import com.wblog.common.exception.BusinessException;
 import com.wblog.common.module.info.vo.AlbumArticleVo;
 import com.wblog.common.module.info.vo.AlbumVo;
 import com.wblog.common.module.system.api.SysUserApi;
 import com.wblog.common.module.system.vo.SysUserVo;
+import com.wblog.info.component.FileTemplatePlus;
 import com.wblog.info.entity.AlbumEntity;
 import com.wblog.info.manage.IAlbumManage;
 import com.wblog.info.service.IAlbumArticleService;
@@ -54,7 +57,7 @@ public class AlbumServiceImpl implements IAlbumService {
 
 
     @Autowired
-    private FileTemplate fileTemplate;
+    private FileTemplatePlus fileTemplate;
 
     @Override
     public PageInfo<AlbumVo> findByPage(PageRequestParams<AlbumVo> pageRequestParams) {
@@ -112,10 +115,10 @@ public class AlbumServiceImpl implements IAlbumService {
 
         if (StrUtil.isBlank(albumEntity.getImage())) {
             // 使用随机的图片
-            albumEntity.setImage(fileInfoApi.randomFile(FilePathEnum.PUBLIC.getClassify()).getData().getUrl());
+            albumEntity.setImage(fileTemplate.randomImage());
 
         }
-        albumEntity.setImage(fileTemplate.spiltHost(albumEntity.getImage()));
+        albumEntity.setImage(fileTemplate.removeHost(albumEntity.getImage()));
         albumEntity.setCreateTime(new Date());
 
         iAlbumManage.insert(albumEntity);
@@ -125,26 +128,26 @@ public class AlbumServiceImpl implements IAlbumService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void update(AlbumVo albumVo) {
-        AlbumEntity albumEntity = albumConver.map(albumVo, AlbumEntity.class);
+        AlbumEntity albumEntity = BeanUtils.copyProperties(albumVo, AlbumEntity.class);
 
 //        if (StrUtil.isBlank(albumEntity.getImage())) {
 //            // 使用随机的图片
 //            albumEntity.setImage(fileInfoApi.randomFile(FilePathEnum.ALBUM_IMAGE.getClassify()).getData().getUrl());
 //        }
-        albumEntity.setImage(fileTemplate.spiltHost(albumEntity.getImage()));
+        albumEntity.setImage(fileTemplate.removeHost(albumEntity.getImage()));
         iAlbumManage.update(albumEntity);
         if (null != albumVo.getStatus() && albumVo.getStatus().equals(ConstantEnum.ALBUM_STATUS_ENABLE.getValue())) {
             // 当上架的时候, 需要检查该专辑下是不是有文章,如果没有文章的话,则不允许上架
             Integer count = albumArticleService.count(AlbumArticleVo.builder().albumId(albumVo.getId()).build());
             if (null == count || count.intValue() == 0) {
-                throw new CustomException("当前专辑下不存在文章, 不允许上架");
+                throw new BusinessException("当前专辑下不存在文章, 不允许上架");
             }
         }
     }
 
     @Override
     public void deleteByIds(List<Long> ids) {
-        iAlbumManage.deleteBatch(new AlbumEntity(), ids);
+        iAlbumManage.deleteBatch(ids);
     }
 
     @Override

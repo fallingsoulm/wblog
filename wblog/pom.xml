@@ -260,8 +260,8 @@
         <module>wblog-common</module>
         <module>wblog-system</module>
         <module>wblog-info</module>
-        <!--                <module>wblog-front</module>-->
-        <!--                <module>wblog-web</module>-->
+        <module>wblog-front</module>
+        <module>wblog-web</module>
 
     </modules>
 </project>

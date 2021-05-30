@@ -75,25 +75,25 @@ public class ArticleInfoServiceImpl implements IArticleInfoService {
     @Override
     public List<ArticleInfoVo> findByIds(List<Long> articleIds) {
         List<ArticleInfoEntity> entities = iArticleInfoManage.findByIds(articleIds);
-        return articleInfoConver.mapAsList(entities, ArticleInfoVo.class);
+        return BeanUtils.copyList(entities, ArticleInfoVo.class);
     }
 
     @Override
     public Long save(ArticleInfoVo articleInfoVo) {
-        ArticleInfoEntity articleInfoEntity = articleInfoConver.map(articleInfoVo, ArticleInfoEntity.class);
+        ArticleInfoEntity articleInfoEntity = BeanUtils.copyProperties(articleInfoVo, ArticleInfoEntity.class);
         iArticleInfoManage.insert(articleInfoEntity);
         return articleInfoEntity.getArticleId();
     }
 
     @Override
     public void update(ArticleInfoVo articleInfoVo) {
-        ArticleInfoEntity articleInfoEntity = articleInfoConver.map(articleInfoVo, ArticleInfoEntity.class);
+        ArticleInfoEntity articleInfoEntity = BeanUtils.copyProperties(articleInfoVo, ArticleInfoEntity.class);
         iArticleInfoManage.update(articleInfoEntity);
     }
 
     @Override
     public void deleteByIds(List<Long> articleIds) {
-        iArticleInfoManage.deleteBatch(new ArticleInfoEntity(), articleIds);
+        iArticleInfoManage.deleteBatch(articleIds);
     }
 
     @Override

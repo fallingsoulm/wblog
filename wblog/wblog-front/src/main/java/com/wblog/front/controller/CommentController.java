@@ -1,9 +1,10 @@
 package com.wblog.front.controller;
 
 
-import com.apes.hub.api.module.info.api.CommentApi;
-import com.apes.hub.api.module.info.vo.CommentVo;
-import com.apes.hub.api.module.system.vo.LoginUserVo;
+
+import com.wblog.common.module.info.api.CommentApi;
+import com.wblog.common.module.info.vo.CommentVo;
+import io.github.fallingsoulm.easy.archetype.security.core.LoginUserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;

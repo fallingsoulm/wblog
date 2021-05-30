@@ -5,12 +5,12 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
-import com.apes.hub.api.module.file.api.FileApi;
-import com.apes.hub.api.module.info.vo.ArticleInfoVo;
-import com.apes.hub.api.module.info.vo.GitSynVo;
-import com.apes.hub.info.config.BlogConfigProperties;
-import com.apes.hub.info.service.IArticleInfoService;
-import com.apes.hub.info.service.IGitSynService;
+import com.wblog.common.module.info.vo.ArticleInfoVo;
+import com.wblog.common.module.info.vo.GitSynVo;
+import com.wblog.info.component.FileTemplatePlus;
+import com.wblog.info.config.BlogConfigProperties;
+import com.wblog.info.service.IArticleInfoService;
+import com.wblog.info.service.IGitSynService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.nio.file.Paths;
@@ -32,19 +32,19 @@ public class ArticleLocalFileReplaceThread extends Thread {
 
     private BlogConfigProperties blogConfigProperties;
 
-    private FileApi fileApi;
+    private FileTemplatePlus fileTemplatePlus;
 
     private IArticleInfoService articleInfoService;
 
     public ArticleLocalFileReplaceThread(Long articleId
             , IGitSynService gitSynService
             , BlogConfigProperties blogConfigProperties
-            , FileApi fileApi
+            , FileTemplatePlus fileTemplatePlus
             , IArticleInfoService articleInfoService) {
         this.articleId = articleId;
         this.gitSynService = gitSynService;
         this.blogConfigProperties = blogConfigProperties;
-        this.fileApi = fileApi;
+        this.fileTemplatePlus = fileTemplatePlus;
         this.articleInfoService = articleInfoService;
     }
 
