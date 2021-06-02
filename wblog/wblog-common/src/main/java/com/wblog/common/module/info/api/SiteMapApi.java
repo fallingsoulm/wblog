@@ -1,5 +1,6 @@
 package com.wblog.common.module.info.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.ApiOperation;
@@ -14,10 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @since 2020/9/17
  * <p>sitemap</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface SiteMapApi {
 
-    String prefix = "business/" + Version.VERSION_1 + "sitemap/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "sitemap/";
 
     /**
      * <p>返回sitemap的内容</p>

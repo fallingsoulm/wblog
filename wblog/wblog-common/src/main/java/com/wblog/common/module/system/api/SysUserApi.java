@@ -1,5 +1,6 @@
 package com.wblog.common.module.system.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.system.vo.SysUserVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -18,10 +19,10 @@ import java.util.List;
  * <p>用户</p>
  **/
 
-@FeignClient(value = "apes-hub-uaa-web", fallback = SysUserApiFallBack.class)
+@FeignClient(value = ApplicationNameConstants.SYSTEM, fallback = SysUserApiFallBack.class)
 public interface SysUserApi {
 
-    String prefix = "uaa/" + Version.VERSION_1 + "system/user/";
+    String prefix = ApplicationNameConstants.SYSTEM_PATH_PREFIX + Version.VERSION_1 + "system/user/";
 
     @PostMapping(prefix + "find/ids")
     RespEntity<List<SysUserVo>> findByIds(@RequestBody List<Long> ids);

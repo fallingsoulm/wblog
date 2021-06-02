@@ -1,6 +1,7 @@
 package com.wblog.common.module.info.api;
 
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.ArticleLabelVo;
 import com.wblog.common.module.info.vo.ArticleVo;
@@ -19,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @since 2020/9/16
  * <p>文章的api</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface ArticleApi {
 
-    String prefix = "/business/" + Version.VERSION_1 + "info/article/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "info/article/";
 
     /**
      * <p>文章详情</p>

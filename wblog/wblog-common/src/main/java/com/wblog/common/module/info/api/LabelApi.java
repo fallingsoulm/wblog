@@ -1,5 +1,6 @@
 package com.wblog.common.module.info.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.LabelVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
@@ -17,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @since 2020/9/17
  * <p>标签</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface LabelApi {
 
-    String prefix = "business/" + Version.VERSION_1 + "label/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "label/";
 
     /**
      * <p>分页查询标签并且统计数量</p>

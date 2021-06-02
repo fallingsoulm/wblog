@@ -95,4 +95,6 @@ public class LabelApiController {
         labelService.deleteByIds(Arrays.stream(ids).collect(Collectors.toList()));
         return RespEntity.success();
     }
+
+
 }

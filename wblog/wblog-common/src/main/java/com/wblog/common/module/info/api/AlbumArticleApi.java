@@ -1,6 +1,7 @@
 package com.wblog.common.module.info.api;
 
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.ArticleVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -16,10 +17,10 @@ import java.util.List;
  * @since 2020/9/17
  * <p>专辑文章关联</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface AlbumArticleApi {
 
-    String prefix = "business/" + Version.VERSION_1 + "album/article/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "album/article/";
 
     /**
      * <p>查询文章列表</p>

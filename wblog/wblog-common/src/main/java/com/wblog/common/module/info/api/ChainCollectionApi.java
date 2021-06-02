@@ -1,5 +1,6 @@
 package com.wblog.common.module.info.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.ChainCollectionVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -16,9 +17,9 @@ import java.util.Map;
  * @since 2020/9/17
  * <p>链接收藏</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface ChainCollectionApi {
-    String prefix = "business/" + Version.VERSION_1 + "chain/collection/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "chain/collection/";
 
     @GetMapping(prefix + "list/map/{classifyId}")
     @ApiOperation(value = "根据父类id查询下面的所有链藏")

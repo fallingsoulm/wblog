@@ -65,6 +65,15 @@ public class BlogConfigProperties {
 
     private News news;
 
+
+    /**
+     * 默认的头像
+     *
+     * @author Administrator
+     * @since 2021/5/31
+     */
+    private String defaultAvatar;
+
     /**
      * <p>资讯配置文件</p>
      *

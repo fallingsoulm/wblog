@@ -1,5 +1,6 @@
 package com.wblog.common.module.info.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.AlbumVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
@@ -16,10 +17,10 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @since 2020/9/17
  * <p>专辑</p>
  **/
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface AlbumApi {
 
-    String prefix = "/business/" + Version.VERSION_1 + "album/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "album/";
 
     /**
      * <p>分页查询</p>

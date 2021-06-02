@@ -1,5 +1,6 @@
 package com.wblog.common.module.system.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.system.vo.SysRoleVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -14,9 +15,9 @@ import java.util.List;
  * @since 2020/11/3
  * <p>系统角色</p>
  **/
-@FeignClient("apes-hub-uaa-web")
+@FeignClient(ApplicationNameConstants.SYSTEM)
 public interface SysRoleApi {
-    String prefix = "uaa/" + Version.VERSION_1 + "system/role/";
+    String prefix = ApplicationNameConstants.SYSTEM_PATH_PREFIX + Version.VERSION_1 + "system/role/";
 
 
     /**

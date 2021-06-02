@@ -1,5 +1,6 @@
 package com.wblog.common.module.system.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.github.fallingsoulm.easy.archetype.security.core.LoginUserVo;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -14,9 +15,9 @@ import java.util.Map;
  * @since 2020/9/4
  * <p>Oauth的接口</p>
  **/
-@FeignClient("apes-hub-uaa-web")
+@FeignClient(ApplicationNameConstants.SYSTEM)
 public interface Oauth2Api {
-
+    String prefix = ApplicationNameConstants.SYSTEM_PATH_PREFIX;
 
     /**
      * <p>获取token</p>
@@ -30,7 +31,7 @@ public interface Oauth2Api {
      * @author luyanan
      * @since 2020/9/4
      */
-    @PostMapping("uaa/oauth/token")
+    @PostMapping(prefix + "oauth/token")
     Map<String, Object> oauthToken(@RequestParam("client_id") String client_id,
                                    @RequestParam("client_secret") String client_secret,
                                    @RequestParam("grant_type") String grant_type,
@@ -45,7 +46,7 @@ public interface Oauth2Api {
      * @author luyanan
      * @since 2020/10/30
      */
-    @GetMapping("uaa/api/v1/getCurrentUser")
+    @GetMapping(prefix + "api/v1/getCurrentUser")
     RespEntity<LoginUserVo> getCurrentUser();
 
 }

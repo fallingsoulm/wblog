@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: wblog
+
+
+wblog:
+  ribbon:
+    listOfServers: localhost:${server.port}

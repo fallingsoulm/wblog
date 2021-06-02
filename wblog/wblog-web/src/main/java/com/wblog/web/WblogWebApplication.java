@@ -1,6 +1,7 @@
 package com.wblog.web;
 
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
+import io.github.fallingsoulm.easy.archetype.data.file.annotation.EnableFileServer;
 import io.github.fallingsoulm.easy.archetype.security.oauth.client.annotation.EnableOauthClient;
 import io.github.fallingsoulm.easy.archetype.security.oauth.server.annotation.EnableOauthServer;
 import org.springframework.boot.SpringApplication;
@@ -15,16 +16,17 @@ import org.springframework.cache.annotation.EnableCaching;
  * @author luyanan
  * @since 2021/1/18
  **/
+@EnableFileServer(mode = EnableFileServer.FileMode.SERVER)
 @EnableKnife4j
 @EnableOauthClient
 @EnableOauthServer
 //@EnableSecurity
-@EnableCaching
+//@EnableCaching
 @SpringBootApplication
-public class ApeHubWebApplication {
+public class WblogWebApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ApeHubWebApplication.class, args);
+        SpringApplication.run(WblogWebApplication.class, args);
     }
 
 }

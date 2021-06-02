@@ -1,6 +1,8 @@
 package com.wblog.info.api;
 
+import cn.hutool.core.util.StrUtil;
 import com.wblog.common.constant.Version;
+import com.wblog.common.datascope.annotation.GlobalDataScope;
 import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.module.info.vo.GitSynDataVo;
 import com.wblog.info.service.IGitSynDataService;
@@ -12,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -181,4 +184,5 @@ public class GitSynDataApiController {
         });
         return RespEntity.success();
     }
+
 }

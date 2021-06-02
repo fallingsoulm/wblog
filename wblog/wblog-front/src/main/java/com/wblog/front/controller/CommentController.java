@@ -1,7 +1,6 @@
 package com.wblog.front.controller;
 
 
-
 import com.wblog.common.module.info.api.CommentApi;
 import com.wblog.common.module.info.vo.CommentVo;
 import io.github.fallingsoulm.easy.archetype.security.core.LoginUserVo;
@@ -24,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class CommentController {
 
-    @Value("${comment.avatar}")
+    @Value("${comment.avatar:/images/avatar.png}")
     private String avatar;
     @Autowired
     private CommentApi commentApi;
@@ -41,11 +40,9 @@ public class CommentController {
         Long blogId = commentEntity.getArticle().getId();
         commentEntity.setArticleId(blogId);
         LoginUserVo userEntity = null;
+        commentEntity.setAvatar(avatar);
         if (userEntity != null) {
-            commentEntity.setAvatar(avatar);
             commentEntity.setAdminComment(Boolean.TRUE);
-        } else {
-            commentEntity.setAvatar(avatar);
         }
         commentApi.save(commentEntity);
         return "redirect:/comments/" + blogId;

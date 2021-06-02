@@ -8,6 +8,7 @@ import com.wblog.info.config.BlogConfigProperties;
 import io.github.fallingsoulm.easy.archetype.data.file.FileProperties;
 import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
 import io.github.fallingsoulm.easy.archetype.data.file.IFileService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +20,15 @@ import java.util.List;
  * @author luyanan
  * @since 2021/5/30
  **/
-@Component
 public class FileTemplatePlus extends FileTemplate {
-    public FileTemplatePlus(IFileService fileService, FileProperties fileProperties) {
-        super(fileService, fileProperties);
-    }
+
 
     @Autowired
     private BlogConfigProperties blogConfigProperties;
+
+    public FileTemplatePlus(IFileService fileService, FileProperties fileProperties) {
+        super(fileService, fileProperties);
+    }
 
 
     /**

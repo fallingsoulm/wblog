@@ -1,5 +1,6 @@
 package com.wblog.common.module.system.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.ApiOperation;
@@ -14,9 +15,9 @@ import java.util.List;
  * @since 2020/11/4
  * <p>部门接口</p>
  **/
-@FeignClient("apes-hub-uaa-web")
+@FeignClient(ApplicationNameConstants.SYSTEM)
 public interface SysDeptApi {
-    String prefix = "uaa/" + Version.VERSION_1 + "system/dept/";
+    String prefix = ApplicationNameConstants.SYSTEM_PATH_PREFIX + Version.VERSION_1 + "system/dept/";
 
 
     /**

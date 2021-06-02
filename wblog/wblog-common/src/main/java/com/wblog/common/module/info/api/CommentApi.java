@@ -1,5 +1,6 @@
 package com.wblog.common.module.info.api;
 
+import com.wblog.common.constant.ApplicationNameConstants;
 import com.wblog.common.constant.Version;
 import com.wblog.common.module.info.vo.CommentVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -12,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
-@FeignClient("apes-hub-business")
+@FeignClient(ApplicationNameConstants.INFO)
 public interface CommentApi {
-    String prefix = "business/" + Version.VERSION_1 + "comment/";
+    String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "comment/";
 
     @ApiOperation(value = "根据文章id查询评论")
     @GetMapping(prefix + "find/articleId/{articleId}")

@@ -1,7 +1,8 @@
 package com.wblog.common.config;
 
-import com.wblog.common.utils.SimpleSnowflake;
+import io.github.fallingsoulm.easy.archetype.data.id.SimpleSnowflake;
 import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +13,10 @@ import org.springframework.context.annotation.Configuration;
  * @author luyanan
  * @since 2021/1/24
  **/
+@EnableFeignClients("com.wblog.common.module")
 @Configuration
 @ComponentScan("com.wblog.common")
 public class CommonAutoConfiguration {
-
 
 
     @Bean

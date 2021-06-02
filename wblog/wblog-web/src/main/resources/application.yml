@@ -1,9 +1,7 @@
 server:
   ## 端口号
   port: 9000
-  servlet:
-    ## 应用的访问路径
-    context-path: /uaa
+
   #  tomcat:
   #    # tomcat的URI 编码
   #    uri-encoding: utf-8
@@ -54,8 +52,6 @@ spring:
       # 设置总上传的文件大小
       max-request-size: 200MB
       enabled: true
-  application:
-    name: easy-archetype
   main:
     allow-bean-definition-overriding: true
   http:
@@ -66,6 +62,11 @@ spring:
   session:
     store-type: redis
     timeout: 5h
+  rabbitmq:
+    host: rabbitmq
+    username: root
+    password: luyanan
+    virtual-host: /${spring.profiles.active}
 # 自定义配置
 easy:
   archetype:
@@ -91,6 +92,17 @@ easy:
       config:
         center:
           enable: true
+      file:
+        server:
+          storetype: minio
+          oss:
+            bucket-name: w-blog-${spring.profiles.active}
+            access-key: root
+            secret-key: luyanan787
+            region: ${easy.archetype.framework.file.file-host}
+            endpoint: http://minio:9001/
+          endpoint: false
+        file-host: http://file.luyanan.com/
     security:
       oauth:
         token-signing-key: easy-archetype
