@@ -67,6 +67,18 @@ spring:
     username: root
     password: luyanan
     virtual-host: /${spring.profiles.active}
+  datasource:
+    hikari:
+      connection-timeout: 10000
+      validation-timeout: 3000
+      idle-timeout: 60000
+      login-timeout: 5
+      max-lifetime: 60000
+      maximum-pool-size: 10
+      minimum-idle: 5
+      read-only: false
+  cache:
+    type: redis
 # 自定义配置
 easy:
   archetype:
@@ -126,6 +138,9 @@ easy:
         enable: true
         validate-code-urls: /login
         validate-code-filter: false
+    data:
+      cache:
+        enable: true
 
 ## mybatis-plus配置
 mybatis-plus:
@@ -183,3 +198,37 @@ com:
     archetype:
       job:
         enable: true
+
+
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 50000 # 连接超时时间
+        readTimeout: 50000   # 读超时时间
+  #        loggerLevel: full # 日志级别
+  okhttp:
+    enabled: true
+  compression:
+    request:
+      enabled: true
+    response:
+      useGzipDecoder: true
+ribbon:
+  okhttp:
+    enabled: true
+
+blog:
+  article-info-url: ${blog.business-domain}article/info/
+  news:
+    sleep-time: 60000
+    max-page-size: 3
+    news-info-url: ${blog.business-domain}news/info/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always

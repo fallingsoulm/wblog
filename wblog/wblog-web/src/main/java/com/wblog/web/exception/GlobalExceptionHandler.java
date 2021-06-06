@@ -91,8 +91,9 @@ public class GlobalExceptionHandler {
      * @since 2021/1/24
      */
     @ExceptionHandler(Exception.class)
-    public RespEntity handleException(RuntimeException e) {
-        log.error(e.getMessage(), e);
+    public RespEntity handleException(Exception e, HttpServletRequest request, HandlerMethod handlerMethod) {
+        String name = handlerMethod.getMethod().getName();
+        log.error(name, e.getMessage(), e);
         e.printStackTrace();
         return RespEntity.error(IMsgCode.INTERNAL_SERVER_ERROR);
     }

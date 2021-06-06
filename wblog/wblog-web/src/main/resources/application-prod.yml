@@ -1,5 +1,30 @@
 ## 日志配置
 logging:
   level:
-    com.easy: debug
+    io.github.fallingsoulm.easy.archetype: debug
     org.springframework: warn
+#    com.wblog: debug
+spring:
+  thymeleaf:
+    # thymeleaf  禁用缓存
+    cache: true
+    # 服务模块
+  devtools:
+    restart:
+      # 热部署开关
+      enabled: false
+      ## 数据库配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql:3306/w-blog?characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false&allowMultiQueries=true
+    password: luyanan
+    username: luyanan
+  redis:
+    host: redis
+    password: luyanan
+    port: 6379
+    database: 4
+
+blog:
+  business-domain: https://luyanan.com/
+  gitee-access-token: 4fb6aa09ddb7e7a00e07ceaf2bc57575

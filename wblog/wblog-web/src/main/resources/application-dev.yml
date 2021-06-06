@@ -1,8 +1,9 @@
 ## 日志配置
 logging:
   level:
-    com.easy: debug
+    io.github.fallingsoulm.easy.archetype: debug
     org.springframework: warn
+#    com.wblog: debug
 spring:
   thymeleaf:
     # thymeleaf  禁用缓存
@@ -23,3 +24,7 @@ spring:
     password: luyanan
     port: 6379
     database: 3
+
+blog:
+  business-domain: http://localhost:9003/
+  gitee-access-token: 4fb6aa09ddb7e7a00e07ceaf2bc57575

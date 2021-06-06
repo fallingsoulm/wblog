@@ -3,6 +3,6 @@ MAINTAINER luyanan <luyanan0718@163.com>
 ENV TZ=Asia/Shanghai
 
 RUN ln -sf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-COPY target/easy-archetype-web-all.jar app.jar
+COPY target/wblog-web.jar app.jar
 EXPOSE 9000
 CMD  exec java $JAVA_OPTS -jar app.jar $RUN_OPTS
