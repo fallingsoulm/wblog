@@ -42,7 +42,7 @@ public interface AlbumApi {
      * @author luyanan
      * @since 2020/9/17
      */
-    @GetMapping(prefix + "find/id/{albumId}")
-    public RespEntity<AlbumVo> findById(@PathVariable("albumId") Long albumId);
+    @GetMapping(prefix + "{id}")
+    public RespEntity<AlbumVo> findById(@PathVariable("id") Long albumId);
 
 }

@@ -451,12 +451,12 @@
                 <div class="ui bottom attached segment" th:if="${articlePageInfo.totalPages}>1">
                     <div class="ui middle aligned two column grid">
                         <div class="column">
-                            <a href="#" th:href="@{?(page=${articlePageInfo.number}-1)}"
+                            <a href="#" th:href="@{?(page=${articlePageInfo.pageNum}-1)}"
                                th:unless="${articlePageInfo.first}"
                                class="ui mini teal basic button">上一页</a>
                         </div>
                         <div class="right aligned column">
-                            <a href="#" th:href="@{?(page=${articlePageInfo.number}+1)}"
+                            <a href="#" th:href="@{?(page=${articlePageInfo.pageNum}+1)}"
                                th:unless="${articlePageInfo.last}"
                                class="ui mini teal basic button">下一页</a>
                         </div>

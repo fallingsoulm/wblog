@@ -121,7 +121,7 @@ public class GitSynDataApiController {
     /**
      * 获取git同步信息配置详细信息
      */
-    @PreAuthorize("hasAnyAuthority('info:gitSynData:query')")
+    @PreAuthorize("hasAnyAuthority('info:gitSynData:list')")
     @GetMapping(value = "/{id}")
     public RespEntity getInfo(@PathVariable("id") Long id) {
         return RespEntity.success(gitSynDataService.findById(id));

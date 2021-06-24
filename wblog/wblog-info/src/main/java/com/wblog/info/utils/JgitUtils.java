@@ -63,25 +63,34 @@ public class JgitUtils {
 
 
         Git git = null;
-        File localFile = new File(localPath);
-        if (localFile.exists() && new File(localFile + "/.git").exists()) {
-            git = Git.open(localFile);
-        } else {
-//设置远程服务器上的用户名和密码
-            UsernamePasswordCredentialsProvider usernamePasswordCredentialsProvider = new
-                    UsernamePasswordCredentialsProvider(userName, passWord);
+        try {
+            File localFile = new File(localPath);
+            if (localFile.exists() && new File(localFile + "/.git").exists()) {
+                git = Git.open(localFile);
+            } else {
+                //设置远程服务器上的用户名和密码
+                UsernamePasswordCredentialsProvider usernamePasswordCredentialsProvider = new
+                        UsernamePasswordCredentialsProvider(userName, passWord);
 
-//克隆代码库命令
-            CloneCommand cloneCommand = Git.cloneRepository();
+                //克隆代码库命令
+                CloneCommand cloneCommand = Git.cloneRepository();
 
-            git = cloneCommand.setURI(remotePath) //设置远程URI
-                    .setBranch(branch) //设置clone下来的分支
-                    .setDirectory(new File(localPath)) //设置下载存放路径
-                    .setCredentialsProvider(usernamePasswordCredentialsProvider) //设置权限验证
-                    .call();
+                git = cloneCommand.setURI(remotePath) //设置远程URI
+                        .setBranch(branch) //设置clone下来的分支
+                        .setDirectory(new File(localPath)) //设置下载存放路径
+                        .setCredentialsProvider(usernamePasswordCredentialsProvider) //设置权限验证
+                        .call();
 
+            }
+            git.pull();
+        } finally {
+
+            if (null != git) {
+                git.clean();
+                git.close();
+            }
         }
-        git.pull();
+
     }
 
     public static void main(String[] args) throws GitAPIException, IOException {

@@ -262,6 +262,7 @@
         <module>wblog-info</module>
         <module>wblog-front</module>
         <module>wblog-web</module>
+        <module>wblog-gateway</module>
 
     </modules>
 </project>

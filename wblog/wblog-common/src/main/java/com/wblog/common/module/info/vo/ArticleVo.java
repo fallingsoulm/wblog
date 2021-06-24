@@ -3,6 +3,7 @@ package com.wblog.common.module.info.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wblog.common.module.system.vo.SysUserVo;
+import io.github.fallingsoulm.easy.archetype.data.file.annotation.FileHostProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -52,6 +53,7 @@ public class ArticleVo implements Serializable {
     /**
      * 头图
      */
+    @FileHostProperty
     @ApiModelProperty(value = "头图")
     private String image;
 

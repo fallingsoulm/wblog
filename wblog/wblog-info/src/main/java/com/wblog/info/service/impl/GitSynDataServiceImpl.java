@@ -469,8 +469,9 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
         log.info("开始执行:" + gitSynDataVo.getGitUrl());
         String gitSynPath = blogConfigProperties.getGitSynPath();
         try {
+            System.gc();
             // 先清空当前目录下的所有的文件
-            FileUtil.del(gitSynPath);
+            FileUtil.clean(gitSynPath);
             String localPath = gitSynPath + gitSynDataVo.getId() + gitSynDataVo.getProjectName();
             // 1. 克隆或者更新代码
             doCloneOrPullProject(gitSynDataVo, localPath);
@@ -500,7 +501,7 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        FileUtil.clean(gitSynPath);
 
     }
 
@@ -591,7 +592,7 @@ public class GitSynDataServiceImpl implements IGitSynDataService {
         for (GitSynVo a : saveVos) {
             try {
                 log.info("gitUrl:{},准备入档的文件为:{}", gitSynDataVo.getGitUrl(), a.getPath());
-                File file = new File(a.getPath());
+                File file = new File(blogConfigProperties.getGitSynPath() + "/" + a.getPath());
                 String[] classifyNames = file.getAbsolutePath()
                         .replace(new File(blogConfigProperties.getGitSynPath())
                                 .getAbsolutePath(), "")

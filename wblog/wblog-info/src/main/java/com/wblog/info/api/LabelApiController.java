@@ -10,6 +10,7 @@ import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 @RequestMapping(Version.VERSION_1 + "label")
 public class LabelApiController {
 
+    private static final String authorPrefix = "info:label:";
+
     @Autowired
     private ILabelService labelService;
 
@@ -36,6 +39,7 @@ public class LabelApiController {
      * @author luyanan
      * @since 2020/6/15
      */
+//    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @PostMapping("find/page/count")
     @ApiOperation(value = "分页查询标签并且统计数量")
     public RespEntity<PageInfo<LabelVo>> findByPageAndCount(@RequestBody PageRequestParams<LabelVo> pageRequestParams) {
@@ -58,6 +62,7 @@ public class LabelApiController {
      * @author luyanan
      * @since 2020/9/17
      */
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "根据id查询", response = LabelVo.class)
     @GetMapping("find/id/{labelId}")
     RespEntity<LabelVo> findById(@PathVariable("labelId") Long labelId) {
@@ -73,7 +78,7 @@ public class LabelApiController {
         return RespEntity.success(pageInfo);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "add')")
     @ApiOperation(value = "新增")
     @PostMapping()
     public RespEntity save(@RequestBody LabelVo labelVo) {
@@ -81,7 +86,7 @@ public class LabelApiController {
         return RespEntity.success();
     }
 
-
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "edit')")
     @ApiOperation(value = "修改")
     @PutMapping
     public RespEntity edit(@RequestBody LabelVo labelVo) {
@@ -89,6 +94,7 @@ public class LabelApiController {
         return RespEntity.success();
     }
 
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "remove')")
     @ApiOperation(value = "删除")
     @DeleteMapping("/{ids}")
     public RespEntity remove(@PathVariable("ids") Long[] ids) {

@@ -229,4 +229,19 @@ public class SysUserController {
         SysUserDo userDo = sysUserService.findById(userId);
         return RespEntity.success(BeanUtils.copyProperties(userDo, SysUserVo.class));
     }
+
+
+    /**
+     * 根据id集合查询
+     *
+     * @param userIds
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<java.util.List < com.wblog.system.vo.SysUserVo>>
+     * @since 2021/6/2
+     */
+    @ApiOperation(value = "根据id集合查询")
+    @PostMapping("find/ids")
+    public RespEntity<List<SysUserVo>> findByIds(@RequestBody List<Long> userIds) {
+        List<SysUserVo> sysUserVos = sysUserService.findByIds(userIds);
+        return RespEntity.success(sysUserVos);
+    }
 }

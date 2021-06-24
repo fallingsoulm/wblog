@@ -6,15 +6,21 @@ services:
     image: registry.cn-hangzhou.aliyuncs.com/easy-archetype/wblog-web:1.0-SNAPSHOT
     volumes:
       - ./logs:/logs
+      - ./data:/data
     ports:
       - "9999:9999"
     restart: always
     environment:
       JAVA_OPTS: "-Xms128m -Xmx256m -Djava.security.egd=file:/dev/./urandom"
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: prod
       RUN_OPTS: "--server.port=9999"
-      redis: ""
-      mysql: ""
-      rabbitmq: ""
-      minio: ""
-
+      # redis: "localhost"
+      #mysql: "localhost"
+      #rabbitmq: "localhost"
+      #minio: "localhost"
+    extra_hosts:
+      - "redis:127.0.0.1"
+      - "mysql:127.0.0.1"
+      - "rabbitmq:127.0.0.1"
+      - "minio:127.0.0.1"
+    network_mode: "host"

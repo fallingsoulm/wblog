@@ -89,7 +89,7 @@ easy:
         enable: true
         # 开启cors
         cors:
-          enable: true
+          enable: false
       # 缓存增强
       cache:
         enable: true
@@ -108,7 +108,7 @@ easy:
         server:
           storetype: minio
           oss:
-            bucket-name: w-blog-${spring.profiles.active}
+            bucket-name: wblog-${spring.profiles.active}
             access-key: root
             secret-key: luyanan787
             region: ${easy.archetype.framework.file.file-host}
@@ -141,7 +141,8 @@ easy:
     data:
       cache:
         enable: true
-
+    job:
+      enable: true
 ## mybatis-plus配置
 mybatis-plus:
   global-config:
@@ -193,11 +194,6 @@ knife4j:
     enable: false
     username: test
     password: 12313
-com:
-  easy:
-    archetype:
-      job:
-        enable: true
 
 
 feign:
@@ -224,6 +220,7 @@ blog:
     sleep-time: 60000
     max-page-size: 3
     news-info-url: ${blog.business-domain}news/info/
+  random-image-path: public
 management:
   endpoints:
     web:

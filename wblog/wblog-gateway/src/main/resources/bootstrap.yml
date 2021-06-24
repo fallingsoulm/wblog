@@ -1,0 +1,66 @@
+server:
+  port: 8888
+  compression:
+    enabled: true
+
+## feign 配置
+feign:
+  compression:
+    request:
+      enabled: true
+      mime-types:
+        - text/html
+        - appliication/xml
+        - application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+  httpclient:
+    connection-timeout: 20000
+    connection-timer-repeat: 20000
+  client:
+    config:
+      default:
+        connectTimeout: 20000
+        readTimeout: 20000
+        loggerLevel: basic
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+spring:
+  application:
+    name: wblog-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          # 是否和服务注册与发现组件结合，设置为 true 后可以直接使用应用名称调用服务
+          enabled: true
+
+      routes:
+        # 认证中心
+        - id: uaa
+          uri: lb://wblog
+          predicates:
+            - Path=/uaa/**
+          filters:
+            #            - RewritePath=/projects(?<segment>/?.*), /regexp$\{segment}
+            - RewritePath=/uaa(?<segment>/?.*),$\{segment}
+        # 认证中心
+        - id: business
+          uri: lb://wblog
+          predicates:
+            - Path=/business/**
+          filters:
+            #            - RewritePath=/projects(?<segment>/?.*), /regexp$\{segment}
+            - RewritePath=/business(?<segment>/?.*),$\{segment}
+
+##  这里暂时代替 注册中心
+wblog:
+  ribbon:
+    listOfServers: localhost:9000

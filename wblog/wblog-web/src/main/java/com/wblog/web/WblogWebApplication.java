@@ -21,7 +21,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableOauthClient
 @EnableOauthServer
 //@EnableSecurity
-@EnableCaching
+//@EnableCaching
 @SpringBootApplication
 public class WblogWebApplication {
 

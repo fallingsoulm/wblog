@@ -1,6 +1,7 @@
 package com.wblog.common.module.info.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.fallingsoulm.easy.archetype.data.file.annotation.FileHostProperty;
 import io.github.fallingsoulm.easy.archetype.framework.validation.AddGroup;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -72,8 +73,10 @@ public class LabelVo implements Serializable {
     @ApiModelProperty(value = "别名")
     private String aliases;
 
+    @FileHostProperty
     @ApiModelProperty(value = "图标")
     private String icon;
+
 
     private Integer num;
 

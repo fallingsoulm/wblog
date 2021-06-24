@@ -1,5 +1,6 @@
 package com.wblog.web.exception;
 
+import com.wblog.common.exception.AbstractExceptionHandler;
 import com.wblog.common.exception.BusinessException;
 import com.wblog.common.exception.IMsgCode;
 import com.wblog.system.SystemMsgCode;
@@ -24,78 +25,7 @@ import javax.servlet.http.HttpServletRequest;
  **/
 @Slf4j
 @RestControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandler extends AbstractExceptionHandler {
 
-    /**
-     * 请求方法不支持
-     *
-     * @param e
-     * @return com.wblog.framework.core.page.RespEntity
-     * @since 2021/1/24
-     */
-    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public RespEntity handleException(HttpRequestMethodNotSupportedException e) {
-        log.error(e.getMessage(), e);
-        return RespEntity.error(IMsgCode.HTTP_NOT_FOUND, e.getMethod());
-    }
-
-    /**
-     * 自定义校验异常
-     *
-     * @param e 异常
-     * @return com.wblog.framework.core.page.RespEntity
-     * @since 2021/1/24
-     */
-    @ExceptionHandler(BindException.class)
-    public RespEntity validatedBindException(BindException e) {
-        log.error(e.getMessage(), e);
-        String message = e.getAllErrors().get(0).getDefaultMessage();
-        return RespEntity.error(message);
-    }
-
-    /**
-     * 自定义异常
-     *
-     * @param request
-     * @param handlerMethod
-     * @param e
-     * @return java.lang.Object
-     * @since 2021/1/24
-     */
-    @ExceptionHandler(BusinessException.class)
-    public Object customerException(HttpServletRequest request, HandlerMethod handlerMethod, BusinessException e) {
-        e.printStackTrace();
-        if (SpringContextHolder.isBody(handlerMethod)) {
-            // json请求
-            return RespEntity.error(e.getCode());
-        } else {
-            ModelAndView modelAndView = new ModelAndView();
-            modelAndView.addObject("errorMessage", e.getMessage());
-            modelAndView.setViewName("error/business");
-            return modelAndView;
-        }
-    }
-
-    @ExceptionHandler(AccessDeniedException.class)
-    public RespEntity accessDeniedException(AccessDeniedException e) {
-        log.error(e.getMessage(), e);
-
-        return RespEntity.error(SystemMsgCode.PERMISSION_DENIED);
-    }
-
-    /**
-     * 拦截未知异常
-     *
-     * @param e 异常信息
-     * @return com.wblog.framework.core.page.RespEntity
-     * @since 2021/1/24
-     */
-    @ExceptionHandler(Exception.class)
-    public RespEntity handleException(Exception e, HttpServletRequest request, HandlerMethod handlerMethod) {
-        String name = handlerMethod.getMethod().getName();
-        log.error(name, e.getMessage(), e);
-        e.printStackTrace();
-        return RespEntity.error(IMsgCode.INTERNAL_SERVER_ERROR);
-    }
 
 }

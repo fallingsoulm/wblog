@@ -2,6 +2,7 @@ package com.wblog.common.enums;
 
 
 import com.wblog.common.exception.BusinessException;
+import com.wblog.common.exception.IMsgCode;
 
 import java.util.Arrays;
 import java.util.List;
@@ -151,7 +152,7 @@ public enum ConstantEnum {
     public static ConstantEnum getByTypeAndValue(EnumType enumType, Integer value) {
         return Arrays.stream(ConstantEnum.values())
                 .filter(a -> a.getEnumType().equals(enumType) && a.getValue().equals(value))
-                .findFirst().orElseThrow(() -> new BusinessException("未知的枚举类型:" + value));
+                .findFirst().orElseThrow(() -> new BusinessException(IMsgCode.INTERNAL_SERVER_ERROR, "未知的枚举类型:" + value));
     }
 
     /**

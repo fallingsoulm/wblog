@@ -1,6 +1,7 @@
 package com.wblog.info.api;
 
 import com.wblog.common.constant.Version;
+import com.wblog.common.datascope.annotation.GlobalDataScope;
 import com.wblog.common.module.info.vo.NewsVo;
 import com.wblog.info.service.INewsService;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
@@ -10,6 +11,7 @@ import io.github.fallingsoulm.easy.archetype.framework.thread.BusinessThreadPool
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -30,6 +32,8 @@ public class NewsApiController {
 
     @Autowired
     private INewsService newsService;
+    private static final String authorPrefix = "info:news:";
+
 
     /**
      * <p>分页查询</p>
@@ -39,6 +43,7 @@ public class NewsApiController {
      * @author luyanan
      * @since 2020/9/17
      */
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "分页查询")
     @PostMapping("find/page")
     public RespEntity<PageInfo<NewsVo>> findByPage(@RequestBody PageRequestParams<NewsVo> pageRequestParams) {
@@ -70,7 +75,7 @@ public class NewsApiController {
         return RespEntity.success(pageInfo);
     }
 
-
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "remove')")
     @ApiOperation(value = "删除")
     @DeleteMapping("/{ids}")
     public RespEntity remove(@PathVariable("ids") Long[] ids) {

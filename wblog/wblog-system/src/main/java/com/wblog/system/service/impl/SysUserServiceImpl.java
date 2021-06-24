@@ -264,6 +264,12 @@ public class SysUserServiceImpl implements ISysUserService {
         return sysMenuDos;
     }
 
+    @Override
+    public List<SysUserVo> findByIds(List<Long> userIds) {
+        List<SysUserDo> userDos = iSysUserManage.findByIds(userIds);
+        return BeanUtils.copyList(userDos, SysUserVo.class);
+    }
+
     /**
      * 检验用户是否有操作的权限
      *

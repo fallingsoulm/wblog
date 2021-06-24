@@ -168,4 +168,13 @@ public interface ISysUserService {
      */
     List<SysMenuDo> findMeunByUserId(Long userId);
 
+    /**
+     * 根据id集合查询
+     *
+     * @param userIds
+     * @return java.util.List<com.wblog.system.vo.SysUserVo>
+     * @since 2021/6/2
+     */
+    List<SysUserVo> findByIds(List<Long> userIds);
+
 }

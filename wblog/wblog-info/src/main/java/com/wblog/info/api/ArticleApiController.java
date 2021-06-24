@@ -38,9 +38,10 @@ public class ArticleApiController {
 
     @ApiOperation(value = "文章详情")
     @GetMapping("info/{articleId}")
-    RespEntity<ArticleVo> info(@PathVariable("articleId") Long articleId) {
+    public RespEntity<ArticleVo> info(@PathVariable("articleId") Long articleId) {
         return RespEntity.success(articleService.info(articleId));
     }
+
 
 
     @ApiOperation(value = "分页查询", response = ArticleVo.class)
@@ -88,6 +89,7 @@ public class ArticleApiController {
      * @author luyanan
      * @since 2020/9/21
      */
+    @PreAuthorize("hasAnyAuthority('info:article:edit')")
     @ApiOperation(value = "修改状态")
     @GetMapping("update/status/{ids}/{status}")
     public RespEntity updateStatus(@PathVariable Long[] ids, @PathVariable("status") Integer status) {
@@ -95,7 +97,7 @@ public class ArticleApiController {
         return RespEntity.success();
     }
 
-
+    @PreAuthorize("hasAnyAuthority('info:article:remove')")
     @ApiOperation(value = "删除")
     @DeleteMapping("/{ids}")
     public RespEntity delete(@PathVariable("ids") Long[] ids) {

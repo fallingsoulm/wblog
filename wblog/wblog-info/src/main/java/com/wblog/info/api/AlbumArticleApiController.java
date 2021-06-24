@@ -7,6 +7,7 @@ import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +28,7 @@ public class AlbumArticleApiController {
 
     @Autowired
     private IAlbumArticleService albumArticleService;
+    private static final String authorPrefix = "info:album:article:";
 
     /**
      * <p>查询文章列表</p>
@@ -36,6 +38,7 @@ public class AlbumArticleApiController {
      * @author luyanan
      * @since 2020/9/17
      */
+//    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "查询文章列表")
     @GetMapping("find/article/{albumId}")
     public RespEntity<List<ArticleVo>> findArticle(@PathVariable("albumId") Long albumId) {

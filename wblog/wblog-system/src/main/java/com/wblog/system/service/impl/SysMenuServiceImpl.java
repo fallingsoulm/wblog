@@ -232,7 +232,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public void insert(SysMenuDo menu) {
         //菜单名唯一
-        if (sysMenuManage.count(SysMenuDo.builder().menuName(menu.getMenuName()).build()) > 0) {
+        if (sysMenuManage.count(SysMenuDo.builder().parentId(menu.getParentId()).menuName(menu.getMenuName()).build()) > 0) {
             throw new BusinessException(SystemMsgCode.MENU_NAME_UNIQUE, menu.getMenuName());
         }
         if (SystemEnums.MENU_YES_FRAME.equalsCode(menu.getIsFrame())
@@ -245,11 +245,14 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public void update(SysMenuDo menu) {
 
+        SysMenuDo oldMeun = this.sysMenuManage.findById(menu.getMenuId());
         //菜单名唯一
-        if (sysMenuManage.count(SysMenuDo.builder().menuName(menu.getMenuName()).build()) > 0) {
+        if (!menu.getMenuName().equals(oldMeun.getMenuName()) &&
+                sysMenuManage.count(SysMenuDo.builder().menuName(menu.getMenuName()).build()) > 0) {
             throw new BusinessException(SystemMsgCode.MENU_NAME_UNIQUE, menu.getMenuName());
         }
-        if (SystemEnums.MENU_YES_FRAME.equalsCode(menu.getIsFrame())
+        if (!menu.getIsFrame().equals(oldMeun.getIsFrame()) &&
+                SystemEnums.MENU_YES_FRAME.equalsCode(menu.getIsFrame())
                 && !StrUtil.startWithAny(menu.getPath(), Constants.HTTP, Constants.HTTPS)) {
             throw new BusinessException(SystemMsgCode.MENU_PATH_START_HTTP);
         }

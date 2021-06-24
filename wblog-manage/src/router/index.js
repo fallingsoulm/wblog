@@ -118,6 +118,23 @@ export const constantRoutes = [
         meta: { title: '修改生成配置' }
       }
     ]
+  },  {
+    path: '/album',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'bind/article/:id(\\d+)',
+        component: (resolve) => require(['@/views/info/album/bindArticle'], resolve),
+        name: 'bindArticle',
+        meta: { title: '专辑关联文章列表', icon: '' }
+      },   {
+        path: 'no/bind/article/:id(\\d+)',
+        component: (resolve) => require(['@/views/info/album/noBindArticle'], resolve),
+        name: 'noBindArticle',
+        meta: { title: '专辑未关联文章列表', icon: '' }
+      }
+    ]
   }
 ]
 

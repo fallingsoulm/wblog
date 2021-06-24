@@ -57,7 +57,7 @@ public class AlbumVo {
     /**
      * 专辑封面图片
      */
-    @NotBlank(message = "封面图片不能为空", groups = AddGroup.class)
+//    @NotBlank(message = "封面图片不能为空", groups = AddGroup.class)
     @ApiModelProperty(value = "专辑封面图片")
     private String image;
 

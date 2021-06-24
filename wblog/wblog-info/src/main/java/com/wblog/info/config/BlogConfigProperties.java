@@ -63,6 +63,12 @@ public class BlogConfigProperties {
     private String giteeAccessToken;
 
 
+    /**
+     * 资讯
+     *
+     * @author Administrator
+     * @since 2021/6/6
+     */
     private News news;
 
 

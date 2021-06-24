@@ -47,7 +47,7 @@ public class AlbumApiController {
     private static final String authorPrefix = "info:album:";
 
     @GlobalDataScope
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "query')")
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "分页查询")
     @PostMapping("list")
     public RespEntity<PageInfo<AlbumVo>> list(@RequestBody PageRequestParams<AlbumVo> pageRequestParams) {
@@ -75,7 +75,7 @@ public class AlbumApiController {
         return RespEntity.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "query')")
+    //    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "根据id查询")
     @GetMapping("/{id}")
     public RespEntity<AlbumVo> findById(@PathVariable("id") Long id) {
@@ -93,7 +93,7 @@ public class AlbumApiController {
     }
 
 
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "query')")
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "绑定的文章列表")
     @PostMapping("bind/article")
     public RespEntity bindArticle(@RequestBody PageRequestParams<AlbumArticleVo> pageRequestParams) {
@@ -109,7 +109,7 @@ public class AlbumApiController {
         return RespEntity.success();
     }
 
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "query')")
+    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @PostMapping("no/bind/article")
     @ApiOperation(value = "没有绑定的文章列表")
     public RespEntity noBindArticle(@RequestBody PageRequestParams<AlbumArticleVo> pageRequestParams) {

@@ -1,6 +1,8 @@
 package com.wblog.system.controller;
 
 
+import cn.hutool.core.collection.CollectionUtil;
+import com.wblog.common.enums.ConstantEnum;
 import com.wblog.system.entity.SysDictDataDo;
 import com.wblog.system.service.ISysDictDataService;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
@@ -13,6 +15,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 数据字典
@@ -38,6 +42,20 @@ public class SysDictDataController {
     @GetMapping(value = "/type/{dictType}")
     public RespEntity<List<SysDictDataDo>> dictType(@PathVariable("dictType") String dictType) {
         List<SysDictDataDo> sysDictDataDos = sysDictDataService.list(SysDictDataDo.builder().dictType(dictType).build());
+        // 再从枚举中获取结果,合并
+        List<ConstantEnum> constantEnums = ConstantEnum.getByType(dictType);
+        if (CollectionUtil.isNotEmpty(constantEnums)) {
+
+            Map<String, List<SysDictDataDo>> listMap = sysDictDataDos.stream().collect(Collectors.groupingBy(SysDictDataDo::getDictType));
+            for (ConstantEnum constantEnum : constantEnums) {
+                if (!listMap.containsKey(constantEnum.getValue().toString())) {
+                    SysDictDataDo sysDictData = new SysDictDataDo();
+                    sysDictData.setDictValue(constantEnum.getValue() + "");
+                    sysDictData.setDictLabel(constantEnum.getDesp());
+                    sysDictDataDos.add(sysDictData);
+                }
+            }
+        }
         return RespEntity.success(sysDictDataDos);
     }
 

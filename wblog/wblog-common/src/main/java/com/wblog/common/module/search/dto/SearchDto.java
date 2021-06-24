@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -17,8 +18,9 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchDto {
+public class SearchDto implements Serializable {
 
+    private static final long serialVersionUID = 1575983725845863597L;
     /**
      * <p>id</p>
      *

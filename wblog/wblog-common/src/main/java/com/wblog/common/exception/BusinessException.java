@@ -1,6 +1,7 @@
 package com.wblog.common.exception;
 
 
+import cn.hutool.core.util.StrUtil;
 import io.github.fallingsoulm.easy.archetype.framework.spring.message.MessageUtils;
 
 /**
@@ -21,29 +22,39 @@ public class BusinessException extends RuntimeException {
      *
      * @since 2021/2/9
      */
-    private final String code;
+    private final Integer code;
     private Object[] args;
+    private String msg;
 
-    public BusinessException(String code) {
+    public BusinessException(Integer code) {
         this.code = code;
     }
 
-    public BusinessException(String code, Object... args) {
+    public BusinessException(String msg) {
+        this.code = IMsgCode.INTERNAL_SERVER_ERROR;
+
+        this.msg = msg;
+    }
+
+    public BusinessException(Integer code, Object... args) {
         this.code = code;
         this.args = args;
     }
 
-    public BusinessException(String code, Throwable e) {
-        super(code, e);
+    public BusinessException(Integer code, Throwable e) {
+        super(code + "", e);
         this.code = code;
     }
 
     @Override
     public String getMessage() {
-        return this.code + ":" + MessageUtils.getMessage(code, args);
+        if (null != this.code && StrUtil.isBlank(this.msg)) {
+            return this.code + ":" + MessageUtils.getMessage(code + "", args);
+        }
+        return this.msg;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 

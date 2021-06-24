@@ -1,6 +1,7 @@
 package com.wblog.common.module.system.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.github.fallingsoulm.easy.archetype.data.file.annotation.FileHostProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -57,6 +58,7 @@ public class SysUserVo {
     /**
      * 用户头像
      */
+    @FileHostProperty
     private String avatar;
 
     /**

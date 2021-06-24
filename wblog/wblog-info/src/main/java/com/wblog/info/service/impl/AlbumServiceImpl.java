@@ -115,7 +115,11 @@ public class AlbumServiceImpl implements IAlbumService {
 
         if (StrUtil.isBlank(albumEntity.getImage())) {
             // 使用随机的图片
-            albumEntity.setImage(fileTemplate.randomImage());
+            String randomImage = fileTemplate.randomImage();
+            if (StrUtil.isBlank(randomImage)) {
+                throw new BusinessException("随机的图片获取异常");
+            }
+            albumEntity.setImage(randomImage);
 
         }
         albumEntity.setImage(fileTemplate.removeHost(albumEntity.getImage()));
