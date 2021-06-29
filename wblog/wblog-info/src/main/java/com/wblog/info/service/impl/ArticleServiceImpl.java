@@ -32,9 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.xml.transform.Source;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -405,7 +407,6 @@ public class ArticleServiceImpl implements IArticleService {
         // 用户名
         SysUserVo sysUserVo = sysUserApi.findById(articleVo.getUserId()).getData();
         if (null != sysUserVo) {
-
             articleVo.setUserName(sysUserVo.getUserName());
             articleVo.setUserVo(sysUserVo);
         }
@@ -452,10 +453,18 @@ public class ArticleServiceImpl implements IArticleService {
         if (!redisTemplate.hasKey(viewKey)) {
             return;
         }
-        redisTemplate.opsForHash().keys(viewKey).forEach(a -> {
-            Double view = redisTemplate.opsForZSet().score(viewKey, a.toString());
-            iArticleManage.update(ArticleEntity.builder().id(Long.valueOf(a.toString())).view(view.longValue()).build());
-        });
+
+        Set range = redisTemplate.opsForZSet().range(viewKey, 0, -1);
+        for (Object o : range) {
+            Double score = redisTemplate.opsForZSet().score(viewKey, o);
+            iArticleManage.update(ArticleEntity.builder().id(
+
+                    Long.valueOf(o.toString())).view(score.longValue()).build());
+        }
+//        redisTemplate.opsForZSet().keys(viewKey).forEach(a -> {
+//            Double view = redisTemplate.opsForZSet().score(viewKey, a.toString());
+//            iArticleManage.update(ArticleEntity.builder().id(Long.valueOf(a.toString())).view(view.longValue()).build());
+//        });
         log.info("文章访问量同步结束");
     }
 

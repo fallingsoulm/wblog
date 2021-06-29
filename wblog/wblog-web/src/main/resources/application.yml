@@ -79,6 +79,7 @@ spring:
       read-only: false
   cache:
     type: redis
+
 # 自定义配置
 easy:
   archetype:
@@ -141,6 +142,8 @@ easy:
     data:
       cache:
         enable: true
+      redis:
+        enable: true
     job:
       enable: true
 ## mybatis-plus配置
@@ -194,7 +197,6 @@ knife4j:
     enable: false
     username: test
     password: 12313
-
 
 feign:
   client:

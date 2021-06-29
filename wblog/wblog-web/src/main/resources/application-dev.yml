@@ -23,7 +23,11 @@ spring:
     host: redis
     password: luyanan
     port: 6379
-    database: 3
+    database: 5
+  cache:
+    redis:
+      ## 超时时间
+      time-to-live: 1s
 
 blog:
   business-domain: http://localhost:9003/

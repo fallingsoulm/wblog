@@ -1,6 +1,10 @@
-package com.wblog.info.task;
+package com.wblog.info.task.job;
 
 import com.wblog.common.enums.ConstantEnum;
+import com.wblog.info.task.*;
+import io.github.fallingsoulm.easy.archetype.job.annotation.Job;
+import io.github.fallingsoulm.easy.archetype.job.invoke.bean.IJobBeanHandler;
+import io.github.fallingsoulm.easy.archetype.job.invoke.bean.JobRespEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,8 +18,8 @@ import java.util.Map;
  * <p>工厂类</p>
  **/
 @Slf4j
-@Component
-public class NewsTaskFactory {
+@Job(name = "资讯定时任务", group = "info", cron = "0 0 0/3 * * ? ")
+public class NewsTaskJob implements IJobBeanHandler {
 
 
     @Autowired
@@ -76,5 +80,16 @@ public class NewsTaskFactory {
             }
         }
 
+    }
+
+    @Override
+    public JobRespEntity execute(String params) throws Exception {
+        syn(null);
+        return JobRespEntity.success();
+    }
+
+    @Override
+    public boolean async() {
+        return true;
     }
 }

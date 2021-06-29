@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 @RequestMapping(Version.VERSION_1 + "news")
 public class NewsApiController {
 
-    @Autowired
-    private BusinessThreadPoolTaskExecutor businessThreadPoolTaskExecutor;
 
     @Autowired
     private INewsService newsService;
@@ -43,7 +41,7 @@ public class NewsApiController {
      * @author luyanan
      * @since 2020/9/17
      */
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
+//    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "分页查询")
     @PostMapping("find/page")
     public RespEntity<PageInfo<NewsVo>> findByPage(@RequestBody PageRequestParams<NewsVo> pageRequestParams) {
@@ -80,25 +78,6 @@ public class NewsApiController {
     @DeleteMapping("/{ids}")
     public RespEntity remove(@PathVariable("ids") Long[] ids) {
         newsService.deleteByIds(Arrays.stream(ids).collect(Collectors.toList()));
-        return RespEntity.success();
-    }
-
-    /**
-     * <p>同步</p>
-     *
-     * @author luyanan
-     * @since 2020/9/21
-     */
-    @GetMapping("news/syn")
-    public RespEntity newsSyn() {
-
-        businessThreadPoolTaskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                newsService.syn(null);
-            }
-        });
-
         return RespEntity.success();
     }
 

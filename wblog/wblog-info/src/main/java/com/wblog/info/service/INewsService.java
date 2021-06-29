@@ -113,13 +113,5 @@ public interface INewsService {
     NewsVo lastUrl(Integer source);
 
 
-    /**
-     * <p>同步</p>
-     *
-     * @param source
-     * @author luyanan
-     * @since 2020/7/14
-     */
-    void syn(Integer source);
 
 }

@@ -7,9 +7,7 @@ import com.wblog.info.event.EventSourceVo;
 import com.wblog.info.event.NewsEvent;
 import com.wblog.info.manage.INewsManage;
 import com.wblog.info.service.INewsService;
-import com.wblog.info.task.NewsTaskFactory;
 import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
-import io.github.fallingsoulm.easy.archetype.data.mybatisplus.PageInfoContentHandler;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
@@ -41,8 +39,6 @@ public class NewsServiceImpl implements INewsService {
     private MybatisPlusUtils plusUtils;
 
 
-    @Autowired
-    private NewsTaskFactory newsTaskFactory;
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -121,9 +117,6 @@ public class NewsServiceImpl implements INewsService {
 
     }
 
-    @Override
-    public void syn(Integer source) {
-        newsTaskFactory.syn(source);
-    }
+
 
 }

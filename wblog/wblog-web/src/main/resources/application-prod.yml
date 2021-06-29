@@ -24,6 +24,9 @@ spring:
     password: luyanan
     port: 6379
     database: 4
+  cache:
+    redis:
+      time-to-live: 1h
 
 blog:
   business-domain: https://luyanan.com/
