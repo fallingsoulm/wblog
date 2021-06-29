@@ -5,7 +5,7 @@ let prefix = 'business/api/v1/album/'
 // 查询文章专辑列表
 export function listAlbum(query) {
   return request({
-    url: prefix + '/list',
+    url: prefix + 'list',
     method: 'post',
     data: query
   })
@@ -14,7 +14,7 @@ export function listAlbum(query) {
 // 查询文章专辑详细
 export function getAlbum(id) {
   return request({
-    url: prefix + '/' + id,
+    url: prefix +  id,
     method: 'get'
   })
 }
@@ -22,7 +22,7 @@ export function getAlbum(id) {
 // 新增文章专辑
 export function addAlbum(data) {
   return request({
-    url: prefix + '/',
+    url: prefix ,
     method: 'post',
     data: data
   })
@@ -31,7 +31,7 @@ export function addAlbum(data) {
 // 修改文章专辑
 export function updateAlbum(data) {
   return request({
-    url: prefix + '/',
+    url: prefix ,
     method: 'put',
     data: data
   })
@@ -40,7 +40,7 @@ export function updateAlbum(data) {
 // 删除文章专辑
 export function delAlbum(id) {
   return request({
-    url: prefix + '/' + id,
+    url: prefix + id,
     method: 'delete'
   })
 }
@@ -48,7 +48,7 @@ export function delAlbum(id) {
 // 导出文章专辑
 export function exportAlbum(query) {
   return request({
-    url: prefix + '/export',
+    url: prefix + 'export',
     method: 'get',
     params: query
   })
@@ -57,7 +57,7 @@ export function exportAlbum(query) {
 // 查询绑定的文章列表
 export function bindArticle(query) {
   return request({
-    url: prefix + '/bind/article',
+    url: prefix + 'bind/article',
     method: 'post',
     data: query
   })
@@ -66,7 +66,7 @@ export function bindArticle(query) {
 // 删除文章绑定
 export function delBindArticle(id) {
   return request({
-    url: prefix + '/delete/bind/' + id,
+    url: prefix + 'delete/bind/' + id,
     method: 'delete'
   })
 }
@@ -74,7 +74,7 @@ export function delBindArticle(id) {
 // 修改绑定排序
 export function updateBindSort(id, sort) {
   return request({
-    url: prefix + '/update/bind/sort/' + id + '/' + sort,
+    url: prefix + 'update/bind/sort/' + id + '/' + sort,
     method: 'get'
   })
 }
@@ -83,7 +83,7 @@ export function updateBindSort(id, sort) {
 // 查询未绑定的文章列表
 export function noBindArticle(query) {
   return request({
-    url: prefix + '/no/bind/article',
+    url: prefix + 'no/bind/article',
     method: 'post',
     data: query
   })
@@ -92,7 +92,7 @@ export function noBindArticle(query) {
 //  绑定
 export function doBind(id, articleIds) {
   return request({
-    url: prefix + '/bind/' + id,
+    url: prefix + 'bind/' + id,
     method: 'post',
     data: articleIds
   })

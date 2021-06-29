@@ -126,7 +126,7 @@ export default {
 		getArticleDataList() {
 			let param = {
 				pageSize: this.list,
-				pageIndex: this.page,
+				pageNum: this.page,
 				params: {
 					orderBy: this.current == 0 ? 100 : 101,
 					introduction: this.keyword,

@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
-let prefix = '/uaa/jobLog'
+let prefix = '/uaa/job/log'
 
 // 查询调度日志列表
 export function listJobLog(query) {
   return request({
     url: prefix + '/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 

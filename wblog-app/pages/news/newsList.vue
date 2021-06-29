@@ -93,7 +93,7 @@ export default {
 		getNewsDataList() {
 			let param = {
 				pageSize: this.list,
-				pageIndex: this.page,
+				pageNum: this.page,
 				params: {
 					title: this.keyword
 				}
