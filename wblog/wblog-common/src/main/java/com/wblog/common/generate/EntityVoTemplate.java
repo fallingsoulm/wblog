@@ -22,7 +22,12 @@ public class EntityVoTemplate extends EntityTemplate {
     }
 
     @Override
+    public String module() {
+        return "common.module." + super.module();
+    }
+
+    @Override
     public String pkg() {
-        return "api.vo";
+        return "vo";
     }
 }

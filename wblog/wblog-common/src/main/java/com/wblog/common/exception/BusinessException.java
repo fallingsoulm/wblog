@@ -4,6 +4,8 @@ package com.wblog.common.exception;
 import cn.hutool.core.util.StrUtil;
 import io.github.fallingsoulm.easy.archetype.framework.spring.message.MessageUtils;
 
+import java.util.function.Supplier;
+
 /**
  * <p>
  * 自定义异常

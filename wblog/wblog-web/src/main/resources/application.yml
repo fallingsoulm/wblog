@@ -79,6 +79,25 @@ spring:
       read-only: false
   cache:
     type: redis
+    ## 邮箱服务器
+  mail:
+    #smtp服务主机  qq邮箱则为smtp.qq.com
+    host: smtp.exmail.qq.com
+    #服务协议
+    protocol: smtp
+    # 编码集
+    default-encoding: UTF-8
+    # 账号
+    username: service@luyanan.com
+    password: vyT4eQacPB
+    test-connection: true
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
 
 # 自定义配置
 easy:

@@ -21,20 +21,26 @@
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.wblog.notice</groupId>
+            <artifactId>wblog-notice</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.wblog.front</groupId>
             <artifactId>wblog-front</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wblog.info</groupId>
             <artifactId>wblog-info</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>com.wblog.system</groupId>
             <artifactId>wblog-system</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.fallingsoulm.easy.archetype.job</groupId>

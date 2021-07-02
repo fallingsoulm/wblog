@@ -59,7 +59,14 @@ spring:
           filters:
             #            - RewritePath=/projects(?<segment>/?.*), /regexp$\{segment}
             - RewritePath=/business(?<segment>/?.*),$\{segment}
-
+        # 消息通知
+        - id: notice
+          uri: lb://wblog
+          predicates:
+            - Path=/notice/**
+          filters:
+            #            - RewritePath=/projects(?<segment>/?.*), /regexp$\{segment}
+            - RewritePath=/notice(?<segment>/?.*),$\{segment}
 ##  这里暂时代替 注册中心
 wblog:
   ribbon:

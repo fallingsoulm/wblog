@@ -84,8 +84,7 @@
 				"pagePath": "pages/news/newsList",
 				"iconPath": "./static/zixun.png",
 				"selectedIconPath": "./static/zixun_1.png",
-				"text": "资讯"
-
+				"text": "更多文章"
 			},
 			{
 				"pagePath": "pages/mine/mine",

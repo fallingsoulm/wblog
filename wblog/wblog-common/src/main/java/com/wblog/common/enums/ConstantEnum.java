@@ -96,8 +96,23 @@ public enum ConstantEnum {
     /*************************搜索******************************************/
     SEARCH_BELONG_ARTICLE(EnumType.SEARCH_BELONG, 100, "文章"),
     SEARCH_BELONG_NEWS(EnumType.SEARCH_BELONG, 101, "资讯"),
-    ;
 
+    /******************************通知消息***************************************/
+    NOTICE_MESSAGE_EMAIL(EnumType.NOTICE_MESSAGE, 0, "邮箱"),
+    NOTICE_MESSAGE_DINGTALK(EnumType.NOTICE_MESSAGE, 1, "钉钉"),
+    NOTICE_MESSAGE_WORK_WEIXIN(EnumType.NOTICE_MESSAGE, 2, "企业微信"),
+
+
+    /**********************消息通知状态********************************/
+    NOTICE_STATUS_ENABLE(EnumType.NOTICE_STATUS, 100, "上架"),
+    NOTICE_STATUS_STOP(EnumType.NOTICE_STATUS, 101, "下架"),
+
+    /*************************消息发送类型*********************************/
+
+    NOTICE_SEND_TYPE_NOW(EnumType.NOTICE_SEND_TYPE, 0, "立即发送"),
+    NOTICE_SEND_TYPE_TIMING(EnumType.NOTICE_SEND_TYPE, 1, "定时发送"),
+
+    ;
     /**
      * <p>枚举类型</p>
      *
@@ -371,8 +386,27 @@ public enum ConstantEnum {
          * @author luyanan
          * @since 2020/12/16
          */
-        SEARCH_BELONG("SEARCH_BELONG");
+        SEARCH_BELONG("SEARCH_BELONG"),
 
+        /**
+         * 通知消息
+         *
+         * @author luyanan
+         * @since 2021/6/29
+         */
+        NOTICE_MESSAGE("NOTICE_MESSAGE"),
+
+
+        NOTICE_STATUS("NOTICE_STATUS"),
+
+
+        /**
+         * 消息发送类型
+         *
+         * @author luyanan
+         * @since 2021/6/30
+         */
+        NOTICE_SEND_TYPE("NOTICE_SEND_TYPE");
         /**
          * <p>名称</p>
          *

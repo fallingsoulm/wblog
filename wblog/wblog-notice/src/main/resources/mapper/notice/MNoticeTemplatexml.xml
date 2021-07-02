@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wblog.notice.mapper.MNoticeTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.wblog.notice.entity.MNoticeTemplateDo">
+        <id column="id" property="id"/>
+        <result column="token" property="token"/>
+        <result column="name" property="name"/>
+        <result column="notice_type" property="noticeType"/>
+        <result column="invoke_target" property="invokeTarget"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_by" property="createBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="send_type" property="sendType"/>
+        <result column="send_time" property="sendTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,
+        token,
+        name,
+        notice_type,
+        invoke_target,
+        create_time,
+        create_by,
+        update_time,
+        update_by,
+        send_type,
+        send_time
+    </sql>
+
+</mapper>
