@@ -278,6 +278,7 @@
         <module>wblog-web</module>
         <module>wblog-gateway</module>
         <module>wblog-notice</module>
+        <module>wblog-social</module>
 
     </modules>
 </project>

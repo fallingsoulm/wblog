@@ -112,6 +112,9 @@ public enum ConstantEnum {
     NOTICE_SEND_TYPE_NOW(EnumType.NOTICE_SEND_TYPE, 0, "立即发送"),
     NOTICE_SEND_TYPE_TIMING(EnumType.NOTICE_SEND_TYPE, 1, "定时发送"),
 
+
+    /***********************第三方平台********************/
+    SOCIAL_PLATFORM_WORK_WECHAT(EnumType.SOCIAL_PLATFORM, 1, "企业微信"),
     ;
     /**
      * <p>枚举类型</p>
@@ -406,7 +409,16 @@ public enum ConstantEnum {
          * @author luyanan
          * @since 2021/6/30
          */
-        NOTICE_SEND_TYPE("NOTICE_SEND_TYPE");
+        NOTICE_SEND_TYPE("NOTICE_SEND_TYPE"),
+
+        /**
+         * 社区平台
+         *
+         * @author luyanan
+         * @since 2021/7/6
+         */
+        SOCIAL_PLATFORM("SOCIAL_PLATFORM"),
+        ;
         /**
          * <p>名称</p>
          *

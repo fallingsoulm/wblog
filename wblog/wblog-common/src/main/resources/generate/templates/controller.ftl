@@ -27,7 +27,7 @@ public class ${className} {
     *
     * @since ${since}
     */
-   private static final String PERMISS_PREFIX = "${requestMapping}";
+   private static final String PERMISS_PREFIX = "${permissPrefix}";
 
     @Autowired
     private ${serviceConfig.className} ${serviceConfig.className?uncap_first};
@@ -40,7 +40,7 @@ public class ${className} {
     * @since ${since}
     */
     @ApiOperation(value = "分页查询", response = ${entityVoConfig.className}.class)
-    @PreAuthorize("@ss.hasPermi('" + PERMISS_PREFIX + "list')")
+    @PreAuthorize("hasAnyAuthority('" + PERMISS_PREFIX + "list')")
     @PostMapping("/list")
     public RespEntity<PageInfo<${entityVoConfig.className}>> listByPage(@RequestBody PageRequestParams<${entityVoConfig.className}> pageRequestParams) {
         PageInfo<${entityVoConfig.className}> pageInfo = ${serviceConfig.className?uncap_first}.listByPage(pageRequestParams);
@@ -55,7 +55,7 @@ public class ${className} {
     * @since ${since}
     */
     @ApiOperation(value = "根据id查询详情", response = ${entityVoConfig.className}.class)
-    @PreAuthorize("@ss.hasPermi('" + PERMISS_PREFIX + "query')")
+    @PreAuthorize("hasAnyAuthority('" + PERMISS_PREFIX + "query')")
     @GetMapping(value = "/{id}")
     public RespEntity<${entityVoConfig.className}> findById(@PathVariable("id") Long id) {
         ${entityVoConfig.className} ${entityVoConfig.className?uncap_first} = ${serviceConfig.className?uncap_first}.findById(id);
@@ -70,7 +70,7 @@ public class ${className} {
     * @since ${since}
     */
     @ApiOperation(value = "新增")
-    @PreAuthorize("@ss.hasPermi('" + PERMISS_PREFIX + "add')")
+    @PreAuthorize("hasAnyAuthority('" + PERMISS_PREFIX + "add')")
     @PostMapping()
     public RespEntity add(@Validated @RequestBody ${entityVoConfig.className} ${entityVoConfig.className?uncap_first}) {
         ${serviceConfig.className?uncap_first}.insert(${entityVoConfig.className?uncap_first});
@@ -85,7 +85,7 @@ public class ${className} {
     * @since ${since}
     */
     @ApiOperation(value = "修改")
-    @PreAuthorize("@ss.hasPermi('" + PERMISS_PREFIX + "edit')")
+    @PreAuthorize("hasAnyAuthority('" + PERMISS_PREFIX + "edit')")
     @PutMapping
     public RespEntity edit(@Validated @RequestBody ${entityVoConfig.className} ${entityVoConfig.className?uncap_first}) {
         ${serviceConfig.className?uncap_first}.update(${entityVoConfig.className?uncap_first});
@@ -100,7 +100,7 @@ public class ${className} {
     * @since ${since}
     */
     @ApiOperation(value = "删除")
-    @PreAuthorize("@ss.hasPermi('" + PERMISS_PREFIX + "remove')")
+    @PreAuthorize("hasAnyAuthority('" + PERMISS_PREFIX + "remove')")
     @DeleteMapping("/{ids}")
     public RespEntity remove(@PathVariable("ids") ${config.idFieldType}[] ids) {
         ${serviceConfig.className?uncap_first}.deleteByIds(Arrays.asList(ids));

@@ -12,6 +12,11 @@
     <artifactId>wblog-web</artifactId>
 
     <dependencies>
+        <dependency>
+            <groupId>com.wblog.social</groupId>
+            <artifactId>wblog-social</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
