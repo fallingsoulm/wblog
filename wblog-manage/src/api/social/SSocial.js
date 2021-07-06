@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const  prefix = "wblog/s/social"
+const  prefix = "social/s/social"
 
 
 // 查询列表

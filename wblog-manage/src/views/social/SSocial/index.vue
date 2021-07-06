@@ -48,21 +48,26 @@
 
     <el-table v-loading="loading" :data="SSocialList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center"/>
-      <el-table-column label="id" align="center" prop="id"/>
       <el-table-column label="平台" align="center" prop="platform"/>
       <el-table-column label="客户端id" align="center" prop="clientId"/>
       <el-table-column label="客户端密钥" align="center" prop="clientSecret"/>
-      <el-table-column label="应用id(企业微信使用)" align="center" prop="agentId"/>
+      <el-table-column label="应用id" align="center" prop="agentId"/>
       <el-table-column label="回调地址" align="center" prop="redirectUri"/>
-      <el-table-column label="创建时间" align="center" prop="createTime"/>
-      <el-table-column label="创建人" align="center" prop="createBy"/>
-      <el-table-column label="修改人" align="center" prop="updateBy"/>
-      <el-table-column label="修改时间" align="center" prop="updateTime"/>
-      <el-table-column label="用户id" align="center" prop="userId"/>
-      <el-table-column label="状态 在线/不在线" align="center" prop="status"/>
+      <el-table-column label="accessToken" align="center" prop="accessToken"/>
+      <el-table-column label="失效时间" align="center" prop="expire"/>
+      <el-table-column label="状态" align="center" prop="status"/>
       <el-table-column label="备注" align="center" prop="remark"/>
+      <el-table-column label="创建时间" align="center" prop="createTime"/>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
+            @click="handleUpdate(scope.row)"
+            v-hasPermi="['s:social:edit']"
+          >登录
+          </el-button>
           <el-button
             size="mini"
             type="text"
@@ -110,24 +115,7 @@
         <el-form-item label="回调地址" prop="redirectUri">
           <el-input v-model="form.redirectUri" placeholder="请输入回调地址"/>
         </el-form-item>
-        <el-form-item label="创建时间" prop="createTime">
-          <el-input v-model="form.createTime" placeholder="请输入创建时间"/>
-        </el-form-item>
-        <el-form-item label="创建人" prop="createBy">
-          <el-input v-model="form.createBy" placeholder="请输入创建人"/>
-        </el-form-item>
-        <el-form-item label="修改人" prop="updateBy">
-          <el-input v-model="form.updateBy" placeholder="请输入修改人"/>
-        </el-form-item>
-        <el-form-item label="修改时间" prop="updateTime">
-          <el-input v-model="form.updateTime" placeholder="请输入修改时间"/>
-        </el-form-item>
-        <el-form-item label="用户id" prop="userId">
-          <el-input v-model="form.userId" placeholder="请输入用户id"/>
-        </el-form-item>
-        <el-form-item label="状态 在线/不在线" prop="status">
-          <el-input v-model="form.status" placeholder="请输入状态 在线/不在线"/>
-        </el-form-item>
+
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" placeholder="请输入备注"/>
         </el-form-item>
@@ -142,7 +130,7 @@
 </template>
 
 <script>
-  import { list, get, del, add, update } from '@/views/social/SSocial'
+  import { list, get, del, add, update } from '@/api/social/SSocial'
 
   export default {
     name: 'SSocial',
@@ -195,24 +183,7 @@
           redirectUri: [
             { required: true, message: '回调地址不能为空', trigger: 'blur' }
           ],
-          createTime: [
-            { required: true, message: '创建时间不能为空', trigger: 'blur' }
-          ],
-          createBy: [
-            { required: true, message: '创建人不能为空', trigger: 'blur' }
-          ],
-          updateBy: [
-            { required: true, message: '修改人不能为空', trigger: 'blur' }
-          ],
-          updateTime: [
-            { required: true, message: '修改时间不能为空', trigger: 'blur' }
-          ],
-          userId: [
-            { required: true, message: '用户id不能为空', trigger: 'blur' }
-          ],
-          status: [
-            { required: true, message: '状态 在线/不在线不能为空', trigger: 'blur' }
-          ],
+
           remark: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
           ]
@@ -230,7 +201,7 @@
       /** 查询参数列表 */
       getList() {
         this.loading = true
-        list(this.addDateRange(this.queryParams, this.dateRange)).then(response => {
+        list(this.queryParams, this.dateRange).then(response => {
             this.SSocialList = response.data.content
             this.total = response.data.totalElements
             this.loading = false
