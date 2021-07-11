@@ -20,6 +20,12 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.wblog.social</groupId>
+            <artifactId>wblog-social</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
         <dependency>
             <groupId>me.zhyd.oauth</groupId>
             <artifactId>JustAuth</artifactId>

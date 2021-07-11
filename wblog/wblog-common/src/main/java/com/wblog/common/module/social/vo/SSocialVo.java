@@ -59,11 +59,6 @@ public class SSocialVo implements Serializable {
     @ApiModelProperty(value = "应用id(企业微信使用)")
     private String agentId;
 
-    /**
-     * 回调地址
-     */
-    @ApiModelProperty(value = "回调地址")
-    private String redirectUri;
 
     /**
      * 创建时间

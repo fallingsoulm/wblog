@@ -58,3 +58,19 @@ export function changeStatus(id, status) {
     data: data
   })
 }
+
+// 获取企业微信邀请二维码
+export function getJoinQrcode() {
+  return request({
+    url: prefix + '/workwechat/join/qrcode',
+    method: 'get'
+  })
+}
+
+// 获取企业微信部门用户
+export function getWorkwechatDepartmentList() {
+  return request({
+    url: prefix + '/workwechat/department',
+    method: 'get'
+  })
+}

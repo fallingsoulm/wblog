@@ -250,3 +250,13 @@ management:
   endpoint:
     health:
       show-details: always
+## 第三方配置
+social:
+  platform:
+    - uuid: WORK_WECHAT_IT
+      client-id: ww444d3e1b37e7331a
+      client-secret: OIRXOWI9bvtzXJ9KJJhgjV6NOEHClXpTI4bYhGl551Q
+      agentId: 1000003
+    - uuid: WORK_ADDRESS_BOOK
+      client-id: ww444d3e1b37e7331a
+      client-secret: T8iuBrkGDSNS5Ck5olmeabpMcSbZdGYKxsobAhD9eOM

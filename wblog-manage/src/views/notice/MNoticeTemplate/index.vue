@@ -53,22 +53,22 @@
       <el-table-column label="token" align="center" prop="token"/>
       <el-table-column label="消息名称" align="center" prop="name"/>
       <el-table-column label="通知的消息的类型" align="center" prop="noticeType" :formatter="noticeTypeFormatter"/>
-
-      <el-table-column label="创建时间" align="center" prop="createTime"/>
-
+      <el-table-column label="调用对象" align="center" prop="invokeTarget" :show-overflow-tooltip="true"/>
+      <el-table-column label="发送时间" align="center" prop="sendTime"/>
       <el-table-column label="发送类型" align="center" prop="sendType" :formatter="sendTypeFormatter"/>
+      <el-table-column label="创建时间" align="center" prop="createTime"/>
       <el-table-column label="状态" align="center" prop="status">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
+            :active-value="100"
+            :inactive-value="101"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="发送时间" align="center" prop="sendTime"/>
-      <el-table-column label="调用对象" align="center" prop="invokeTarget" :show-overflow-tooltip="true"/>
+
+
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -108,20 +108,42 @@
           <el-input v-model="form.name" placeholder="请输入消息名称"/>
         </el-form-item>
         <el-form-item label="通知的消息的类型" prop="noticeType">
-          <el-select v-model="form.noticeType" placeholder="请选择">
+          <el-select v-model="form.noticeType" placeholder="请选择" @change="noticeTypeChange">
             <el-option
+
               v-for="dict in noticeTypeOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             ></el-option>
           </el-select>
+
           <!--          <el-input v-model="form.noticeType" placeholder="请输入通知的消息的类型"/>-->
         </el-form-item>
-        <el-form-item label="调用对象" prop="invokeTarget">
+
+        <el-form-item v-if="form.noticeType == 2" label="扫描二维码加入企业微信">
+          <el-image :src="workWechatJoinQrcode">
+            <div slot="placeholder" class="image-slot">
+              加载中<span class="dot">...</span>
+            </div>
+          </el-image>
+        </el-form-item>
+
+        <el-form-item label="调用对象" prop="invokeTarget" v-if="form.noticeType != 2">
           <el-input v-model="form.invokeTarget" placeholder="请输入调用对象"/>
         </el-form-item>
 
+        <el-form-item label="选择发送对象" prop="invokeTarget" v-if="form.noticeType == 2">
+          <!--          <el-input v-model="form.sendType" placeholder="请输入发送类型"/>-->
+          <el-select v-model="form.invokeTarget" placeholder="请选择">
+            <el-option
+              v-for="list in workwechatDepartmentLists"
+              :key="list.userid"
+              :label="list.name"
+              :value="list.userid"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item label="发送类型" prop="sendType">
           <!--          <el-input v-model="form.sendType" placeholder="请输入发送类型"/>-->
           <el-select v-model="form.sendType" placeholder="请选择">
@@ -151,214 +173,236 @@
 </template>
 
 <script>
-import { list, get, del, add, update, changeStatus } from '@/api/notice/MNoticeTemplate'
-import { changeUserStatus } from '@/api/system/user'
+  import { list, get, del, add, update, changeStatus, getJoinQrcode } from '@/api/notice/MNoticeTemplate'
+  import { changeUserStatus } from '@/api/system/user'
+  import { getWorkwechatDepartmentList } from '../../../api/notice/MNoticeTemplate'
 
-export default {
-  name: 'MNoticeTemplate',
-  data() {
-    return {
-      // 遮罩层
-      loading: true,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: true,
-      // 非多个禁用
-      multiple: true,
-      // 显示搜索条件
-      showSearch: true,
-      // 总条数
-      total: 0,
-      // 参数表格数据
-      MNoticeTemplateList: [],
-      // 弹出层标题
-      title: '',
-      // 是否显示弹出层
-      open: false,
-      // 类型数据字典
-      typeOptions: [],
-      // 日期范围
-      dateRange: [],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10
-      },
-      // 表单参数
-      form: {},
-      // 表单校验
-      rules: {
+  export default {
+    name: 'MNoticeTemplate',
+    data() {
+      return {
+        // 遮罩层
+        loading: true,
+        // 选中数组
+        ids: [],
+        // 非单个禁用
+        single: true,
+        // 非多个禁用
+        multiple: true,
+        // 显示搜索条件
+        showSearch: true,
+        // 总条数
+        total: 0,
+        // 参数表格数据
+        MNoticeTemplateList: [],
+        // 弹出层标题
+        title: '',
+        // 是否显示弹出层
+        open: false,
+        // 类型数据字典
+        typeOptions: [],
+        // 日期范围
+        dateRange: [],
+        // 查询参数
+        queryParams: {
+          pageNum: 1,
+          pageSize: 10
+        },
+        // 表单参数
+        form: {},
+        // 表单校验
+        rules: {
 
-        name: [
-          { required: true, message: '消息名称不能为空', trigger: 'blur' }
-        ],
-        noticeType: [
-          { required: true, message: '通知的消息的类型不能为空', trigger: 'blur' }
-        ],
-        invokeTarget: [
-          { required: true, message: '调用对象不能为空', trigger: 'blur' }
-        ],
+          name: [
+            { required: true, message: '消息名称不能为空', trigger: 'blur' }
+          ],
+          noticeType: [
+            { required: true, message: '通知的消息的类型不能为空', trigger: 'blur' }
+          ],
+          invokeTarget: [
+            { required: true, message: '调用对象不能为空', trigger: 'blur' }
+          ],
 
-        sendType: [
-          { required: true, message: '发送类型', trigger: 'blur' }
-        ],
-        sendTime: [
-          { required: true, message: '发送时间不能为空', trigger: 'blur' }
-        ]
+          sendType: [
+            { required: true, message: '发送类型', trigger: 'blur' }
+          ],
+          sendTime: [
+            { required: true, message: '发送时间不能为空', trigger: 'blur' }
+          ]
 
-      },
-      // 状态
-      statusOptions: [],
-      // 消息通知类型
-      noticeTypeOptions: [],
-      // 发送类型
-      sendTypeOptions: []
-    }
-  },
-  created() {
-    this.getList()
-    this.getDicts('NOTICE_STATUS').then(response => {
-      this.statusOptions = response.data
-    })
-    this.getDicts('NOTICE_MESSAGE').then(response => {
-      this.noticeTypeOptions = response.data
-    })
-    this.getDicts('NOTICE_SEND_TYPE').then(response => {
-      this.sendTypeOptions = response.data
-    })
-  },
-  methods: {
-    /** 查询参数列表 */
-    getList() {
-      this.loading = true
-      list(this.queryParams).then(response => {
-          this.MNoticeTemplateList = response.data.content
-          this.total = response.data.totalElements
-          this.loading = false
-        }
-      )
-    },
-    // 系统内置字典翻译
-    // typeFormat(row, column) {
-    //     return this.selectDictLabel(this.typeOptions, row.configType);
-    // },
-    // 参数系统内置字典翻译
-    noticeTypeFormatter(row, column) {
-      return this.selectDictLabel(this.noticeTypeOptions, row.noticeType)
-    },
-    sendTypeFormatter(row, column) {
-      return this.selectDictLabel(this.sendTypeOptions, row.sendType)
-    },
-
-    // 状态修改
-    handleStatusChange(row) {
-
-      let text = row.status === 0 ? '启用' : '停用'
-
-
-      this.$confirm('确认要"' + text + '""' + row.id + '"吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return changeStatus(row.id,row.status)
-      }).then(() => {
-        this.msgSuccess(text + '成功')
-      }).catch(function() {
-        row.status = row.status === '100' ? '100' : '101'
-      })
-    },
-    // 取消按钮
-    cancel() {
-      this.open = false
-      this.reset()
-    },
-    // 表单重置
-    reset() {
-      this.form = {
-        id: undefined,
-        token: undefined,
-        name: undefined,
-        noticeType: undefined,
-        invokeTarget: undefined,
-        createTime: undefined,
-        createBy: undefined,
-        updateTime: undefined,
-        updateBy: undefined,
-        sendType: undefined,
-        sendTime: undefined
-
+        },
+        // 状态
+        statusOptions: [],
+        // 消息通知类型
+        noticeTypeOptions: [],
+        // 发送类型
+        sendTypeOptions: [],
+        // 企业微信邀请加入图片地址
+        workWechatJoinQrcode: '',
+        // 企业微信用户
+        workwechatDepartmentLists: []
       }
-      this.resetForm('form')
     },
-    /** 搜索按钮操作 */
-    handleQuery() {
-      this.queryParams.pageNum = 1
+    created() {
       this.getList()
-    },
-    /** 重置按钮操作 */
-    resetQuery() {
-      this.dateRange = []
-      this.resetForm('queryForm')
-      this.handleQuery()
-    },
-    /** 新增按钮操作 */
-    handleAdd() {
-      this.reset()
-      this.open = true
-      this.title = '添加参数'
-    },
-    // 多选框选中数据
-    handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.id)
-      this.single = selection.length != 1
-      this.multiple = !selection.length
-    },
-    /** 修改按钮操作 */
-    handleUpdate(row) {
-      this.reset()
-      const id = row.id || this.ids
-      get(id).then(response => {
-        this.form = response.data
-        this.open = true
-        this.title = '修改参数'
+      this.getDicts('NOTICE_STATUS').then(response => {
+        this.statusOptions = response.data
+      })
+      this.getDicts('NOTICE_MESSAGE').then(response => {
+        this.noticeTypeOptions = response.data
+      })
+      this.getDicts('NOTICE_SEND_TYPE').then(response => {
+        this.sendTypeOptions = response.data
       })
     },
-    /** 提交按钮 */
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
-        if (valid) {
-          if (this.form.id != undefined) {
-            update(this.form).then(response => {
-              this.msgSuccess('修改成功')
-              this.open = false
-              this.getList()
-            })
-          } else {
-            add(this.form).then(response => {
-              this.msgSuccess('新增成功')
-              this.open = false
-              this.getList()
-            })
+    methods: {
+      /** 查询参数列表 */
+      getList() {
+        this.loading = true
+        list(this.queryParams).then(response => {
+            this.MNoticeTemplateList = response.data.content
+            this.total = response.data.totalElements
+            this.loading = false
           }
+        )
+      },
+      // 系统内置字典翻译
+      // typeFormat(row, column) {
+      //     return this.selectDictLabel(this.typeOptions, row.configType);
+      // },
+      // 参数系统内置字典翻译
+      noticeTypeFormatter(row, column) {
+        return this.selectDictLabel(this.noticeTypeOptions, row.noticeType)
+      },
+      sendTypeFormatter(row, column) {
+        return this.selectDictLabel(this.sendTypeOptions, row.sendType)
+      },
+
+      // 状态修改
+      handleStatusChange(row) {
+
+        let text = row.status === 100 ? '启用' : '停用'
+
+        this.$confirm('确认要"' + text + '""' + row.id + '"吗?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function() {
+          return changeStatus(row.id, row.status)
+        }).then(() => {
+          this.msgSuccess(text + '成功')
+        }).catch(function() {
+          row.status = row.status === '100' ? '100' : '101'
+        })
+      },
+      // 取消按钮
+      cancel() {
+        this.open = false
+        this.reset()
+      },
+      // 表单重置
+      reset() {
+        this.form = {
+          id: undefined,
+          token: undefined,
+          name: undefined,
+          noticeType: undefined,
+          invokeTarget: undefined,
+          createTime: undefined,
+          createBy: undefined,
+          updateTime: undefined,
+          updateBy: undefined,
+          sendType: undefined,
+          sendTime: undefined
+
         }
-      })
-    },
-    /** 删除按钮操作 */
-    handleDelete(row) {
-      const ids = row.id || this.ids
-      this.$confirm('是否确认删除参数编号为"' + ids + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return del(ids)
-      }).then(() => {
+        this.resetForm('form')
+      },
+      /** 搜索按钮操作 */
+      handleQuery() {
+        this.queryParams.pageNum = 1
         this.getList()
-        this.msgSuccess('删除成功')
-      })
+      },
+      /** 重置按钮操作 */
+      resetQuery() {
+        this.dateRange = []
+        this.resetForm('queryForm')
+        this.handleQuery()
+      },
+      /** 新增按钮操作 */
+      handleAdd() {
+        this.reset()
+        this.open = true
+        this.title = '添加参数'
+      },
+      // 多选框选中数据
+      handleSelectionChange(selection) {
+        this.ids = selection.map(item => item.id)
+        this.single = selection.length != 1
+        this.multiple = !selection.length
+      },
+      /** 修改按钮操作 */
+      handleUpdate(row) {
+        this.reset()
+        const id = row.id || this.ids
+        get(id).then(response => {
+          this.form = response.data
+          this.open = true
+          this.title = '修改参数'
+        })
+      },
+      /** 提交按钮 */
+      submitForm: function() {
+        this.$refs['form'].validate(valid => {
+          if (valid) {
+            if (this.form.id != undefined) {
+              update(this.form).then(response => {
+                this.msgSuccess('修改成功')
+                this.open = false
+                this.getList()
+              })
+            } else {
+              add(this.form).then(response => {
+                this.msgSuccess('新增成功')
+                this.open = false
+                this.getList()
+              })
+            }
+          }
+        })
+      },
+      /** 删除按钮操作 */
+      handleDelete(row) {
+        const ids = row.id || this.ids
+        this.$confirm('是否确认删除参数编号为"' + ids + '"的数据项?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function() {
+          return del(ids)
+        }).then(() => {
+          this.getList()
+          this.msgSuccess('删除成功')
+        })
+      },
+      noticeTypeChange(value) {
+        // 获取微信企业的邀请二维码
+        if (value == 2) {
+          // 获取邀请二维码
+          getJoinQrcode().then(response => {
+            this.workWechatJoinQrcode = response.data
+          })
+          // 获取企业微信部门用户
+          this.workwechatDepartmentList()
+        }
+      },
+      workwechatDepartmentList() {
+        // 获取企业微信部门用户
+        getWorkwechatDepartmentList().then(response => {
+
+          this.workwechatDepartmentLists = response.data
+        })
+      }
     }
   }
-}
 </script>

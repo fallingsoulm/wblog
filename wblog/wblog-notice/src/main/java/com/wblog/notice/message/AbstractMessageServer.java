@@ -9,7 +9,13 @@ import java.util.*;
  * @since 2021/7/2
  **/
 public abstract class AbstractMessageServer implements IMessageServer {
+    protected String getContent(MessageVo messageVo) {
 
+        StringBuffer sb = new StringBuffer();
+        sb.append("标题:").append(messageVo.getTitle()).append("\n")
+                .append("内容:").append(messageVo.getContent());
+        return sb.toString();
+    }
 
     @Override
     public void sendMessage(List<MessageVo> messageVos) {

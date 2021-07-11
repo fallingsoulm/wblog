@@ -65,7 +65,7 @@ public class MNoticeTemplateServiceImpl implements IMNoticeTemplateService {
         MNoticeTemplateDo mNoticeTemplateDo = ConverUtils.conver(mNoticeTemplateVo, MNoticeTemplateDo.class);
         mNoticeTemplateDo.setId(simpleSnowflake.nextId());
         mNoticeTemplateDo.setToken(IdUtil.simpleUUID());
-        mNoticeTemplateDo.setStatus(ConstantEnum.NOTICE_STATUS_STOP.getValue().toString());
+        mNoticeTemplateDo.setStatus(ConstantEnum.NOTICE_STATUS_STOP.getValue());
         mNoticeTemplateDo.setUserId(loginUserService.getUserId());
         iMNoticeTemplateManage.insert(mNoticeTemplateDo);
     }

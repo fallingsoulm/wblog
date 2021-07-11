@@ -15,7 +15,11 @@
 
 
     <dependencies>
-
+        <dependency>
+            <groupId>me.zhyd.oauth</groupId>
+            <artifactId>JustAuth</artifactId>
+            <version>1.16.1</version>
+        </dependency>
         <dependency>
             <groupId>com.wblog.common</groupId>
             <artifactId>wblog-common</artifactId>

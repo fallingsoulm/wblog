@@ -103,7 +103,7 @@ public class MNoticeTemplateVo implements Serializable {
      * @since 2021/6/30
      */
     @ApiModelProperty(value = "状态")
-    private String status;
+    private Integer status;
 
 
     /**

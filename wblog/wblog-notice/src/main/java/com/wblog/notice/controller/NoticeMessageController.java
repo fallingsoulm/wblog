@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author luyanan
  * @since 2021/6/30
  **/
-@Api(value = "消息发送")
+@Api(description = "消息发送")
 @RestController
 @RequestMapping("notice")
 public class NoticeMessageController {
@@ -39,11 +39,9 @@ public class NoticeMessageController {
     @ApiOperation(value = "发送消息")
     @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST}, value = "send/message")
     public RespEntity sendMessage(@RequestParam("token") String token,
-                                  @RequestParam("title") String title,
+                                  @RequestParam(value = "title", required = false) String title,
                                   @RequestParam("content") String content,
                                   @RequestParam(value = "template", defaultValue = "html") String template) {
-
-
         imNoticeMessageService.sendMessage(token, title, content, template);
         return RespEntity.success();
     }

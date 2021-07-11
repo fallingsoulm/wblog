@@ -99,8 +99,9 @@ public enum ConstantEnum {
 
     /******************************通知消息***************************************/
     NOTICE_MESSAGE_EMAIL(EnumType.NOTICE_MESSAGE, 0, "邮箱"),
-    NOTICE_MESSAGE_DINGTALK(EnumType.NOTICE_MESSAGE, 1, "钉钉"),
+    NOTICE_MESSAGE_DINGTALK(EnumType.NOTICE_MESSAGE, 1, "钉钉机器人"),
     NOTICE_MESSAGE_WORK_WEIXIN(EnumType.NOTICE_MESSAGE, 2, "企业微信"),
+    NOTICE_MESSAGE_WORK_WEIXIN_ROBOT(EnumType.NOTICE_MESSAGE, 3, "企业微信机器人"),
 
 
     /**********************消息通知状态********************************/
@@ -114,7 +115,8 @@ public enum ConstantEnum {
 
 
     /***********************第三方平台********************/
-    SOCIAL_PLATFORM_WORK_WECHAT(EnumType.SOCIAL_PLATFORM, 1, "企业微信"),
+    SOCIAL_PLATFORM_WORK_WECHAT_IT(EnumType.SOCIAL_PLATFORM, "WORK_WECHAT_IT", "企业微信_IT栈"),
+    SOCIAL_PLATFORM_WORK_WECHAT_ADDRESS_BOOK(EnumType.SOCIAL_PLATFORM, "WORK_ADDRESS_BOOK", "企业微信_IT栈"),
     ;
     /**
      * <p>枚举类型</p>
@@ -130,7 +132,7 @@ public enum ConstantEnum {
      * @author luyanan
      * @since 2020/6/8
      */
-    private Integer value;
+    private String value;
 
     /**
      * <p>介绍</p>
@@ -214,13 +216,38 @@ public enum ConstantEnum {
 
     ConstantEnum(EnumType enumType, Integer type, String desp) {
         this.enumType = enumType;
-        this.value = type;
+        this.value = type.toString();
         this.desp = desp;
         this.defaults = false;
         this.listClass = ListClass.primary;
     }
 
     ConstantEnum(Integer value, String desp) {
+        this.enumType = EnumType.DEFAULT;
+        this.value = value.toString();
+        this.desp = desp;
+        this.defaults = false;
+        this.listClass = ListClass.primary;
+    }
+
+
+    ConstantEnum(EnumType enumType, Integer value, String desp, boolean defaults, ListClass listClass) {
+        this.enumType = enumType;
+        this.value = value.toString();
+        this.desp = desp;
+        this.defaults = defaults;
+        this.listClass = listClass;
+    }
+
+    ConstantEnum(EnumType enumType, String type, String desp) {
+        this.enumType = enumType;
+        this.value = type;
+        this.desp = desp;
+        this.defaults = false;
+        this.listClass = ListClass.primary;
+    }
+
+    ConstantEnum(String value, String desp) {
         this.enumType = EnumType.DEFAULT;
         this.value = value;
         this.desp = desp;
@@ -229,7 +256,7 @@ public enum ConstantEnum {
     }
 
 
-    ConstantEnum(EnumType enumType, Integer value, String desp, boolean defaults, ListClass listClass) {
+    ConstantEnum(EnumType enumType, String value, String desp, boolean defaults, ListClass listClass) {
         this.enumType = enumType;
         this.value = value;
         this.desp = desp;
@@ -242,6 +269,10 @@ public enum ConstantEnum {
     }
 
     public Integer getValue() {
+        return Integer.valueOf(value);
+    }
+
+    public String getValueStr() {
         return value;
     }
 
@@ -258,6 +289,13 @@ public enum ConstantEnum {
     }
 
     ConstantEnum(EnumType enumType, Integer value, String desp, boolean defaults) {
+        this.enumType = enumType;
+        this.value = value.toString();
+        this.desp = desp;
+        this.defaults = defaults;
+    }
+
+    ConstantEnum(EnumType enumType, String value, String desp, boolean defaults) {
         this.enumType = enumType;
         this.value = value;
         this.desp = desp;

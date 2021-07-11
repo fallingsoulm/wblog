@@ -1,5 +1,6 @@
 package com.wblog.notice.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.exception.BusinessException;
 import com.wblog.notice.entity.MNoticeTemplateDo;
@@ -93,7 +94,14 @@ public class MNoticeMessageServiceImpl implements IMNoticeMessageService {
         if (null == templateDo) {
             throw new BusinessException("token不存在");
         }
+        if (!templateDo.getStatus().equals(ConstantEnum.NOTICE_STATUS_ENABLE.getValue())) {
 
+            throw new BusinessException("模板未启用");
+        }
+
+        if (StrUtil.isBlank(title)) {
+            title = templateDo.getName();
+        }
         messageTemplate.sendMessage(MessageVo
                 .builder()
                 .messageType(templateDo.getNoticeType())
