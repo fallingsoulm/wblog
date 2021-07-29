@@ -5,7 +5,7 @@
 		<u-tabs :list="tabs" :is-scroll="false" :current="current" @change="change"></u-tabs>
 		<view style="padding-top: 20upx;">
 			<u-card class="item u-border-bottom" v-for="article in articles" :key="article.id">
-				<view class="" slot="body" @click="toArticleInfo(article.id)">
+				<view class="" slot="body" @click="toArticleInfo(article.id,article.classify)">
 					<view class="top">
 						<view class="left">
 							<u-icon name="list" :size="30" color="rgb(94,94,94)"></u-icon>
@@ -37,8 +37,8 @@
 				<view class="" slot="foot">
 					<u-icon name="calendar" size="34" color="" :label="`发布时间   :` + article.createTime"></u-icon>
 
-					<u-icon name="eye" size="34" color="" :label="article.view + '人观看'" style="margin-left: 20upx;"></u-icon>
-					<u-icon name="info-circle" size="34" color="" :label="article.userName + ' 发表'" style="margin-left: 20upx;"></u-icon>
+					<u-icon  name="eye" size="34" color="" :label="article.view + '人观看'" style="margin-left: 20upx;"></u-icon>
+					<u-icon v-if="article.userName.length>0"  name="info-circle" size="34" color="" :label="article.userName + ' 发表'" style="margin-left: 20upx;"></u-icon>
 				</view>
 			</u-card>
 		</view>
@@ -111,16 +111,26 @@ export default {
 			this.articles = [];
 			this.page = 1;
 		},
-		toArticleInfo(id) {
+		toArticleInfo(id,classify) {
 			let pa = {
 				id: id
 			};
+			if(classify == 100){
 			this.$u.route({
 				type: 'to',
 				params: pa,
 				url: '/pages/article/articleInfo',
 				animationType: this.animate
+			});	
+			}else{
+			this.$u.route({
+				type: 'to',
+				params: pa,
+				url: '/pages/news/newsInfo',
+				animationType: this.animate
 			});
+			}
+			
 		},
 		// 获取文章数据
 		getArticleDataList() {
@@ -129,12 +139,12 @@ export default {
 				pageNum: this.page,
 				params: {
 					orderBy: this.current == 0 ? 100 : 101,
-					introduction: this.keyword,
-					"status":100
+					content: this.keyword
+					
 				}
 			};
 
-			this.$u.post('business/api/v1/info/article/find/page', param).then(res => {
+			this.$u.post('business/search/info/find/page', param).then(res => {
 				// this.result = res;
 				// console.log("列表:",res);
 

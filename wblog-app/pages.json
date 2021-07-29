@@ -72,7 +72,7 @@
 				"iconPath": "./static/shouye.png",
 				"selectedIconPath": "./static/shouye_1.png",
 				"text": "首页"
-			}
+			},
 			// , {
 			// 	"pagePath": "pages/article/articles",
 			// "iconPath": "static/uview/example/js.png",
@@ -80,12 +80,12 @@
 			// 	"text": "文章列表"
 
 			// }
-			, {
-				"pagePath": "pages/news/newsList",
-				"iconPath": "./static/zixun.png",
-				"selectedIconPath": "./static/zixun_1.png",
-				"text": "更多文章"
-			},
+			// , {
+			// 	"pagePath": "pages/news/newsList",
+			// 	"iconPath": "./static/zixun.png",
+			// 	"selectedIconPath": "./static/zixun_1.png",
+			// 	"text": "更多文章"
+			// },
 			{
 				"pagePath": "pages/mine/mine",
 				"iconPath": "./static/wode.png",
