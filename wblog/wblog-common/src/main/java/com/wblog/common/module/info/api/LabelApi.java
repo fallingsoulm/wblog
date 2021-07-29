@@ -8,10 +8,9 @@ import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author luyanan
@@ -47,4 +46,16 @@ public interface LabelApi {
     @GetMapping(prefix + "find/id/{labelId}")
     RespEntity<LabelVo> findById(@PathVariable("labelId") Long labelId);
 
+
+    /**
+     * 根据信息id查询
+     *
+     * @param articleId 文章id
+     * @param num       数量,当为-1的时候,查询所有
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<java.util.List < com.wblog.common.module.info.vo.LabelVo>>
+     * @since 2021/7/26
+     */
+    @ApiOperation(value = "根据信息id查询")
+    @GetMapping(prefix + "ids/articleId")
+    RespEntity<List<LabelVo>> findByArticleId(@RequestParam("articleId") Long articleId, @RequestParam("num") Integer num);
 }

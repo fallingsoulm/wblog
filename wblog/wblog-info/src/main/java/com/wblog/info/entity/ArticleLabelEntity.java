@@ -49,5 +49,11 @@ public class ArticleLabelEntity implements Serializable {
     @ApiModelProperty(value = "标签id")
     private Long labelId;
 
-
+    /**
+     * 分类
+     *
+     * @since 2021/7/21
+     */
+    @ApiModelProperty(value = "分类")
+    private Integer classify;
 }

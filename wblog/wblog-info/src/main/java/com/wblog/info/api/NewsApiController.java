@@ -35,6 +35,7 @@ public class NewsApiController {
 
     /**
      * <p>分页查询</p>
+     * findByPage
      *
      * @param pageRequestParams
      * @return {@link PageInfo< NewsVo>}
@@ -79,6 +80,21 @@ public class NewsApiController {
     public RespEntity remove(@PathVariable("ids") Long[] ids) {
         newsService.deleteByIds(Arrays.stream(ids).collect(Collectors.toList()));
         return RespEntity.success();
+    }
+
+
+    /**
+     * 查询详情
+     *
+     * @param id
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<com.wblog.common.module.info.vo.NewsVo>
+     * @since 2021/7/21
+     */
+    @GetMapping("info/{id}")
+    public RespEntity<NewsVo> info(@PathVariable("id") Long id) {
+
+        NewsVo newsVo = newsService.info(id);
+        return RespEntity.success(newsVo);
     }
 
 

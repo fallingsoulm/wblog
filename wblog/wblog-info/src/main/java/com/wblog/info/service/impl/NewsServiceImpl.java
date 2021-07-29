@@ -1,11 +1,20 @@
 package com.wblog.info.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.wblog.common.enums.ConstantEnum;
+import com.wblog.common.exception.BusinessException;
+import com.wblog.common.module.info.api.ArticleViewComponent;
+import com.wblog.common.module.info.vo.LabelVo;
 import com.wblog.common.module.info.vo.NewsVo;
+import com.wblog.info.component.FileTemplatePlus;
 import com.wblog.info.entity.NewsEntity;
+import com.wblog.info.entity.NewsInfoEntity;
 import com.wblog.info.event.EventSourceVo;
 import com.wblog.info.event.NewsEvent;
+import com.wblog.info.manage.INewsInfoManage;
 import com.wblog.info.manage.INewsManage;
+import com.wblog.info.news.NewsSpiderHandlerFactory;
+import com.wblog.info.service.ILabelService;
 import com.wblog.info.service.INewsService;
 import io.github.fallingsoulm.easy.archetype.data.mybatisplus.MybatisPlusUtils;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
@@ -32,6 +41,8 @@ public class NewsServiceImpl implements INewsService {
 
 
     @Autowired
+    private ArticleViewComponent articleViewComponent;
+    @Autowired
     private INewsManage iNewsManage;
 
 
@@ -39,9 +50,18 @@ public class NewsServiceImpl implements INewsService {
     private MybatisPlusUtils plusUtils;
 
 
+    @Autowired
+    private FileTemplatePlus fileTemplatePlus;
+
 
     @Autowired
     private ApplicationContext applicationContext;
+
+    @Autowired
+    private INewsInfoManage newsInfoManage;
+
+    @Autowired
+    private ILabelService labelService;
 
     @Override
     public PageInfo<NewsVo> findByPage(PageRequestParams<NewsVo> pageRequestParams) {
@@ -60,7 +80,14 @@ public class NewsServiceImpl implements INewsService {
         if (newsEntity == null) {
             return null;
         }
-        return BeanUtils.copyProperties(newsEntity, NewsVo.class);
+        NewsVo newsVo = BeanUtils.copyProperties(newsEntity, NewsVo.class);
+        NewsInfoEntity infoEntity = newsInfoManage.findById(id);
+        if (null != infoEntity) {
+            newsVo.setContent(infoEntity.getContent());
+            newsVo.setType(infoEntity.getType());
+        }
+
+        return newsVo;
     }
 
     @Override
@@ -83,7 +110,12 @@ public class NewsServiceImpl implements INewsService {
         if (null != one) {
             return null;
         }
+        //
         NewsEntity newsEntity = BeanUtils.copyProperties(newsVo, NewsEntity.class);
+        if (StrUtil.isBlank(newsEntity.getImage())) {
+            // 随机的头图
+            newsEntity.setImage(fileTemplatePlus.removeHost(fileTemplatePlus.randomImage()));
+        }
         iNewsManage.insert(newsEntity);
         // 发布资讯添加事件
         applicationContext.publishEvent(new NewsEvent(EventSourceVo
@@ -117,6 +149,27 @@ public class NewsServiceImpl implements INewsService {
 
     }
 
+    @Override
+    public NewsVo info(Long id) {
+        NewsEntity entity = iNewsManage.findById(id);
+        if (null == entity) {
+            throw new BusinessException(id + ":资讯不存在");
+        }
+        NewsInfoEntity infoEntity = newsInfoManage.findById(id);
+        if (null == infoEntity) {
+            throw new BusinessException("资讯详情不存在");
+        }
+        NewsVo newsVo = BeanUtils.copyProperties(entity, NewsVo.class);
+        newsVo.setContent(infoEntity.getContent());
+        newsVo.setType(infoEntity.getType());
+        // 访问量
+        newsVo.setView(articleViewComponent.getView(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue(), id, entity.getView()));
+        // 标签
+
+        List<LabelVo> labelVos = labelService.findByArticleId(newsVo.getId());
+        newsVo.setLabelVos(labelVos);
+        return newsVo;
+    }
 
 
 }

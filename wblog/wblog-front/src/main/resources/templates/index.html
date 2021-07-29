@@ -60,9 +60,18 @@
                          th:each="article : ${articlePageInfo.content}">
                         <div class="ui middle aligned mobile reversed stackable grid">
                             <div class="eleven wide column">
-                                <h3 class="ui header"><a href="#" th:href="@{/article/info/{id}(id=${article.id})}+'.html'"
-                                                         target="_blank"
-                                                         class="m-black" th:text="${article.title}">你真的理解什么是财富自由吗?</a>
+                                <h3 class="ui header">
+
+
+
+                                    <a th:if="${article.classify == 100}" href="#"
+                                       th:href="@{/article/info/{id}(id=${article.id})}+'.html'"
+                                       target="_blank"
+                                       class="m-black" th:text="${article.title}">你真的理解什么是财富自由吗?</a>
+
+                                    <a  th:if="${article.classify == 101}" href="#" th:href="@{/news/info/{id}(id=${article.id})}+'.html'"
+                                        target="_blank"
+                                        class="m-black" th:text="${article.title}">你真的理解什么是财富自由吗?</a>
                                 </h3>
                                 <p class="m-text" th:text="|${article.introduction}......|">
                                     正确做好任何一件事情的前提是清晰、正确的理解目标。而事实是，我们很多人很多时候根本没有对目标正确的定义，甚至根本从来就没有想过，只是大家都那么做而已…...</p>

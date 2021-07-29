@@ -66,11 +66,21 @@ public interface ArticleApi {
     /**
      * <p>文章巡查</p>
      *
+     * @return RespEntity
      * @author luyanan
      * @since 2020/9/21
      */
     @GetMapping(prefix + "patrol")
     RespEntity patrol();
 
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<com.wblog.common.module.info.vo.ArticleVo>
+     * @since 2021/7/21
+     */
+    @GetMapping(prefix + "find/id/{id}")
+    RespEntity<ArticleVo> findById(@PathVariable("id") Long id);
 
 }

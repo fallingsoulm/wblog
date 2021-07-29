@@ -23,5 +23,11 @@
             <artifactId>wblog-common</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.wblog.search.api</groupId>
+            <artifactId>wblog-search-api</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 </project>

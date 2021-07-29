@@ -94,8 +94,8 @@ public enum ConstantEnum {
 
 
     /*************************搜索******************************************/
-    SEARCH_BELONG_ARTICLE(EnumType.SEARCH_BELONG, 100, "文章"),
-    SEARCH_BELONG_NEWS(EnumType.SEARCH_BELONG, 101, "资讯"),
+    SEARCH_INFO_TYPE_ARTICLE(EnumType.SEARCH_INFO_TYPE, 100, "文章"),
+    SEARCH_INFO_TYPE_NEWS(EnumType.SEARCH_INFO_TYPE, 101, "资讯"),
 
     /******************************通知消息***************************************/
     NOTICE_MESSAGE_EMAIL(EnumType.NOTICE_MESSAGE, 0, "邮箱"),
@@ -117,6 +117,10 @@ public enum ConstantEnum {
     /***********************第三方平台********************/
     SOCIAL_PLATFORM_WORK_WECHAT_IT(EnumType.SOCIAL_PLATFORM, "WORK_WECHAT_IT", "企业微信_IT栈"),
     SOCIAL_PLATFORM_WORK_WECHAT_ADDRESS_BOOK(EnumType.SOCIAL_PLATFORM, "WORK_ADDRESS_BOOK", "企业微信_IT栈"),
+    /****************************资讯内容类型***********************/
+
+    NEWS_INFO_TYPE_MARKDOWN(EnumType.NEWS_INFO_TYPE, 0, "markdown"),
+    NEWS_INFO_TYPE_HTML(EnumType.NEWS_INFO_TYPE, 1, "html"),
     ;
     /**
      * <p>枚举类型</p>
@@ -427,7 +431,7 @@ public enum ConstantEnum {
          * @author luyanan
          * @since 2020/12/16
          */
-        SEARCH_BELONG("SEARCH_BELONG"),
+        SEARCH_INFO_TYPE("SEARCH_INFO_TYPE"),
 
         /**
          * 通知消息
@@ -456,6 +460,15 @@ public enum ConstantEnum {
          * @since 2021/7/6
          */
         SOCIAL_PLATFORM("SOCIAL_PLATFORM"),
+
+
+        /**
+         * 资讯内容类型
+         *
+         * @author luyanan
+         * @since 2021/7/14
+         */
+        NEWS_INFO_TYPE("NEWS_INFO_TYPE"),
         ;
         /**
          * <p>名称</p>

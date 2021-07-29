@@ -4,12 +4,12 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import com.wblog.common.enums.ConstantEnum;
-import com.wblog.common.enums.FilePathEnum;
 import com.wblog.common.exception.BusinessException;
 import com.wblog.common.module.info.vo.*;
 import com.wblog.common.module.system.api.SysUserApi;
 import com.wblog.common.module.system.vo.SysUserVo;
 import com.wblog.common.redis.RedisKeyEnums;
+import com.wblog.common.module.info.api.ArticleViewComponent;
 import com.wblog.info.component.FileTemplatePlus;
 import com.wblog.info.config.BlogConfigProperties;
 import com.wblog.info.entity.ArticleEntity;
@@ -27,16 +27,13 @@ import io.github.fallingsoulm.easy.archetype.data.redis.RedisKeyGenerator;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.github.fallingsoulm.easy.archetype.framework.utils.BeanUtils;
-import io.github.fallingsoulm.easy.archetype.security.core.LoginUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.xml.transform.Source;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -75,8 +72,9 @@ public class ArticleServiceImpl implements IArticleService {
     @Autowired
     private FileTemplatePlus fileTemplatePlus;
 
+
     @Autowired
-    private LoginUserService loginUserService;
+    private ArticleViewComponent articleViewComponent;
 
     @Autowired
     private FileTemplate fileTemplate;
@@ -115,50 +113,17 @@ public class ArticleServiceImpl implements IArticleService {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private INewsService newsService;
+
     @Override
     public PageInfo<ArticleVo> findByPage(PageRequestParams<ArticleVo> pageRequestParams) {
         PageInfo<ArticleEntity> entityPageInfo = null;
         // 按照创建时间分页排序
         PageRequestParams<ArticleEntity> params = plusUtils.convertPageRequestParams(pageRequestParams, ArticleEntity.class);
-        if (null == pageRequestParams.getParams() || null == pageRequestParams.getParams().getOrderBy() ||
-                (null != pageRequestParams.getParams().getOrderBy() && pageRequestParams.getParams().getOrderBy().
-                        equals(ConstantEnum.ARTICLE_ORDER_BY_NEWEST.getValue()))) {
 
-
-            entityPageInfo = iArticleManage.findByPage(params,
-                    null == pageRequestParams.getParams() ? null : pageRequestParams.getParams().getStatusList());
-        } else {
-            //按照访问量分页排序
-            String viewKey = redisKeyGenerator.generate(RedisKeyEnums.ARTICLE_VIEW);
-            Long size = redisTemplate.opsForZSet().size(viewKey);
-            List<ArticleEntity> articleEntities = null;
-            if (size > 0) {
-                LinkedHashSet set = (LinkedHashSet) redisTemplate.opsForZSet().reverseRange(viewKey, pageRequestParams.getOffset(), pageRequestParams.getOffset().intValue() + pageRequestParams.getPageSize().intValue() - 1);
-                List<Long> articleIds = new ArrayList<>();
-                for (Object o : set) {
-
-                    articleIds.add(Long.valueOf(o.toString()));
-                }
-                articleEntities = this.iArticleManage.findByIds(articleIds);
-                List<ArticleEntity> sortList = new ArrayList<>();
-                for (Long articleId : articleIds) {
-                    for (ArticleEntity articleEntity : articleEntities) {
-
-                        if (articleId.equals(articleEntity.getId())) {
-                            sortList.add(articleEntity);
-                        }
-                    }
-                }
-
-                articleEntities = sortList;
-
-            } else {
-                articleEntities = new ArrayList<>();
-            }
-            entityPageInfo = new PageInfo<ArticleEntity>(articleEntities, size.longValue(), params);
-        }
-
-
+        entityPageInfo = iArticleManage.findByPage(params,
+                null == pageRequestParams.getParams() ? null : pageRequestParams.getParams().getStatusList());
         return plusUtils.convertPageInfo(entityPageInfo, ArticleVo.class, new PageInfoContentHandler<ArticleVo>() {
             @Override
             public void handler(List<ArticleVo> contentList) {
@@ -228,7 +193,8 @@ public class ArticleServiceImpl implements IArticleService {
             }, executor);
             allFuture.add(labelFuture);
             articleVo.setImage(images.getOrDefault(articleVo.getImage(), ""));
-            articleVo.setView(getView(articleVo.getId(), articleVo.getView()));
+            articleVo.setView(articleViewComponent.getView(ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.getValue(),
+                    articleVo.getId(), articleVo.getView()));
         }
         try {
             CompletableFuture.allOf(allFuture.toArray(new CompletableFuture[allFuture.size()])).get();
@@ -240,25 +206,18 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
 
-    public Long getView(Long articleId, Long dbView) {
-        String viewKey = redisKeyGenerator.generate(RedisKeyEnums.ARTICLE_VIEW);
-        Double score = redisTemplate.opsForZSet().score(viewKey, articleId + "");
-        if (null == score || score.longValue() == 0L) {
-            redisTemplate.opsForZSet().add(viewKey, articleId + "", dbView);
-            return dbView;
-        } else {
-            return score.longValue();
-
-        }
-    }
-
     @Override
     public ArticleVo findById(Long id) {
         ArticleEntity articleEntity = iArticleManage.findById(id);
         if (articleEntity == null) {
             return null;
         }
-        return BeanUtils.copyProperties(articleEntity, ArticleVo.class);
+        ArticleVo articleVo = BeanUtils.copyProperties(articleEntity, ArticleVo.class);
+        ArticleInfoVo infoVo = articleInfoService.findById(id);
+        if (null != infoVo) {
+            articleVo.setContent(infoVo.getContent());
+        }
+        return articleVo;
     }
 
     @Override
@@ -414,11 +373,9 @@ public class ArticleServiceImpl implements IArticleService {
         if (StrUtil.isNotBlank(articleInfoVo.getContent())) {
             articleVo.setContent(MarkdownUtils.markdownToHtmlExtensions(articleInfoVo.getContent()));
         }
-        String viewKey = redisKeyGenerator.generate(RedisKeyEnums.ARTICLE_VIEW);
 
-        //访问量
-        Double view = redisTemplate.opsForZSet().incrementScore(viewKey, articleVo.getId() + "", 1);
-        articleVo.setView(view.longValue());
+        articleVo.setView(articleViewComponent.incrementView(ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.getValue(),
+                id, articleEntity.getView()));
 
         articleVo.setSourceVal(ConstantEnum.getByTypeAndValue(ConstantEnum.EnumType.ARTICLE_SOURCE_TYPE, articleVo.getSource()).getDesp());
 
@@ -457,14 +414,19 @@ public class ArticleServiceImpl implements IArticleService {
         Set range = redisTemplate.opsForZSet().range(viewKey, 0, -1);
         for (Object o : range) {
             Double score = redisTemplate.opsForZSet().score(viewKey, o);
-            iArticleManage.update(ArticleEntity.builder().id(
-
-                    Long.valueOf(o.toString())).view(score.longValue()).build());
+            if (!o.toString().contains("-")) {
+                continue;
+            }
+            Long id = Long.valueOf(o.toString().split("-")[1]);
+            Integer classify = Integer.valueOf(o.toString().split("-")[0]);
+            if (classify.equals(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue())) {
+                newsService.update(NewsVo.builder().id(id).view(score.longValue()).build());
+            } else if (ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.equalsValue(classify)) {
+                iArticleManage.update(ArticleEntity.builder().id(
+                        id).view(score.longValue()).build());
+            }
         }
-//        redisTemplate.opsForZSet().keys(viewKey).forEach(a -> {
-//            Double view = redisTemplate.opsForZSet().score(viewKey, a.toString());
-//            iArticleManage.update(ArticleEntity.builder().id(Long.valueOf(a.toString())).view(view.longValue()).build());
-//        });
+
         log.info("文章访问量同步结束");
     }
 
@@ -477,9 +439,7 @@ public class ArticleServiceImpl implements IArticleService {
             return;
         }
 
-        // 当状态为上架的时候,发布到MQ中进行处理
         if (status.equals(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue())) {
-            articleMqService.enableArticle(articleIds);
             //  发布上架事件
             applicationContext.publishEvent(new ArticleEvent(EventSourceVo
                     .builder()

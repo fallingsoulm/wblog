@@ -5,13 +5,16 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.RandomUtil;
 import com.wblog.common.enums.FilePathEnum;
+import com.wblog.common.redis.RedisKeyEnums;
 import com.wblog.info.config.BlogConfigProperties;
 import io.github.fallingsoulm.easy.archetype.data.file.FileFilterArgs;
 import io.github.fallingsoulm.easy.archetype.data.file.FileProperties;
 import io.github.fallingsoulm.easy.archetype.data.file.FileTemplate;
 import io.github.fallingsoulm.easy.archetype.data.file.IFileService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,7 +25,12 @@ import java.util.List;
  * @author luyanan
  * @since 2021/5/30
  **/
+@Slf4j
 public class FileTemplatePlus extends FileTemplate {
+
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
 
     @Autowired
@@ -41,14 +49,24 @@ public class FileTemplatePlus extends FileTemplate {
      */
     public String randomImage() {
         String prefix = FilePathEnum.PUBLIC.getPath();
-//        String prefix = FilePathEnum.PUBLIC.getPath() + RandomUtil.randomString(1);
         Assert.notBlank(blogConfigProperties.getRandomImagePath(), "随机图片的地址不能为空");
-        List<String> paths =
-                super.loopFiles(FileFilterArgs.builder().prefix(prefix).size(1).build());
-        if (CollectionUtil.isNotEmpty(paths)) {
-            return paths.get(RandomUtil.randomInt(paths.size()));
+        Long size = redisTemplate.opsForList().size(RedisKeyEnums.INFO_RANDOM_IMAGE.getKey());
+        if (null == size || size.longValue() < 1000) {
+            List<String> paths =
+                    super.loopFiles(FileFilterArgs.builder().prefix(prefix).size(1000).build());
+            log.info("初始化随机头图, 大小为:{}", paths.size());
+            for (String path : paths) {
+                redisTemplate.opsForList().leftPush(RedisKeyEnums.INFO_RANDOM_IMAGE.getKey(), path);
+            }
         }
-        return null;
+
+
+        Long total = redisTemplate.opsForList().size(RedisKeyEnums.INFO_RANDOM_IMAGE.getKey());
+
+        if (null == total || total.longValue() == 0) {
+            return null;
+        }
+        return (String) redisTemplate.opsForList().index(RedisKeyEnums.INFO_RANDOM_IMAGE.getKey(), RandomUtil.randomInt(total.intValue()));
     }
 
 }

@@ -7,6 +7,8 @@ import com.wblog.common.module.info.api.LabelApi;
 import com.wblog.common.module.info.vo.ArticleVo;
 import com.wblog.common.module.info.vo.LabelVo;
 import com.wblog.front.utils.PageUtils;
+import com.wblog.search.api.ArticleSearchApi;
+import com.wblog.search.vo.ArticleSearchVo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
 import io.github.fallingsoulm.easy.archetype.framework.page.RespEntity;
@@ -36,21 +38,21 @@ public class IndexController {
     @Autowired
     private LabelApi labelApi;
 
+    @Autowired
+    private ArticleSearchApi articleSearchApi;
+
     @ApiOperation(value = "首页-文章列表")
     @GetMapping({"", "index.html"})
     public String index(Integer page, Model model) {
 
 
-        PageRequestParams<ArticleVo> requestParams = PageUtils
-                .build(ArticleVo.builder().status(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue()).build(), page, 10);
-        RespEntity<PageInfo<ArticleVo>> articleApiByPage = articleApi.findByPage(requestParams);
-
+        RespEntity<PageInfo<ArticleSearchVo>> pageInfoRespEntity = articleSearchApi.findByPage(PageUtils.build(page, 10));
 
         PageRequestParams<LabelVo> pageRequestParams = new PageRequestParams<>();
         pageRequestParams.setPageNum(1);
         pageRequestParams.setPageSize(30);
         List<LabelVo> labelVoLists = labelApi.findByPageAndCount(pageRequestParams).getData().getContent();
-        model.addAttribute("articlePageInfo", articleApiByPage.getData());
+        model.addAttribute("articlePageInfo", pageInfoRespEntity.getData());
         model.addAttribute("labelVoLists", labelVoLists);
         return "index";
     }
@@ -60,10 +62,12 @@ public class IndexController {
     @GetMapping({"search", "search.html"})
     public String search(String search, Integer page, Model model) {
 
-        PageRequestParams<ArticleVo> requestParams = PageUtils
-                .build(ArticleVo.builder().introduction(search).status(ConstantEnum.ARTICLE_STATUS_ENABLE.getValue()).build(), page, 10);
-        PageInfo<ArticleVo> articleVoIPageInfo = articleApi.findByPage(requestParams).getData();
-        model.addAttribute("articlePageInfo", articleVoIPageInfo);
+
+        RespEntity<PageInfo<ArticleSearchVo>> pageInfoRespEntity = articleSearchApi.findByPage(PageUtils
+                .build(ArticleSearchVo.builder()
+                        .title(search)
+                        .content(search).build(), page, 10));
+        model.addAttribute("articlePageInfo", pageInfoRespEntity.getData());
         model.addAttribute("search", search);
         return "search";
     }

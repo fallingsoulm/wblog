@@ -59,6 +59,21 @@ public enum RedisKeyEnums implements IRedisKeyEnums {
     SITEMAP_URL("sitemap_url"),
 
 
+    /**
+     * 随机头图
+     *
+     * @author luyanan
+     * @since 2021/7/24
+     */
+    INFO_RANDOM_IMAGE("INFO_RANDOM_IMAGE"),
+
+    /**
+     * 资讯id黑名单
+     *
+     * @author luyanan
+     * @since 2021/7/28
+     */
+    NEWS_ID_BLACK_LIST("NEWS_ID_BLACK_LIST"),
     ;
 
     private String key;

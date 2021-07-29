@@ -2,15 +2,28 @@ package com.wblog.info.event;
 
 import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.module.info.vo.ArticleVo;
+import com.wblog.common.module.info.vo.LabelVo;
 import com.wblog.common.module.search.dto.SearchDto;
 import com.wblog.common.module.search.mq.SearchMqConstant;
+import com.wblog.info.entity.ArticleEntity;
+import com.wblog.info.entity.ArticleInfoEntity;
+import com.wblog.info.manage.IArticleInfoManage;
+import com.wblog.info.manage.IArticleManage;
+import com.wblog.info.mq.service.ILabelMqService;
 import com.wblog.info.service.IArticleService;
+import com.wblog.info.service.ILabelService;
+import com.wblog.info.utils.ArticleSearchVoBuilder;
+import com.wblog.search.service.InfoSearchService;
+import com.wblog.search.vo.ArticleSearchVo;
+import io.swagger.annotations.ApiImplicitParam;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,11 +34,21 @@ import java.util.UUID;
 @Component
 public class ArticleEventListener implements ApplicationListener<ArticleEvent> {
 
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private IArticleService articleService;
+    private InfoSearchService infoSearchService;
+
+    @Autowired
+    private IArticleManage articleManage;
+
+    @Autowired
+    private IArticleInfoManage articleInfoManage;
+
+    @Autowired
+    private ILabelService labelService;
+
+    @Autowired
+    private ILabelMqService labelMqService;
 
     @Override
     public void onApplicationEvent(ArticleEvent event) {
@@ -35,19 +58,21 @@ public class ArticleEventListener implements ApplicationListener<ArticleEvent> {
             EventSourceVo sourceVo = (EventSourceVo) source;
             switch (sourceVo.getType()) {
                 case SAVE:
-                    doSaveListener(((EventSourceVo) source).getId());
+
+                    update(Long.valueOf(sourceVo.getId()));
                     break;
                 case UPDATE:
-                    doUpdateListener(sourceVo.getId());
+                    update(Long.valueOf(sourceVo.getId()));
                     break;
                 case DELETE:
-                    doDeleteListener(sourceVo.getId());
+                    delete(Long.valueOf(sourceVo.getId()));
                     break;
                 case STOP_STATUS:
-                    doEnableStatusListener(sourceVo.getId());
+                    delete(Long.valueOf(sourceVo.getId()));
                     break;
                 case ENABLE_STATUS:
-                    doStopStatusListener(sourceVo.getId());
+                    labelMqService.articleAddLabel(Long.valueOf(sourceVo.getId()), ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.getValue());
+                    update(Long.valueOf(sourceVo.getId()));
                     break;
                 default:
                     break;
@@ -56,96 +81,15 @@ public class ArticleEventListener implements ApplicationListener<ArticleEvent> {
 
     }
 
-    /**
-     * <p>执行下架的监听</p>
-     *
-     * @param id
-     * @author luyanan
-     * @since 2020/12/22
-     */
-    private void doStopStatusListener(String id) {
-        // 发送搜索服务删除文章的消息
-        rabbitTemplate.convertAndSend(SearchMqConstant.SEARCH_ARTICLE_EXCHANGE,
-                SearchMqConstant.SEARCH_ARTICLE_DELETE_ROUTINGKEY,
-                SearchDto.builder().id(id).belong(ConstantEnum.SEARCH_BELONG_ARTICLE.getValue()).build(),
-                new CorrelationData(UUID.randomUUID().toString()));
+    private void update(Long id) {
+        // 根据id查询详情
+//        ArticleEntity articleEntity = articleManage.findById(id);
+//        ArticleSearchVo searchVo = ArticleSearchVoBuilder.build(articleEntity, articleInfoManage, labelService);
+        infoSearchService.update(Arrays.asList(id), ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.getValue());
     }
 
-    /**
-     * <p>执行上架的监听</p>
-     *
-     * @param id
-     * @author luyanan
-     * @since 2020/12/22
-     */
-    private void doEnableStatusListener(String id) {
-        // 发送搜索服务上架文章的消息
-
-        rabbitTemplate.convertAndSend(SearchMqConstant.SEARCH_ARTICLE_EXCHANGE,
-                SearchMqConstant.SEARCH_ARTICLE_SAVE_ROUTINGKEY,
-                conver(id),
-                new CorrelationData(UUID.randomUUID().toString()));
-
+    private void delete(Long id) {
+        infoSearchService.deleteById(ArticleSearchVo.builder().id(id).classify(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue()).build());
     }
-
-    /**
-     * <p>执行删除的监听</p>
-     *
-     * @param id
-     * @author luyanan
-     * @since 2020/12/22
-     */
-    private void doDeleteListener(String id) {
-        // 发送搜索服务删除文章的消息
-        rabbitTemplate.convertAndSend(SearchMqConstant.SEARCH_ARTICLE_EXCHANGE,
-                SearchMqConstant.SEARCH_ARTICLE_DELETE_ROUTINGKEY,
-                SearchDto.builder().id(id).belong(ConstantEnum.SEARCH_BELONG_ARTICLE.getValue()).build(),
-                new CorrelationData(UUID.randomUUID().toString()));
-
-    }
-
-    /**
-     * <p>执行修改的监听</p>
-     *
-     * @param id
-     * @author luyanan
-     * @since 2020/12/22
-     */
-    private void doUpdateListener(String id) {
-
-        // 发送搜索服务上架文章的消息
-        rabbitTemplate.convertAndSend(SearchMqConstant.SEARCH_ARTICLE_EXCHANGE,
-                SearchMqConstant.SEARCH_ARTICLE_SAVE_ROUTINGKEY,
-                conver(id),
-                new CorrelationData(UUID.randomUUID().toString()));
-    }
-
-    private SearchDto conver(String id) {
-        ArticleVo articleVo = articleService.findById(Long.valueOf(id));
-        return SearchDto
-                .builder()
-                .id(id)
-                .belong(ConstantEnum.SEARCH_BELONG_ARTICLE.getValue())
-                .content(articleVo.getContent())
-                .image(articleVo.getImage())
-                .createTime(articleVo.getCreateTime())
-                .introduction(articleVo.getIntroduction())
-                .title(articleVo.getTitle())
-                .userId(articleVo.getUserId())
-                .build();
-    }
-
-    /**
-     * <p>执行添加的监听</p>
-     *
-     * @param id
-     * @author luyanan
-     * @since 2020/12/22
-     */
-    private void doSaveListener(String id) {
-
-
-    }
-
 
 }

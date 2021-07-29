@@ -8,13 +8,14 @@ package com.wblog.info.mq.service;
 public interface ILabelMqService {
 
     /**
-     * 文章上架增加标签
+     * 增加标签
      *
-     * @param articleId 文章id
+     * @param id       文章id
+     * @param classify 分类
      * @author luyanan
      * @since 2020/11/30
      */
-    void articleAddLabel(Long articleId);
+    void articleAddLabel(Long id, Integer classify);
 
     /**
      * 添加标签,给文章分配标签

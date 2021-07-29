@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 /**
  * <p>
  * 热门资讯 mapper
@@ -27,7 +29,15 @@ public interface NewsMapper extends BaseMapperPlus<NewsEntity> {
      * @author luyanan
      * @since 2020/7/13
      */
-    @Select("SELECT *  FROM b_news  WHERE source = #{source} ORDER BY create_time DESC  LIMIT 0,1 ")
+    @Select("SELECT *  FROM b_news  WHERE source = #{source} AND  del_flag = 0  ORDER BY create_time DESC  LIMIT 0,1 ")
     NewsVo lastUrl(@Param("source") Integer source);
 
+    /**
+     * 查询没有资讯内容的id
+     *
+     * @return java.util.List<java.lang.Long>
+     * @since 2021/7/27
+     */
+    @Select("SELECT b_news.* FROM b_news LEFT JOIN b_news_info ON b_news.id = b_news_info.news_id  WHERE  b_news.del_flag = 0  AND  b_news_info.content IS NULL  ORDER BY create_time DESC   LIMIT 0,1000")
+    List<NewsEntity> findWithoutContent();
 }

@@ -5,6 +5,8 @@ import com.wblog.common.module.info.vo.NewsVo;
 import com.wblog.info.entity.NewsEntity;
 import io.github.fallingsoulm.easy.archetype.data.manage.IManage;
 
+import java.util.List;
+
 /**
  * <p>
  * 热门资讯 manage
@@ -25,6 +27,15 @@ public interface INewsManage extends IManage<NewsEntity> {
      * @since 2020/7/13
      */
     NewsVo lastUrl(Integer source);
+
+
+    /**
+     * 查询没有内容的资讯id
+     *
+     * @return java.util.List<java.lang.Long>
+     * @since 2021/7/27
+     */
+    List<NewsEntity> findWithoutContent();
 
 
 }

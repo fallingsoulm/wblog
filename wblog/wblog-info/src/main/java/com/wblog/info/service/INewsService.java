@@ -113,5 +113,13 @@ public interface INewsService {
     NewsVo lastUrl(Integer source);
 
 
+    /**
+     * 查询详情
+     *
+     * @param id id
+     * @return com.wblog.common.module.info.vo.NewsVo
+     * @since 2021/7/21
+     */
+    NewsVo info(Long id);
 
 }

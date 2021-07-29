@@ -44,6 +44,13 @@ public class NewsEntity implements Serializable {
     private Integer source;
 
     /**
+     * 头图
+     *
+     * @since 2021/7/18
+     */
+    @ApiModelProperty(value = "头图")
+    private String image;
+    /**
      * 标题
      */
     @TableField(condition = SqlCondition.LIKE)
@@ -74,5 +81,22 @@ public class NewsEntity implements Serializable {
     @ApiModelProperty(value = "创建时间")
     private Date createTime;
 
+
+    /**
+     * 访问量
+     *
+     * @since 2021/7/21
+     */
+    @ApiModelProperty(value = "访问量")
+    private Long view;
+
+    /**
+     * 删除
+     *
+     * @since 2021/7/29
+     */
+    @TableLogic
+    @ApiModelProperty(value = "删除")
+    private Integer delFlag;
 
 }

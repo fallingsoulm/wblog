@@ -17,11 +17,7 @@
             <artifactId>easy-archetype-job-core</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <optional>true</optional>
-        </dependency>
+
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-generator</artifactId>
@@ -34,10 +30,7 @@
             <groupId>io.github.fallingsoulm.easy.archetype.framework</groupId>
             <artifactId>easy-archetype-framework-starter</artifactId>
         </dependency>
-        <dependency>
-            <groupId>io.github.fallingsoulm.easy.archetype.generate</groupId>
-            <artifactId>easy-archetype-generate</artifactId>
-        </dependency>
+
 
         <dependency>
             <groupId>io.github.fallingsoulm.easy.archetype.security</groupId>
@@ -79,6 +72,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
     </dependencies>
 

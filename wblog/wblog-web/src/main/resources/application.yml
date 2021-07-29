@@ -43,7 +43,7 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
   profiles:
     # 指定启用哪个环境的配置文件
-    active: dev
+    active: prod
   # 文件上传
   servlet:
     multipart:
@@ -94,10 +94,16 @@ spring:
     properties:
       mail:
         smtp:
+          ssl:
+            trust: smtp.exmail.qq.com
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
           auth: true
           starttls:
             enable: true
             required: true
+    port: 465
 
 # 自定义配置
 easy:
@@ -174,7 +180,7 @@ mybatis-plus:
       select-strategy: not_empty
       update-strategy: not_empty
       logic-delete-field: delFlag
-      logic-delete-value: 2
+      logic-delete-value: 1
       logic-not-delete-value: 0
   # 配置mapper的扫描，找到所有的mapper.xml映射文件
   mapper-locations: classpath*:mapper/**/*Mapper.xml
@@ -260,3 +266,8 @@ social:
     - uuid: WORK_ADDRESS_BOOK
       client-id: ww444d3e1b37e7331a
       client-secret: T8iuBrkGDSNS5Ck5olmeabpMcSbZdGYKxsobAhD9eOM
+es:
+  host: es
+  port: 9200
+  info-type: ${spring.profiles.active}-info
+

@@ -79,9 +79,9 @@ public class ArticleMqServiceImpl implements IArticleMqService {
                 // 5. 推送到ES
 
             }
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+//            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
-            channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
+//            channel.basicReject(message.getMessageProperties().getDeliveryTag(), false);
             e.printStackTrace();
         }
 

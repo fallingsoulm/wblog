@@ -9,7 +9,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -77,4 +79,44 @@ public class NewsVo implements Serializable {
     private String sourceStr;
 
 
+    /**
+     * 内容
+     *
+     * @since 2021/7/15
+     */
+    @ApiModelProperty(value = "内容")
+    private String content;
+
+
+    /**
+     * 内容类型 0:markdown  1: html
+     *
+     * @since 2021/7/17
+     */
+    @ApiModelProperty(value = "内容类型 0:markdown  1: html")
+    private Integer type;
+
+    /**
+     * 访问量
+     *
+     * @since 2021/7/17
+     */
+    @ApiModelProperty(value = "访问量")
+    private Long view;
+
+    /**
+     * 标签
+     *
+     * @since 2021/7/17
+     */
+    @ApiModelProperty(value = "标签")
+    private List<LabelVo> labelVos = new ArrayList<>();
+
+    /**
+     * 头图
+     *
+     * @since 2021/7/18
+     */
+    @ApiModelProperty(value = "头图")
+    private String image;
 }

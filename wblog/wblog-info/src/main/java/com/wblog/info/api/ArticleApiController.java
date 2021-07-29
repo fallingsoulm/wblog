@@ -42,6 +42,19 @@ public class ArticleApiController {
         return RespEntity.success(articleService.info(articleId));
     }
 
+    /**
+     * 根据id查询
+     *
+     * @param id
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<com.wblog.common.module.info.vo.ArticleVo>
+     * @since 2021/7/21
+     */
+    @GetMapping("find/id/{id}")
+    @ApiOperation(value = "根据id查询")
+    public RespEntity<ArticleVo> findById(@PathVariable("id") Long id) {
+        return RespEntity.success(articleService.findById(id));
+
+    }
 
 
     @ApiOperation(value = "分页查询", response = ArticleVo.class)

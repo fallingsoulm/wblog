@@ -16,34 +16,41 @@ import java.io.Serializable;
  *
  * @author luyanan
  * @since 2020-06-10
-*/
+ */
 @ApiModel(value = "文章与标签关联")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleLabelVo implements Serializable{
+public class ArticleLabelVo implements Serializable {
 
-private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
     /**
-    * id
-    */
+     * id
+     */
     @ApiModelProperty(value = "id")
     private Long id;
 
     /**
-    * 文章id
-    */
+     * 文章id
+     */
     @ApiModelProperty(value = "文章id")
     private Long articleId;
 
     /**
-    * 标签id
-    */
+     * 标签id
+     */
     @ApiModelProperty(value = "标签id")
     private Long labelId;
 
+    /**
+     * 分类
+     *
+     * @since 2021/7/21
+     */
+    @ApiModelProperty(value = "分类")
+    private Integer classify;
 
 
 }

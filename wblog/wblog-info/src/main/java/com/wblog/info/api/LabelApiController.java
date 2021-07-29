@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +63,7 @@ public class LabelApiController {
      * @author luyanan
      * @since 2020/9/17
      */
-    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
+//    @PreAuthorize("hasAnyAuthority('" + authorPrefix + "list')")
     @ApiOperation(value = "根据id查询", response = LabelVo.class)
     @GetMapping("find/id/{labelId}")
     RespEntity<LabelVo> findById(@PathVariable("labelId") Long labelId) {
@@ -102,5 +103,19 @@ public class LabelApiController {
         return RespEntity.success();
     }
 
+    /**
+     * 根据信息id查询
+     *
+     * @param articleId 文章id
+     * @param num       数量,当为-1的时候,查询所有
+     * @return io.github.fallingsoulm.easy.archetype.framework.page.RespEntity<java.util.List < com.wblog.common.module.info.vo.LabelVo>>
+     * @since 2021/7/26
+     */
+    @ApiOperation(value = "根据信息id查询")
+    @GetMapping("ids/articleId")
+    public RespEntity<List<LabelVo>> findByArticleId(@RequestParam("articleId") Long articleId, @RequestParam("num") Integer num) {
+        List<LabelVo> labelVos = labelService.findByArticleId(articleId, num);
+        return RespEntity.success(labelVos);
+    }
 
 }

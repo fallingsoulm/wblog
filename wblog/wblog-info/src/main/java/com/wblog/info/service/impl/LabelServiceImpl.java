@@ -1,6 +1,7 @@
 package com.wblog.info.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.wblog.common.enums.ConstantEnum;
 import com.wblog.common.exception.BusinessException;
 import com.wblog.common.module.info.vo.ArticleLabelVo;
 import com.wblog.common.module.info.vo.LabelVo;
@@ -139,7 +140,7 @@ public class LabelServiceImpl implements ILabelService {
     @Override
     public void updateLabel(Long articleId) {
 //        this.articleAddLabel(articleId);
-        labelMqService.articleAddLabel(articleId);
+        labelMqService.articleAddLabel(articleId, ConstantEnum.SEARCH_INFO_TYPE_ARTICLE.getValue());
     }
 
 
@@ -173,7 +174,8 @@ public class LabelServiceImpl implements ILabelService {
                 .distinct()
                 .collect(Collectors.toList());
 
-        if (null != limit) {
+
+        if (null != limit && -1 != limit) {
             labelIds = labelIds.subList(0, (labelIds.size() >= limit) ? limit : labelIds.size());
         }
         List<LabelVo> voList = this.findByIds(labelIds);
