@@ -35,5 +35,14 @@ public class ApplicationNameConstants {
      */
     public static final String SEARCH = "wblog";
 
+
+    /**
+     * 消息推送模块
+     *
+     * @author luyanan
+     * @since 2021/8/1
+     */
+    public static final String NOTICE = "wblog";
+
     public static final String INFO_PATH_PREFIX = "/";
 }

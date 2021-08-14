@@ -23,7 +23,6 @@ public interface NewsApi {
     String prefix = ApplicationNameConstants.INFO_PATH_PREFIX + Version.VERSION_1 + "news/";
 
 
-
     /**
      * <p>分页查询</p>
      *
@@ -58,5 +57,15 @@ public interface NewsApi {
     @ApiOperation(value = "同步")
     @GetMapping(prefix + "news/syn")
     RespEntity newsSyn();
+
+
+    /**
+     * 详情
+     *
+     * @author luyanan
+     * @since 2021/7/30
+     */
+    @GetMapping(prefix + "info/{id}")
+    RespEntity<NewsVo> info(@PathVariable("id") Long id);
 
 }

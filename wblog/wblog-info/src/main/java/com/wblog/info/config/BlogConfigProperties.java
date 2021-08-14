@@ -80,6 +80,27 @@ public class BlogConfigProperties {
      */
     private String defaultAvatar;
 
+
+    /**
+     * 任务
+     *
+     * @author luyanan
+     * @since 2021/8/1
+     */
+    private job job;
+
+    @Data
+    public static class job {
+
+        /**
+         * 通知的token
+         *
+         * @author luyanan
+         * @since 2021/8/1
+         */
+        private String noticeToken;
+    }
+
     /**
      * <p>资讯配置文件</p>
      *

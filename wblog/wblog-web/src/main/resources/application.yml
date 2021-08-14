@@ -248,6 +248,8 @@ blog:
     max-page-size: 3
     news-info-url: ${blog.business-domain}news/info/
   random-image-path: public
+  job:
+    notice-token: 7d51733b0b4a44c1afb8ade532bb0088
 management:
   endpoints:
     web:
@@ -270,4 +272,15 @@ es:
   host: es
   port: 9200
   info-type: ${spring.profiles.active}-info
-
+bi:
+  oss:
+    app-id: 1001
+    endpoint: ${easy.archetype.framework.file.file-host}
+    access-key: root
+    secret-key: luyanan787
+    region:  http://minio:9001/
+ureport:
+  debug: true
+  disableFileProvider: false
+  disableHttpSessionReportCache: false
+  fileStoreDir: /data/ureport

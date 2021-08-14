@@ -6,6 +6,7 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.wblog.search.config.SearchProperties;
 import com.wblog.search.vo.ArticleSearchVo;
+import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import lombok.SneakyThrows;
 import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
@@ -106,6 +107,7 @@ public abstract class AbstractElasticsearchService {
         IndexResponse index = restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
         System.out.println(index);
     }
+
 
 
 }

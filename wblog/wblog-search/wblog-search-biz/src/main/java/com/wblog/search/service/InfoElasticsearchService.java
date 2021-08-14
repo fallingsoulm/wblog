@@ -103,6 +103,7 @@ public class InfoElasticsearchService extends AbstractElasticsearchService {
             searchSourceBuilder.query(QueryBuilders.idsQuery().addIds(articleIds.toArray(new String[]{})));
         }
 
+
         // 排除字段
         searchSourceBuilder.fetchSource(null, "content");
         searchSourceBuilder.sort("createTime", SortOrder.DESC);
@@ -200,4 +201,22 @@ public class InfoElasticsearchService extends AbstractElasticsearchService {
         return articleSearchVos;
     }
 
+    @SneakyThrows
+    public List<ArticleSearchVo> findByPage(Long lastId, int size) {
+        SearchRequest searchRequest = new SearchRequest(type());
+        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
+        if (null != lastId) {
+            searchSourceBuilder.query(QueryBuilders.rangeQuery("id").gt(lastId));
+        }
+        searchSourceBuilder.from(0).size(size);
+        // 排除字段
+        searchSourceBuilder.fetchSource(null, new String[]{"content", "labelVos", "introduction"});
+        searchSourceBuilder.sort("id", SortOrder.ASC);
+
+        searchRequest.source(searchSourceBuilder);
+
+        SearchResponse response = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        List<ArticleSearchVo> articleSearchVos = Arrays.stream(response.getHits().getHits()).map(a -> JSON.parseObject(a.getSourceAsString(), ArticleSearchVo.class)).collect(Collectors.toList());
+        return articleSearchVos;
+    }
 }

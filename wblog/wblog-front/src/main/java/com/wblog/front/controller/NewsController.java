@@ -5,6 +5,7 @@ import com.wblog.common.module.info.vo.NewsVo;
 import com.wblog.front.utils.PageUtils;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageInfo;
 import io.github.fallingsoulm.easy.archetype.framework.page.PageRequestParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -45,10 +46,10 @@ public class NewsController {
 //        response.sendRedirect(newsVo.getUrl());
 //    }
 
-    //    @ApiOperation(value = "查看详情")
+    @ApiOperation(value = "查看详情")
     @GetMapping({"news/info/{id}", "news/info/{id}.html"})
     public String info(@PathVariable("id") Long id, Model model) throws IOException {
-        NewsVo newsVo = newsApi.findById(id).getData();
+        NewsVo newsVo = newsApi.info(id).getData();
         model.addAttribute("newsVo", newsVo);
 //        response.sendRedirect(newsVo.getUrl());
         return "newsInfo";

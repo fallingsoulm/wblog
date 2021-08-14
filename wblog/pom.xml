@@ -288,6 +288,7 @@
         <module>wblog-social</module>
         <module>wblog-search</module>
         <module>wblog-generate</module>
+        <module>wblog-bi</module>
 
     </modules>
 </project>

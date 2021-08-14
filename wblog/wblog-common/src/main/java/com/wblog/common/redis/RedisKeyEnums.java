@@ -74,7 +74,15 @@ public enum RedisKeyEnums implements IRedisKeyEnums {
      * @since 2021/7/28
      */
     NEWS_ID_BLACK_LIST("NEWS_ID_BLACK_LIST"),
-    ;
+
+
+    /**
+     * sitemap提交
+     *
+     * @author luyanan
+     * @since 2021/8/13
+     */
+    SUBMIT_SITEMAP("SUBMIT_SITEMAP");
 
     private String key;
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wblog</artifactId>
+        <groupId>com.wblog</groupId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.wblog.bi</groupId>
+    <artifactId>wblog-bi</artifactId>
+
+    <properties>
+        <ureport.version>2.2.9</ureport.version>
+        <aws.version>1.11.543</aws.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.wblog.common</groupId>
+            <artifactId>wblog-common</artifactId>
+            <version>1.1-SNAPSHOT</version>
+        </dependency>
+        <!--ureport-->
+        <dependency>
+            <groupId>com.bstek.ureport</groupId>
+            <artifactId>ureport2-console</artifactId>
+            <version>${ureport.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>${aws.version}</version>
+        </dependency>
+
+    </dependencies>
+</project>

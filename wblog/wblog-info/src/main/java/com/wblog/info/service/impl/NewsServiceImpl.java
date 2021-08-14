@@ -163,7 +163,7 @@ public class NewsServiceImpl implements INewsService {
         newsVo.setContent(infoEntity.getContent());
         newsVo.setType(infoEntity.getType());
         // 访问量
-        newsVo.setView(articleViewComponent.getView(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue(), id, entity.getView()));
+        newsVo.setView(articleViewComponent.incrementView(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue(), id, entity.getView()));
         // 标签
 
         List<LabelVo> labelVos = labelService.findByArticleId(newsVo.getId());
