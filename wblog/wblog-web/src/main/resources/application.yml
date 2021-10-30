@@ -134,7 +134,7 @@ easy:
         server:
           storetype: minio
           oss:
-            bucket-name: wblog-${spring.profiles.active}
+#            bucket-name: wblog-${spring.profiles.active}
             access-key: root
             secret-key: luyanan787
             region: ${easy.archetype.framework.file.file-host}

@@ -86,10 +86,9 @@ public class NewsSynEsJob implements IJobBeanHandler {
         if (cleanAll) {
             articleSearchApi.delete(ArticleSearchVo.builder().classify(ConstantEnum.SEARCH_INFO_TYPE_NEWS.getValue()).build());
         }
-        boolean hasNext = true;
         Integer offset = 0;
         Integer size = 100;
-        while (hasNext) {
+        while (true) {
             try {
                 LambdaQueryWrapper<NewsInfoEntity> queryWrapper = new LambdaQueryWrapper<NewsInfoEntity>()
                         .select(NewsInfoEntity::getNewsId).orderByDesc(NewsInfoEntity::getNewsId)
@@ -98,7 +97,7 @@ public class NewsSynEsJob implements IJobBeanHandler {
 
                 List<NewsInfoEntity> newsInfoEntities = newsInfoMapper.selectList(queryWrapper);
                 if (CollectionUtil.isEmpty(newsInfoEntities)) {
-                    hasNext = false;
+                    break;
                 }
                 offset = offset + size;
                 List<Long> ids = newsInfoEntities.stream().map(NewsInfoEntity::getNewsId).collect(Collectors.toList());

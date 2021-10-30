@@ -45,7 +45,7 @@ export default {
 	methods: {
 		// 获取文章详情K
 		getArticleInfo() {
-			this.$u.get('business/api/v1/news/find/id/' + this.id).then(res => {
+			this.$u.get('business/api/v1/news/info/' + this.id).then(res => {
 				// this.result = res;
 				// console.log("get请求", res);
 				this.article = res;
